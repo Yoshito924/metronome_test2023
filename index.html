@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>ポリリズムメトロノーム</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+    <h1>ポリリズムメトロノーム</h1>
+
+    <!-- メトロノームの設定 -->
+    <div>
+        <label for="bpm">BPM:</label>
+        <input type="range" id="bpm" min="1" max="300" value="120">
+        <span id="bpmValue">120</span>
+    </div>
+    <!-- リズムの設定 -->
+    <div>
+        <label for="rhythm1">リズム1:</label>
+        <input type="range" id="rhythm1" min="1" max="20" value="4">
+        <span id="rhythm1Value">4</span>
+    </div>
+
+    <div>
+        <label for="rhythm2">リズム2:</label>
+        <input type="range" id="rhythm2" min="1" max="20" value="3">
+        <span id="rhythm2Value">3</span>
+    </div>
+    <!-- 拍のビジュアル表示 -->
+<table id="rhythmTable">
+    <tr id="rhythmRow">
+        <!-- 動的にセルが追加されます -->
+    </tr>
+</table>
+
+    <!-- コントロールボタン -->
+    <div>
+        <button id="controlButton">開始</button>
+    </div>
+
+    <script src="main.js"></script>
+</body>
+
+</html>
