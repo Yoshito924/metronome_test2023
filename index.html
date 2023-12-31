@@ -9,6 +9,22 @@
 
 <body>
     <h1>ポリリズムメトロノーム</h1>
+    <div>
+
+        <!-- 拍のビジュアル表示 -->
+        <table id="rhythmTable">
+            <tr id="rhythm1BeatRow">
+                <!-- 動的にセルが追加されます -->
+            </tr>
+            <tr id="leastCommonMultipleBeatRow">
+                <!-- 動的にセルが追加されます -->
+            </tr>
+            <tr id="rhythm2BeatRow">
+                <!-- 動的にセルが追加されます -->
+            </tr>
+        </table>
+
+    </div>
 
     <!-- メトロノームの設定 -->
     <div>
@@ -19,26 +35,31 @@
     <!-- リズムの設定 -->
     <div>
         <label for="rhythm1">リズム1:</label>
-        <input type="range" id="rhythm1" min="1" max="20" value="4">
+        <input type="range" id="rhythm1" min="1" max="20" value="3">
         <span id="rhythm1Value">4</span>
     </div>
 
     <div>
         <label for="rhythm2">リズム2:</label>
-        <input type="range" id="rhythm2" min="1" max="20" value="3">
+        <input type="range" id="rhythm2" min="1" max="20" value="2">
         <span id="rhythm2Value">3</span>
     </div>
-    <!-- 拍のビジュアル表示 -->
-<table id="rhythmTable">
-    <tr id="rhythmRow">
-        <!-- 動的にセルが追加されます -->
-    </tr>
-</table>
+
 
     <!-- コントロールボタン -->
     <div>
         <button id="controlButton">開始</button>
     </div>
+
+    <div>
+        <button id="Button">再生</button>
+    </div>
+
+    <div>
+        <input type="range" id="volumeControl" min="0" max="10" step="0.01" value="1">
+        <div id="volumeValue">1</div>
+    </div>
+
 
     <script src="main.js"></script>
 </body>
