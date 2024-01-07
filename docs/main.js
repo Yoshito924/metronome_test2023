@@ -49,13 +49,11 @@ let timerId;
 
 // グローバル変数としてAudioContextとオーディオバッファを保持する変数を定義
 let audioContext;
-//GainNode のグローバル変数宣言
+//GainNode のグローバル変数
 let gainNode;
 // オーディオバッファを保持するオブジェクト
 let audioBuffers = {};
 
-// ロードするオーディオファイルの名前を配列で定義
-const fileNames = ['HiHat', 'conga808', 'Kick', 'handClap'];
 
 //=============================================================================
 // AudioContextの初期化を行う関数
@@ -63,23 +61,21 @@ function initializeAudioContext() {
     try {
         // 新しいAudioContextインスタンスを作成
         audioContext = new AudioContext();
-        // ゲインノードの初期化
+        // ゲインノードの作成
         gainNode = audioContext.createGain();
-        // 初期ボリュームを中間値に設定
-        gainNode.gain.value = 0.5;
+        // 初期ボリュームを低めに設定
+        gainNode.gain.value = 0.1;
         // ゲインノードをオーディオコンテキストの出力に接続
         gainNode.connect(audioContext.destination);
     } catch (e) {
         console.error("Web Audio APIはこのブラウザではサポートされていません。", e);
     }
 };
+
 //=============================================================================
-// ページが読み込まれた時にAudioContextを初期化
-window.addEventListener('load', () => {
-    initializeAudioContext();
-    loadAudioFiles();  // オーディオファイルの読み込みも開始
-});
-//=============================================================================
+// ロードするオーディオファイルの名前を配列で定義
+const fileNames = ['HiHat', 'conga808', 'Kick', 'handClap'];
+
 // オーディオファイルを非同期にロードし、オーディオバッファに変換する関数
 async function loadAudioFiles() {
     // Promise.allを使って、各ファイルを非同期に読み込む
@@ -97,7 +93,17 @@ async function loadAudioFiles() {
             return obj;
         }, {});
     });
+    console.log(audioBuffers)
 };
+
+//=============================================================================
+// ページが読み込まれた時にAudioContextを初期化
+window.addEventListener('load', () => {
+    initializeAudioContext();
+    loadAudioFiles();  // オーディオファイルの読み込みも開始
+});
+
+// ビートの構成を保存しておく配列
 let beatPattern;
 //=============================================================================
 // ビートパターンの配列を作成する関数
@@ -108,26 +114,22 @@ function generateBeatPattern(lcm, rhythm1, rhythm2) {
 
     for (let i = 0; i < lcm; i++) {
         let sounds = ['HiHat']; // HiHatは全てのビートに含まれる
-
         // 最初のビートにKickを追加
         if (i === 0) {
             sounds.push('Kick');
         }
-
         // rhythm1の間隔ごとにClaveを追加
         if (i % rhythm1Interval === 0) {
             sounds.push('conga808');
         }
-
         // rhythm2の間隔ごとにConga808を追加
         if (i % rhythm2Interval === 0) {
             sounds.push('handClap');
         }
-
         beatPattern.push({ sounds });
     }
-    // 結果の確認
     console.log(beatPattern);
+    // 結果の確認
     return beatPattern;
 }
 
@@ -143,18 +145,11 @@ async function metronomeOnOff() {
     if (!isPlaying) {
         // メトロノームを開始したときの処理
         if (!audioContext) {
-            audioContext = new AudioContext();
-            // 必要ならここでオーディオファイルを再度ロードする
+            initializeAudioContext()
         }
         nextBeatTime = audioContext.currentTime;
         // BPMに基づいてビート間隔を秒単位で計算します。
         beatInterval = 60 / (lcmRhythm / rhythm1 * bpm);
-
-        // 'HiHat.mp3'オーディオファイルを非同期で読み込む
-        const response = await fetch(`Audio/HiHat.mp3`);
-        const arrayBuffer = await response.arrayBuffer();
-        // バッファされたオーディオデータをデコードする
-        yourAudioBuffer = await audioContext.decodeAudioData(arrayBuffer);
         // 各ビートをスケジュールする。totalBeatsの数だけ繰り返す。
         for (let i = 0; i < totalBeats; i++) {
             scheduleBeat(i % totalBeats + 1);
@@ -177,7 +172,6 @@ async function metronomeOnOff() {
         // タイマーIDの配列をクリア
         timerIds = [];
         // ビジュアル表示をリセットするために各ビートのクラスをクリア
-        //一度ハイライトを全てリセットする
         for (let i = 1; i <= rhythm1; i++) {
             document.getElementById(`rhythm1Beat${i}`).classList = '';
         };
@@ -187,27 +181,13 @@ async function metronomeOnOff() {
         for (let i = 1; i <= rhythm2; i++) {
             document.getElementById(`rhythm2Beat${i}`).classList = '';
         };
+        //ビートのカウントをリセット
+        beatCount = 1
+        rhythm1BeatCount = 1
+        rhythm2BeatCount = 1
     };
     isPlaying = !isPlaying; // メトロノームの再生状態を切り替える
 };
-//=============================================================================
-// オーディオバッファを再生する関数
-function playSound(buffer, time) {
-    if (!audioContext) {
-        // 必要ならここでオーディオファイルを再度ロードする
-        audioContext = new AudioContext();
-        gainNode = audioContext.createGain();
-        gainNode.connect(audioContext.destination);
-    };
-    // 新しいオーディオバッファソースノードを作成
-    const source = audioContext.createBufferSource();
-    // ソースノードにオーディオバッファを設定
-    source.buffer = buffer;
-    // ソースノードをゲインノードに接続し、その後オーディオコンテキストの出力に接続
-    source.connect(gainNode);
-    // 指定された時間にオーディオバッファの再生を開始
-    source.start(time);
-}
 
 //=============================================================================
 function scheduleBeat(beatCount) {
@@ -221,13 +201,14 @@ function scheduleBeat(beatCount) {
 
     // ビートに対応する音を再生
     beat.sounds.forEach(sound => {
+        // 新しいAudioBufferSourceNodeを作成
         if (audioBuffers[sound]) {
             playSound(audioBuffers[sound], nextBeatTime);
         };
     });
 
-    // ビジュアル表示の更新をスケジュール
     const timeUntilNextBeat = nextBeatTime - audioContext.currentTime;
+    // ビジュアル表示の更新をスケジュール
     timerId = setTimeout(() => highlightBeat(beatCount), timeUntilNextBeat * 1000);
     timerIds.push(timerId);
     // 次の拍の音をスケジュール
@@ -249,7 +230,7 @@ function highlightBeat(beatCount) {
     rhythm2 = parseInt(document.getElementById('rhythm2').value);
     let lcmRhythm = lcm(rhythm1, rhythm2);
     //------------------------------------------------------------------------
-    if (beatCount % (lcmRhythm / rhythm1) === 1) {
+    if (beatCount % (lcmRhythm / rhythm1) === 1 || lcmRhythm === rhythm1) {
         //一度rhythm1ハイライトを全てリセットする
         for (let i = 1; i <= rhythm1; i++) {
             document.getElementById(`rhythm1Beat${i}`).classList = '';
@@ -266,7 +247,7 @@ function highlightBeat(beatCount) {
     //ハイライトを付ける
     document.getElementById(`leastCommonMultipleBeat${beatCount}`).classList = 'highlightLcm';
     //------------------------------------------------------------------------
-    if (beatCount % (lcmRhythm / rhythm2) === 1) {
+    if (beatCount % (lcmRhythm / rhythm2) === 1 || lcmRhythm === rhythm2) {
         //一度rhythm2ハイライトを全てリセットする
         for (let i = 1; i <= rhythm2; i++) {
             document.getElementById(`rhythm2Beat${i}`).classList = '';
@@ -289,21 +270,13 @@ function highlightBeat(beatCount) {
 // オーディオバッファを再生する関数
 function playSound(buffer, time) {
     if (!audioContext) {
-        // 新しいAudioContextインスタンスを作成
-        audioContext = new AudioContext();
-        // ゲインノードの初期化
-        gainNode = audioContext.createGain();
-        // 初期ボリュームを中間値に設定
-        gainNode.gain.value = 0.5;
-        // ゲインノードをオーディオコンテキストの出力に接続
-        gainNode.connect(audioContext.destination);
+        initializeAudioContext()
     };
     // 新しいオーディオバッファソースノードを作成
     const source = audioContext.createBufferSource();
     // ソースノードにオーディオバッファを設定
     source.buffer = buffer;
-    // ソースノードをオーディオコンテキストの出力に接続
-    source.connect(audioContext.destination);
+    // ソースをゲインノードに接続
     source.connect(gainNode);
     // 指定された時間にオーディオバッファの再生を開始
     source.start(time);
@@ -321,9 +294,9 @@ document.getElementById('Button').addEventListener('click', () => {
     playSound(audioBuffers['Kick'], audioContext.currentTime);
 });
 
+//BPMが変更された時の処理
 document.getElementById('bpm').addEventListener('input', function () {
     document.getElementById('bpmValue').textContent = this.value;
-    metronomeOnOff()
 });
 
 
@@ -358,28 +331,14 @@ document.getElementById('rhythm2').addEventListener('input', function () {
 // ボリュームコントロールのイベントリスナー
 document.getElementById('volumeControl').addEventListener('input', function () {
     let volume = this.value;
-    gainNode.gain.value = volume / 10; // 0-10 の値を 0-1 に変換
+    gainNode.gain.value = volume / 10; // 0-10 の値を 0-0.5 に変換
     document.getElementById('volumeValue').textContent = volume; // ボリューム値の表示更新
 });
+
 //=============================================================================
-function CalculatePolyRhythmTable(mainRhythm, subRhythm) {
-    // mainRhythmValueの取得
-    // 'Value'というIDが付いている要素からテキスト内容を取得して整数に変換
-    let mainRhythmValue = parseInt(document.getElementById(`${mainRhythm}Value`).textContent);
-    console.log(mainRhythmValue);
 
-    // mainRhythmのビートテーブルを更新
-    updateRhythmTable(mainRhythmValue, `${mainRhythm}Beat`);
 
-    // subRhythmValueの取得
-    // 'subRhythm'というIDが付いている入力要素から値を取得して整数に変換
-    let subRhythmValue = parseInt(document.getElementById(`${subRhythm}`).value);
-
-    // 最小公倍数を計算して、共通のビートテーブルを更新
-    updateRhythmTable(lcm(mainRhythmValue, subRhythmValue), 'leastCommonMultipleBeat');
-}
-
-// 拍のビジュアルを描画する関数
+// 拍のビジュアルをHTML上に描画する関数
 function updateRhythmTable(beats, idName) {
     let row = document.getElementById(`${idName}Row`);
     row.innerHTML = ''; // テーブルの行をクリア
@@ -389,6 +348,10 @@ function updateRhythmTable(beats, idName) {
         td.textContent = i;
         row.appendChild(td);
     }
+    //ビートのカウントをリセット
+    beatCount = 1
+    rhythm1BeatCount = 1
+    rhythm2BeatCount = 1
 }
 
 updateRhythmValueAndTable('rhythm1', 'rhythm1Beat');
