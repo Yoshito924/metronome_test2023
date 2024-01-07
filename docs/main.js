@@ -41,6 +41,7 @@ let yourAudioBuffer; // オーディオデータを格納する変数
 let bpm = 220; // BPMを設定する
 let rhythm1;
 let rhythm2;
+let lcmRhythm;
 let isPlaying = false; // メトロノームが再生中かどうかを追跡するフラグ
 let beatCount = 1;
 // タイマーIDを保持するための配列
@@ -128,18 +129,17 @@ function generateBeatPattern(lcm, rhythm1, rhythm2) {
         }
         beatPattern.push({ sounds });
     }
-    console.log(beatPattern);
+
     // 結果の確認
     return beatPattern;
 }
 
 //=============================================================================
 async function metronomeOnOff() {
-
     bpm = document.getElementById('bpm').value;
     rhythm1 = document.getElementById('rhythm1').value;
     rhythm2 = document.getElementById('rhythm2').value;
-    let lcmRhythm = lcm(rhythm1, rhythm2);
+    lcmRhythm = lcm(rhythm1, rhythm2);
     totalBeats = lcmRhythm;
 
     if (!isPlaying) {
@@ -148,7 +148,7 @@ async function metronomeOnOff() {
             initializeAudioContext()
         }
         nextBeatTime = audioContext.currentTime;
-        // BPMに基づいてビート間隔を秒単位で計算します。
+        // BPMに基づいてビート間隔を秒単位で計算。
         beatInterval = 60 / (lcmRhythm / rhythm1 * bpm);
         // 各ビートをスケジュールする。totalBeatsの数だけ繰り返す。
         for (let i = 0; i < totalBeats; i++) {
@@ -172,14 +172,27 @@ async function metronomeOnOff() {
         // タイマーIDの配列をクリア
         timerIds = [];
         // ビジュアル表示をリセットするために各ビートのクラスをクリア
+        console.log(rhythm1, rhythm2)
         for (let i = 1; i <= rhythm1; i++) {
-            document.getElementById(`rhythm1Beat${i}`).classList = '';
+            let element = document.getElementById(`rhythm1Beat${i}`);
+            //要素がある場合のみ削除
+            if (element) {
+                element.classList = '';
+            }
         };
         for (let i = 1; i <= lcmRhythm; i++) {
-            document.getElementById(`leastCommonMultipleBeat${i}`).classList = '';
+            let element = document.getElementById(`leastCommonMultipleBeat${i}`);
+            //要素がある場合のみ削除
+            if (element) {
+                element.classList = '';
+            }
         };
         for (let i = 1; i <= rhythm2; i++) {
-            document.getElementById(`rhythm2Beat${i}`).classList = '';
+            let element = document.getElementById(`rhythm2Beat${i}`);
+            //要素がある場合のみ削除
+            if (element) {
+                element.classList = '';
+            }
         };
         //ビートのカウントをリセット
         beatCount = 1
@@ -230,10 +243,15 @@ function highlightBeat(beatCount) {
     rhythm2 = parseInt(document.getElementById('rhythm2').value);
     let lcmRhythm = lcm(rhythm1, rhythm2);
     //------------------------------------------------------------------------
+
     if (beatCount % (lcmRhythm / rhythm1) === 1 || lcmRhythm === rhythm1) {
         //一度rhythm1ハイライトを全てリセットする
         for (let i = 1; i <= rhythm1; i++) {
-            document.getElementById(`rhythm1Beat${i}`).classList = '';
+            let element = document.getElementById(`rhythm1Beat${i}`);
+            //要素がある場合のみ削除
+            if (element) {
+                element.classList = '';
+            }
         };
         //ハイライトを付ける
         document.getElementById(`rhythm1Beat${rhythm1BeatCount}`).classList = 'highlight1';
@@ -242,7 +260,11 @@ function highlightBeat(beatCount) {
     //------------------------------------------------------------------------
     //一度lcmのハイライトを全てリセットする
     for (let i = 1; i <= lcmRhythm; i++) {
-        document.getElementById(`leastCommonMultipleBeat${i}`).classList = '';
+        let element = document.getElementById(`leastCommonMultipleBeat${i}`);
+        //要素がある場合のみ削除
+        if (element) {
+            element.classList = '';
+        }
     };
     //ハイライトを付ける
     document.getElementById(`leastCommonMultipleBeat${beatCount}`).classList = 'highlightLcm';
@@ -250,7 +272,11 @@ function highlightBeat(beatCount) {
     if (beatCount % (lcmRhythm / rhythm2) === 1 || lcmRhythm === rhythm2) {
         //一度rhythm2ハイライトを全てリセットする
         for (let i = 1; i <= rhythm2; i++) {
-            document.getElementById(`rhythm2Beat${i}`).classList = '';
+            let element = document.getElementById(`rhythm2Beat${i}`);
+            //要素がある場合のみ削除
+            if (element) {
+                element.classList = '';
+            }
         };
         //ハイライトを付ける
         document.getElementById(`rhythm2Beat${rhythm2BeatCount}`).classList = 'highlight2';
@@ -296,12 +322,19 @@ document.getElementById('Button').addEventListener('click', () => {
 
 //BPMが変更された時の処理
 document.getElementById('bpm').addEventListener('input', function () {
+    //メトロノームが動作中ならばいったん止める
+    if (isPlaying) {
+        metronomeOnOff()
+    };
     document.getElementById('bpmValue').textContent = this.value;
 });
 
-
 //リズム値の更新とテーブル更新を行う関数
 function updateRhythmValueAndTable(rhythmId, tableId) {
+    //メトロノームが動作中ならばいったん止める
+    if (isPlaying) {
+        metronomeOnOff()
+    };
     let rhythmValue = parseInt(document.getElementById(rhythmId).value);
     document.getElementById(`${rhythmId}Value`).textContent = rhythmValue;
     updateRhythmTable(rhythmValue, tableId);
@@ -317,12 +350,13 @@ function updateCommonRhythmTable(rhythm1Id, rhythm2Id, tableId) {
     beatPattern = generateBeatPattern(lcmRhythm, rhythm1, rhythm2);
 }
 
-//イベントリスナーの一般化
+//リズム1の値が変更された時の処理
 document.getElementById('rhythm1').addEventListener('input', function () {
     updateRhythmValueAndTable('rhythm1', 'rhythm1Beat');
     updateCommonRhythmTable('rhythm1', 'rhythm2', 'leastCommonMultipleBeat');
 });
 
+//リズム1の値が変更された時の処理
 document.getElementById('rhythm2').addEventListener('input', function () {
     updateRhythmValueAndTable('rhythm2', 'rhythm2Beat');
     updateCommonRhythmTable('rhythm1', 'rhythm2', 'leastCommonMultipleBeat');
