@@ -68,7 +68,7 @@ const fileNames = [
     'cowbell',
     'edm_percussion',
     'female_voice',
-    'hihat',
+    'hi-hat',
     'naiki_voice',
 ];
 
@@ -392,6 +392,14 @@ function updateCommonRhythmTable() {
     updateRhythmTable(rhythm2, 'rhythm2Beat', rhythm2BeatStates);
 }
 
+const noteArray = [
+    { note: '●', rest: '◯' },
+    { note: '&#x1D15E;', rest: '&#x1D13C;' },
+    { note: '♩', rest: '&#x1D13D;' },
+    { note: '&#9834;', rest: '&#x1D13E;' },
+    { note: '&#x1D161;', rest: '&#x1D13F;' },
+];
+
 // 拍のビジュアルをHTML上に描画する関数
 function updateRhythmTable(beats, idName, beatStates) {
     //メトロノームが動作中ならばいったん止める
@@ -409,16 +417,45 @@ function updateRhythmTable(beats, idName, beatStates) {
     let note;
     let rest;
     console.log(polyRhythmBasisValue, idName)
+
     //表示する音符を決定する処理
     if (polyRhythmBasisValue === 1 && idName === 'rhythm1Beat') {
-        note = '♩'
-        rest = '&#x1D13D;'
+        if (polyRhythmBasisNote === 2) {
+            note = noteArray[1].note
+            rest = noteArray[1].rest
+        } else if (polyRhythmBasisNote === 4) {
+            note = noteArray[2].note
+            rest = noteArray[2].rest
+        } else if (polyRhythmBasisNote === 8) {
+            note = noteArray[3].note
+            rest = noteArray[3].rest
+        } else if (polyRhythmBasisNote === 16) {
+            note = noteArray[4].note
+            rest = noteArray[4].rest
+        } else {
+            note = noteArray[0].note
+            rest = noteArray[0].rest
+        }
     } else if (polyRhythmBasisValue === 0 && idName === 'leastCommonMultipleBeat') {
-        note = '♩'
-        rest = '&#x1D13D;'
+        if (polyRhythmBasisNote === 2) {
+            note = noteArray[1].note
+            rest = noteArray[1].rest
+        } else if (polyRhythmBasisNote === 4) {
+            note = noteArray[2].note
+            rest = noteArray[2].rest
+        } else if (polyRhythmBasisNote === 8) {
+            note = noteArray[3].note
+            rest = noteArray[3].rest
+        } else if (polyRhythmBasisNote === 16) {
+            note = noteArray[4].note
+            rest = noteArray[4].rest
+        } else {
+            note = noteArray[0].note
+            rest = noteArray[0].rest
+        }
     } else {
-        note = '●'
-        rest = '◯'
+        note = noteArray[0].note
+        rest = noteArray[0].rest
     }
     //------------------------------------------------------------------------
     for (let i = 1; i <= beats; i++) {
