@@ -44,22 +44,48 @@
         <span id="rhythm2Value">2</span>
     </div>
 
-
     <!-- コントロールボタン -->
     <div>
         <button id="controlButton">開始</button>
     </div>
 
-    <button id="muteRhythm1">リズム1 ミュート/ミュート解除</button>
-    <button id="muteLCM">LCM ミュート/ミュート解除</button>
-    <button id="muteRhythm2">リズム2 ミュート/ミュート解除</button>
-    <button id="muteBeatHead">拍の頭 ミュート/ミュート解除</button>
-
     <div>
-        <input type="range" id="volumeControl" min="0" max="10" step="1" value="1">
-        <div id="volumeValue">1</div>
+        <div>
+            <button id="muteRhythm1">リズム1 ミュート/ミュート解除</button>
+        </div>
+        <div>
+            <button id="muteLCM">LCM ミュート/ミュート解除</button>
+        </div>
+        <div>
+            <button id="muteRhythm2">リズム2 ミュート/ミュート解除</button>
+        </div>
+        <div>
+            <button id="muteBeatHead">拍の頭 ミュート/ミュート解除</button>
+        </div>
     </div>
 
+    <div>
+        <label for="polyRhythm_basis_Value" class="">基準：
+            <select id="polyRhythm_basis_Value" class="form-select mt-1" onchange="">
+                <option value="0">LCM（最小公倍数）</option>
+                <option value="1" selected>リズム1</option>
+            </select>
+        </label>
+        <label for="polyRhythm_basis_note" class="">が
+            <select id="polyRhythm_basis_note" class="form-select mt-1" onchange="">
+                <option value="2">2分音符</option>
+                <option value="4" selected>4分音符</option>
+                <option value="8">8分音符</option>
+                <option value="16">16分音符</option>
+            </select>
+        </label>
+    </div>
+
+    <div>
+        <label for="rhythm2">音量：</label>
+        <input type="range" id="volumeControl" min="0" max="10" step="1" value="1">
+        <span id="volumeValue">1</span>
+    </div>
 
     <script src="main.js"></script>
 </body>

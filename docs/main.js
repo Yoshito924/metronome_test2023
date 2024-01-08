@@ -131,6 +131,7 @@ function generateBeatPattern(lcm, rhythm1, rhythm2) {
     // console.log(lcmMuted, beatHeadMuted, rhythm1Muted, rhythm2Muted)
     for (let i = 0; i < lcm; i++) {
         // -------------------------------------------
+        // lcmの音を追加
         if (lcmBeatStates[i] === false) {
             sounds = [''];
         } else if (lcmMuted === false) {
@@ -151,7 +152,6 @@ function generateBeatPattern(lcm, rhythm1, rhythm2) {
         } else if (i % rhythm1Interval === 0) {
             rhythm1Counter++
         }
-
         // -------------------------------------------
         // rhythm2の音を追加
         if (i % rhythm2Interval === 0 && rhythm2Muted === false && rhythm2BeatStates[rhythm2Counter] === true) {
@@ -160,20 +160,30 @@ function generateBeatPattern(lcm, rhythm1, rhythm2) {
         } else if (i % rhythm2Interval === 0) {
             rhythm2Counter++
         }
+        // -------------------------------------------
         beatPattern.push({ sounds });
     }
 
     // 結果の確認
     return beatPattern;
 }
-
+// 基準となるポリリズムの値を取得
+let polyRhythmBasisValue;
+// 選択された音符の種類（2分音符、4分音符など）を取得
+let polyRhythmBasisNote;
 //=============================================================================
+// メトロノームをオンオフする関数
 async function metronomeOnOff() {
     bpm = document.getElementById('bpm').value;
     rhythm1 = document.getElementById('rhythm1').value;
     rhythm2 = document.getElementById('rhythm2').value;
     lcmRhythm = lcm(rhythm1, rhythm2);
     totalBeats = lcmRhythm;
+
+    // 基準となるポリリズムの値を取得
+    polyRhythmBasisValue = parseInt(document.getElementById('polyRhythm_basis_Value').value);
+    // 選択された音符の種類（2分音符、4分音符など）を取得
+    polyRhythmBasisNote = parseInt(document.getElementById('polyRhythm_basis_note').value);
 
     if (!isPlaying) {
         // メトロノームを開始したときの処理
@@ -182,7 +192,12 @@ async function metronomeOnOff() {
         }
         nextBeatTime = audioContext.currentTime;
         // BPMに基づいてビート間隔を秒単位で計算。
-        beatInterval = 60 / (lcmRhythm / rhythm1 * bpm);
+        if (polyRhythmBasisValue === 1) {
+            beatInterval = (60 / (lcmRhythm / rhythm1 * bpm)) / (polyRhythmBasisNote / 4);
+        } else if (polyRhythmBasisValue === 0) {
+            beatInterval = (60 / bpm) / (polyRhythmBasisNote / 4);
+        }
+
         // 各ビートをスケジュールする。totalBeatsの数だけ繰り返す。
         for (let i = 0; i < totalBeats; i++) {
             scheduleBeat(i % totalBeats + 1);
@@ -445,6 +460,22 @@ document.getElementById('rhythm2').addEventListener('input', function () {
     document.getElementById('rhythm2Value').textContent = this.value;
     // 拍のビジュアルをHTML上に描画する関数
     updateCommonRhythmTable()
+});
+
+document.getElementById('polyRhythm_basis_Value').addEventListener('change', function () {
+    polyRhythmBasisValue = this.value;
+    //メトロノームが動作中ならばいったん止める
+    if (isPlaying) {
+        metronomeOnOff()
+    };
+});
+
+document.getElementById('polyRhythm_basis_note').addEventListener('change', function () {
+    polyRhythmBasisNote = this.value;
+    //メトロノームが動作中ならばいったん止める
+    if (isPlaying) {
+        metronomeOnOff()
+    };
 });
 
 //ミュートボタンのイベントリスナー
