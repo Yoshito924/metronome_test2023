@@ -61,14 +61,14 @@ let polyRhythmBasisNote;
 // ロードするオーディオファイルの名前を配列で定義
 const fileNames = [
     '808conga',
-
+    'kick',
     'clap',
     'clave',
     'click',
     'cowbell',
     'edm_percussion',
     'female_voice',
-
+    'hihat',
     'naiki_voice',
 ];
 
@@ -118,7 +118,7 @@ async function loadAudioFiles() {
             return obj;
         }, {});
     });
-    console.log("complete")
+
 };
 
 //=============================================================================
@@ -365,6 +365,7 @@ function playSound(buffer, time) {
     const source = audioContext.createBufferSource();
     // ソースノードにオーディオバッファを設定
     source.buffer = buffer;
+    console.log(buffer)
     // ソースをゲインノードに接続
     source.connect(gainNode);
     // 指定された時間にオーディオバッファの再生を開始
