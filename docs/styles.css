@@ -1,6 +1,6 @@
 
 .highlight1{
-    background-color: darksalmon;
+    background-color: salmon;
 }
 
 .highlightLcm{
@@ -8,13 +8,14 @@
 }
 
 .highlight2{
-    background-color: aqua;
+    background-color: cyan;
 }
 
 table {
     width: 100%; /* テーブルを親要素の横幅いっぱいに設定 */
     border-collapse: collapse; /* セルの境界線を1本にする */
     text-align: center;
+    table-layout: fixed; /* セルの幅を固定 */
 }
 
 /* オプションで、テーブルのヘッダーに別のスタイルを適用することもできます */
@@ -23,4 +24,7 @@ td {
     border: 1px solid #ababab; /* 黒色の境界線 */
     border-collapse: collapse; /* セルの境界線を1本にする */
     padding: 10px 0px;
+    overflow: hidden; /* 内容がセルの幅を超える場合には非表示にします */
+    text-overflow: ellipsis; /* 内容が超えた場合には省略記号を表示します */
+    white-space: nowrap; /* セルの内容を改行しないようにします */
 }

@@ -115,9 +115,11 @@ async function loadAudioFiles() {
         // 読み込んだオーディオバッファをファイル名と関連付けてオブジェクトに格納
         return fileNames.reduce((obj, name, index) => {
             obj[name] = buffers[index];
+            console.log(obj)
             return obj;
         }, {});
     });
+
 };
 
 //=============================================================================
