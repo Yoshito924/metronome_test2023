@@ -61,7 +61,7 @@ let polyRhythmBasisNote;
 // ロードするオーディオファイルの名前を配列で定義
 const fileNames = [
     '808conga',
-    'kick',
+    'bass_drum',
     'clap',
     'clave',
     'click',
