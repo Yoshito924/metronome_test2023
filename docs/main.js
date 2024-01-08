@@ -64,12 +64,12 @@ const fileNames = [
     'kick',
     'clap',
     'clave',
-    'click',
+
     'cowbell',
     'edm_percussion',
     'female_voice',
     'hihat',
-    'naiki_voice',
+
 ];
 
 //=============================================================================
@@ -115,11 +115,10 @@ async function loadAudioFiles() {
         // 読み込んだオーディオバッファをファイル名と関連付けてオブジェクトに格納
         return fileNames.reduce((obj, name, index) => {
             obj[name] = buffers[index];
-            console.log(obj)
             return obj;
         }, {});
     });
-
+    console.log("complete")
 };
 
 //=============================================================================
