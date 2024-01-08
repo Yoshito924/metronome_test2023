@@ -10,3 +10,8 @@
 .highlight2{
     background-color: aqua;
 }
+
+#rhythmTable{
+    display: block;
+    text-align: center;
+}

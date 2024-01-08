@@ -60,9 +60,22 @@ let rhythm1Muted = false; // リズム1のミュート状態
 let lcmMuted = false; // LCMのミュート状態
 let rhythm2Muted = false; // リズム2のミュート状態
 let beatHeadMuted = false; // 拍の頭のミュート状態
-
+// ----------------------------------------------------
+let rhythm1BeatStates = [];  // リズム1のビート状態
+let lcmBeatStates = [];      // LCMのビート状態
+let rhythm2BeatStates = [];  // リズム2のビート状態
 
 //=============================================================================
+//ビート状態の配列を初期化する関数
+function initializeBeatStates() {
+    let rhythm1Length = parseInt(document.getElementById('rhythm1').value);
+    let rhythm2Length = parseInt(document.getElementById('rhythm2').value);
+    let lcmLength = lcm(rhythm1Length, rhythm2Length);
+    rhythm1BeatStates = new Array(rhythm1Length).fill(true);
+    lcmBeatStates = new Array(lcmLength).fill(true);
+    rhythm2BeatStates = new Array(rhythm2Length).fill(true);
+};
+
 // AudioContextの初期化を行う関数
 function initializeAudioContext() {
     try {
@@ -103,43 +116,49 @@ async function loadAudioFiles() {
 };
 
 //=============================================================================
-// ページが読み込まれた時にAudioContextを初期化
-window.addEventListener('load', () => {
-    initializeAudioContext();
-    loadAudioFiles();  // オーディオファイルの読み込みも開始
-});
-
 // ビートの構成を保存しておく配列
 let beatPattern;
-//=============================================================================
 // ビートパターンの配列を作成する関数
 function generateBeatPattern(lcm, rhythm1, rhythm2) {
     let beatPattern = [];
     let rhythm1Interval = lcm / rhythm1;
     let rhythm2Interval = lcm / rhythm2;
     let sounds = [];
+    let rhythm1Counter = 0
+    let rhythm2Counter = 0
     // console.log(lcm, rhythm1, rhythm2)
     // console.log(beatCount, rhythm1BeatCount, rhythm2BeatCount)
-    console.log(rhythm1BeatStates, lcmBeatStates, rhythm2BeatStates)
-
     // console.log(lcmMuted, beatHeadMuted, rhythm1Muted, rhythm2Muted)
     for (let i = 0; i < lcm; i++) {
-        if (lcmMuted === false) {
-            sounds = ['HiHat']; // HiHatは全てのビートに含まれる
+        // -------------------------------------------
+        if (lcmBeatStates[i] === false) {
+            sounds = [''];
+        } else if (lcmMuted === false) {
+            sounds = ['HiHat']; // 基本的にHiHatは全てのビートに含まれる
         } else {
             sounds = [''];
         }
+        // -------------------------------------------
         // ビートの先頭の音を追加
         if (i === 0 && beatHeadMuted === false) {
             sounds.push('Kick');
         }
+        // -------------------------------------------
         // rhythm1の音を追加
-        if (i % rhythm1Interval === 0 && rhythm1Muted === false) {
+        if (i % rhythm1Interval === 0 && rhythm1Muted === false && rhythm1BeatStates[rhythm1Counter] === true) {
             sounds.push('conga808');
+            rhythm1Counter++
+        } else if (i % rhythm1Interval === 0) {
+            rhythm1Counter++
         }
+
+        // -------------------------------------------
         // rhythm2の音を追加
-        if (i % rhythm2Interval === 0 && rhythm2Muted === false) {
+        if (i % rhythm2Interval === 0 && rhythm2Muted === false && rhythm2BeatStates[rhythm2Counter] === true) {
             sounds.push('handClap');
+            rhythm2Counter++
+        } else if (i % rhythm2Interval === 0) {
+            rhythm2Counter++
         }
         beatPattern.push({ sounds });
     }
@@ -186,7 +205,6 @@ async function metronomeOnOff() {
         // タイマーIDの配列をクリア
         timerIds = [];
         // ビジュアル表示をリセットするために各ビートのクラスをクリア
-        console.log(rhythm1, rhythm2)
         for (let i = 1; i <= rhythm1; i++) {
             let element = document.getElementById(`rhythm1Beat${i}`);
             //要素がある場合のみ削除
@@ -323,85 +341,52 @@ function playSound(buffer, time) {
     source.start(time);
 }
 
-function playSoundIfNotMuted(sound, time) {
-    switch (sound) {
-        case 'rhythm1Sound':
-            if (!rhythm1Muted) playSound(sound, time);
-            break;
-        case 'lcmSound':
-            if (!lcmMuted) playSound(sound, time);
-            break;
-        case 'rhythm2Sound':
-            if (!rhythm2Muted) playSound(sound, time);
-            break;
-        case 'beatHeadSound':
-            if (!beatHeadMuted) playSound(sound, time);
-            break;
-        default:
-            playSound(sound, time); // その他の音は常に再生
-    }
-}
-
-
 // --------------------------------------------------------------
-let rhythm1BeatStates = [];  // リズム1のビート状態
-let lcmBeatStates = [];      // LCMのビート状態
-let rhythm2BeatStates = [];  // リズム2のビート状態
 
-//ビート状態の配列を初期化する関数
-function initializeBeatStates(rhythm1Length, lcmLength, rhythm2Length) {
-    rhythm1BeatStates = new Array(rhythm1Length).fill(true);
-    lcmBeatStates = new Array(lcmLength).fill(true);
-    rhythm2BeatStates = new Array(rhythm2Length).fill(true);
+//リズムテーブル更新を行う関数
+function updateCommonRhythmTable() {
+    let rhythm1 = parseInt(document.getElementById('rhythm1').value);
+    let rhythm2 = parseInt(document.getElementById('rhythm2').value);
+    let lcmRhythm = lcm(rhythm1, rhythm2);
+    // ビート状態の配列を初期化する関数
+    initializeBeatStates()
+    updateRhythmTable(rhythm1, 'rhythm1Beat', rhythm1BeatStates);
+    updateRhythmTable(lcmRhythm, 'leastCommonMultipleBeat', lcmBeatStates);
+    updateRhythmTable(rhythm2, 'rhythm2Beat', rhythm2BeatStates);
 }
 
-//リズム値の更新とテーブル更新を行う関数
-function updateRhythmValueAndTable(rhythmId, tableId, beatStates) {
+// 拍のビジュアルをHTML上に描画する関数
+function updateRhythmTable(beats, idName, beatStates) {
     //メトロノームが動作中ならばいったん止める
     if (isPlaying) {
         metronomeOnOff()
     };
-    let rhythmValue = parseInt(document.getElementById(rhythmId).value);
-    document.getElementById(`${rhythmId}Value`).textContent = rhythmValue;
-    updateRhythmTable(rhythmValue, tableId, beatStates);
-}
 
-//lcmリズムテーブル更新を行う関数
-function updateCommonRhythmTable(rhythm1Id, rhythm2Id, tableId) {
-    let rhythm1 = parseInt(document.getElementById(rhythm1Id).value);
-    let rhythm2 = parseInt(document.getElementById(rhythm2Id).value);
-    let lcmRhythm = lcm(rhythm1, rhythm2);
-    updateRhythmTable(lcmRhythm, tableId, lcmBeatStates);
-}
-
-//リズム1の値が変更された時の処理
-document.getElementById('rhythm1').addEventListener('input', function () {
-    updateRhythmValueAndTable('rhythm1', 'rhythm1Beat', rhythm1BeatStates);
-    updateCommonRhythmTable('rhythm1', 'rhythm2', 'leastCommonMultipleBeat');
-});
-
-//リズム1の値が変更された時の処理
-document.getElementById('rhythm2').addEventListener('input', function () {
-    updateRhythmValueAndTable('rhythm2', 'rhythm2Beat', rhythm2BeatStates);
-    updateCommonRhythmTable('rhythm1', 'rhythm2', 'leastCommonMultipleBeat');
-});
-
-//=============================================================================
-
-
-// 拍のビジュアルをHTML上に描画する関数
-function updateRhythmTable(beats, idName, beatStates) {
     let row = document.getElementById(`${idName}Row`);
     row.innerHTML = '';
+
     for (let i = 1; i <= beats; i++) {
         let td = document.createElement('td');
         td.id = `${idName}${i}`;
-        td.textContent = i;
+        // beatStatesがfalseの場合に特定の文字列を出力
+        if (!beatStates[i - 1]) {
+            td.innerHTML = i + '<br>&#x1D13D;';  // または '&#x2669;' または直接 '♩' を使用
+        } else {
+            td.innerHTML = i + '<br>♩';
+        }
+
         td.addEventListener('click', function () {
             beatStates[i - 1] = !beatStates[i - 1];
+            // 再度条件をチェックして、内容を切り替える
+            console.log(rhythm1BeatStates, lcmBeatStates, rhythm2BeatStates)
+
+            if (!beatStates[i - 1]) {
+                this.innerHTML = i + '<br>&#x1D13D;';
+            } else {
+                this.innerHTML = i + '<br>♩';
+            }
             this.classList.toggle('muted');
         });
-        // ---------------------
         row.appendChild(td);
     }
     //ビートのカウントをリセット
@@ -410,19 +395,34 @@ function updateRhythmTable(beats, idName, beatStates) {
     rhythm2BeatCount = 1
 }
 
-updateRhythmValueAndTable('rhythm1', 'rhythm1Beat');
-updateCommonRhythmTable('rhythm1', 'rhythm2', 'leastCommonMultipleBeat');
-updateRhythmValueAndTable('rhythm2', 'rhythm2Beat');
-updateCommonRhythmTable('rhythm1', 'rhythm2', 'leastCommonMultipleBeat');
 
 //=============================================================================
 // イベントリスナー
+
+// ページが読み込まれた時に実行する関数
+window.addEventListener('load', () => {
+    // AudioContextを初期化
+    initializeAudioContext();
+    // オーディオファイルの読み込みを開始
+    loadAudioFiles();
+    // ビート状態の配列を初期化する関数（↓イベントリスナー効かなくなるので拍のビジュアルをHTML上に描画する関数の前に実行しないとダメ）
+    initializeBeatStates()
+    // 拍のビジュアルをHTML上に描画する関数
+    updateCommonRhythmTable()
+});
 
 // ボタンを押したときに実行される処理
 document.getElementById('controlButton').addEventListener('click', () => {
     metronomeOnOff()
 });
 
+// キーボードイベントのリスナーを追加
+document.addEventListener('keydown', function (event) {
+    // スペースキーが押されたかチェック
+    if (event.key === " ") {
+        metronomeOnOff();
+    }
+});
 
 //BPMが変更された時の処理
 document.getElementById('bpm').addEventListener('input', function () {
@@ -433,6 +433,21 @@ document.getElementById('bpm').addEventListener('input', function () {
     document.getElementById('bpmValue').textContent = this.value;
 });
 
+//リズム1の値が変更された時の処理
+document.getElementById('rhythm1').addEventListener('input', function () {
+    document.getElementById('rhythm1Value').textContent = this.value;
+    // 拍のビジュアルをHTML上に描画する関数
+    updateCommonRhythmTable()
+});
+
+//リズム2の値が変更された時の処理
+document.getElementById('rhythm2').addEventListener('input', function () {
+    document.getElementById('rhythm2Value').textContent = this.value;
+    // 拍のビジュアルをHTML上に描画する関数
+    updateCommonRhythmTable()
+});
+
+//ミュートボタンのイベントリスナー
 document.getElementById('muteRhythm1').addEventListener('click', () => {
     rhythm1Muted = !rhythm1Muted;
     console.log(rhythm1Muted)
