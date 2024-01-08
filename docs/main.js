@@ -55,6 +55,12 @@ let gainNode;
 // オーディオバッファを保持するオブジェクト
 let audioBuffers = {};
 
+// ----------------------------------------------------
+let rhythm1Muted = false; // リズム1のミュート状態
+let lcmMuted = false; // LCMのミュート状態
+let rhythm2Muted = false; // リズム2のミュート状態
+let beatHeadMuted = false; // 拍の頭のミュート状態
+
 
 //=============================================================================
 // AudioContextの初期化を行う関数
@@ -94,7 +100,6 @@ async function loadAudioFiles() {
             return obj;
         }, {});
     });
-    console.log(audioBuffers)
 };
 
 //=============================================================================
@@ -112,19 +117,28 @@ function generateBeatPattern(lcm, rhythm1, rhythm2) {
     let beatPattern = [];
     let rhythm1Interval = lcm / rhythm1;
     let rhythm2Interval = lcm / rhythm2;
+    let sounds = [];
+    // console.log(lcm, rhythm1, rhythm2)
+    // console.log(beatCount, rhythm1BeatCount, rhythm2BeatCount)
+    console.log(rhythm1BeatStates, lcmBeatStates, rhythm2BeatStates)
 
+    // console.log(lcmMuted, beatHeadMuted, rhythm1Muted, rhythm2Muted)
     for (let i = 0; i < lcm; i++) {
-        let sounds = ['HiHat']; // HiHatは全てのビートに含まれる
-        // 最初のビートにKickを追加
-        if (i === 0) {
+        if (lcmMuted === false) {
+            sounds = ['HiHat']; // HiHatは全てのビートに含まれる
+        } else {
+            sounds = [''];
+        }
+        // ビートの先頭の音を追加
+        if (i === 0 && beatHeadMuted === false) {
             sounds.push('Kick');
         }
-        // rhythm1の間隔ごとにClaveを追加
-        if (i % rhythm1Interval === 0) {
+        // rhythm1の音を追加
+        if (i % rhythm1Interval === 0 && rhythm1Muted === false) {
             sounds.push('conga808');
         }
-        // rhythm2の間隔ごとにConga808を追加
-        if (i % rhythm2Interval === 0) {
+        // rhythm2の音を追加
+        if (i % rhythm2Interval === 0 && rhythm2Muted === false) {
             sounds.push('handClap');
         }
         beatPattern.push({ sounds });
@@ -208,7 +222,8 @@ function scheduleBeat(beatCount) {
     if (!isPlaying && nextBeatTime <= 0) {
         return;
     };
-
+    // 配列を生成
+    beatPattern = generateBeatPattern(lcmRhythm, rhythm1, rhythm2);
     // 現在のビートに対応するビートパターンを取得
     const beat = beatPattern[beatCount - 1];
 
@@ -308,78 +323,85 @@ function playSound(buffer, time) {
     source.start(time);
 }
 
-//=============================================================================
-// ボタンを押したときに実行される処理
-document.getElementById('controlButton').addEventListener('click', () => {
-    metronomeOnOff()
-});
+function playSoundIfNotMuted(sound, time) {
+    switch (sound) {
+        case 'rhythm1Sound':
+            if (!rhythm1Muted) playSound(sound, time);
+            break;
+        case 'lcmSound':
+            if (!lcmMuted) playSound(sound, time);
+            break;
+        case 'rhythm2Sound':
+            if (!rhythm2Muted) playSound(sound, time);
+            break;
+        case 'beatHeadSound':
+            if (!beatHeadMuted) playSound(sound, time);
+            break;
+        default:
+            playSound(sound, time); // その他の音は常に再生
+    }
+}
 
-document.getElementById('Button').addEventListener('click', () => {
-    // クリックイベントが発生したときにplaySound関数を呼び出す
-    playSound(audioBuffers['HiHat'], audioContext.currentTime);
-    playSound(audioBuffers['Kick'], audioContext.currentTime);
-});
 
-//BPMが変更された時の処理
-document.getElementById('bpm').addEventListener('input', function () {
-    //メトロノームが動作中ならばいったん止める
-    if (isPlaying) {
-        metronomeOnOff()
-    };
-    document.getElementById('bpmValue').textContent = this.value;
-});
+// --------------------------------------------------------------
+let rhythm1BeatStates = [];  // リズム1のビート状態
+let lcmBeatStates = [];      // LCMのビート状態
+let rhythm2BeatStates = [];  // リズム2のビート状態
+
+//ビート状態の配列を初期化する関数
+function initializeBeatStates(rhythm1Length, lcmLength, rhythm2Length) {
+    rhythm1BeatStates = new Array(rhythm1Length).fill(true);
+    lcmBeatStates = new Array(lcmLength).fill(true);
+    rhythm2BeatStates = new Array(rhythm2Length).fill(true);
+}
 
 //リズム値の更新とテーブル更新を行う関数
-function updateRhythmValueAndTable(rhythmId, tableId) {
+function updateRhythmValueAndTable(rhythmId, tableId, beatStates) {
     //メトロノームが動作中ならばいったん止める
     if (isPlaying) {
         metronomeOnOff()
     };
     let rhythmValue = parseInt(document.getElementById(rhythmId).value);
     document.getElementById(`${rhythmId}Value`).textContent = rhythmValue;
-    updateRhythmTable(rhythmValue, tableId);
+    updateRhythmTable(rhythmValue, tableId, beatStates);
 }
 
-//共通のリズムテーブル更新を行う関数
+//lcmリズムテーブル更新を行う関数
 function updateCommonRhythmTable(rhythm1Id, rhythm2Id, tableId) {
     let rhythm1 = parseInt(document.getElementById(rhythm1Id).value);
     let rhythm2 = parseInt(document.getElementById(rhythm2Id).value);
     let lcmRhythm = lcm(rhythm1, rhythm2);
-    updateRhythmTable(lcmRhythm, tableId);
-    // 配列を生成
-    beatPattern = generateBeatPattern(lcmRhythm, rhythm1, rhythm2);
+    updateRhythmTable(lcmRhythm, tableId, lcmBeatStates);
 }
 
 //リズム1の値が変更された時の処理
 document.getElementById('rhythm1').addEventListener('input', function () {
-    updateRhythmValueAndTable('rhythm1', 'rhythm1Beat');
+    updateRhythmValueAndTable('rhythm1', 'rhythm1Beat', rhythm1BeatStates);
     updateCommonRhythmTable('rhythm1', 'rhythm2', 'leastCommonMultipleBeat');
 });
 
 //リズム1の値が変更された時の処理
 document.getElementById('rhythm2').addEventListener('input', function () {
-    updateRhythmValueAndTable('rhythm2', 'rhythm2Beat');
+    updateRhythmValueAndTable('rhythm2', 'rhythm2Beat', rhythm2BeatStates);
     updateCommonRhythmTable('rhythm1', 'rhythm2', 'leastCommonMultipleBeat');
-});
-
-// ボリュームコントロールのイベントリスナー
-document.getElementById('volumeControl').addEventListener('input', function () {
-    let volume = this.value;
-    gainNode.gain.value = volume / 10; // 0-10 の値を 0-0.5 に変換
-    document.getElementById('volumeValue').textContent = volume; // ボリューム値の表示更新
 });
 
 //=============================================================================
 
 
 // 拍のビジュアルをHTML上に描画する関数
-function updateRhythmTable(beats, idName) {
+function updateRhythmTable(beats, idName, beatStates) {
     let row = document.getElementById(`${idName}Row`);
-    row.innerHTML = ''; // テーブルの行をクリア
+    row.innerHTML = '';
     for (let i = 1; i <= beats; i++) {
         let td = document.createElement('td');
-        td.id = `${idName}${i}`;  // ユニークなIDを割り当て
+        td.id = `${idName}${i}`;
         td.textContent = i;
+        td.addEventListener('click', function () {
+            beatStates[i - 1] = !beatStates[i - 1];
+            this.classList.toggle('muted');
+        });
+        // ---------------------
         row.appendChild(td);
     }
     //ビートのカウントをリセット
@@ -392,3 +414,42 @@ updateRhythmValueAndTable('rhythm1', 'rhythm1Beat');
 updateCommonRhythmTable('rhythm1', 'rhythm2', 'leastCommonMultipleBeat');
 updateRhythmValueAndTable('rhythm2', 'rhythm2Beat');
 updateCommonRhythmTable('rhythm1', 'rhythm2', 'leastCommonMultipleBeat');
+
+//=============================================================================
+// イベントリスナー
+
+// ボタンを押したときに実行される処理
+document.getElementById('controlButton').addEventListener('click', () => {
+    metronomeOnOff()
+});
+
+
+//BPMが変更された時の処理
+document.getElementById('bpm').addEventListener('input', function () {
+    //メトロノームが動作中ならばいったん止める
+    if (isPlaying) {
+        metronomeOnOff()
+    };
+    document.getElementById('bpmValue').textContent = this.value;
+});
+
+document.getElementById('muteRhythm1').addEventListener('click', () => {
+    rhythm1Muted = !rhythm1Muted;
+    console.log(rhythm1Muted)
+});
+document.getElementById('muteLCM').addEventListener('click', () => {
+    lcmMuted = !lcmMuted;
+});
+document.getElementById('muteRhythm2').addEventListener('click', () => {
+    rhythm2Muted = !rhythm2Muted;
+});
+document.getElementById('muteBeatHead').addEventListener('click', () => {
+    beatHeadMuted = !beatHeadMuted;
+});
+
+// ボリュームコントロールのイベントリスナー
+document.getElementById('volumeControl').addEventListener('input', function () {
+    let volume = this.value;
+    gainNode.gain.value = volume / 10; // 0-10 の値を 0-0.5 に変換
+    document.getElementById('volumeValue').textContent = volume; // ボリューム値の表示更新
+});
