@@ -58,19 +58,18 @@ let polyRhythmBasisValue;
 // 選択された音符の種類（2分音符、4分音符など）を格納する変数
 let polyRhythmBasisNote;
 
-console.log("1")
 // ロードするオーディオファイルの名前を配列で定義
 const fileNames = [
     '808conga',
-    'kick',
+
     'clap',
     'clave',
-
+    'click',
     'cowbell',
     'edm_percussion',
     'female_voice',
-    'hihat',
 
+    'naiki_voice',
 ];
 
 //=============================================================================
