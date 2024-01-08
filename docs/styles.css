@@ -11,7 +11,16 @@
     background-color: aqua;
 }
 
-#rhythmTable{
-    display: block;
+table {
+    width: 100%; /* テーブルを親要素の横幅いっぱいに設定 */
+    border-collapse: collapse; /* セルの境界線を1本にする */
     text-align: center;
+}
+
+/* オプションで、テーブルのヘッダーに別のスタイルを適用することもできます */
+td {
+    text-align: center; /* テキストを中央揃えにする */
+    border: 1px solid #ababab; /* 黒色の境界線 */
+    border-collapse: collapse; /* セルの境界線を1本にする */
+    padding: 10px 0px;
 }

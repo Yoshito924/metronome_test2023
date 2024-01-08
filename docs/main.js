@@ -1,15 +1,5 @@
 'use strict'
 
-
-// 必要な入力（ユーザーが操作できる）項目は
-// リズム1(1～20の値をとる)
-// リズム2(こちらも1～20の値をとる)
-// リズム1かリズム1と2の最小公倍数のどちらを基準の音符にしてBPMを決定するか選ぶメニュー
-// BPMの値
-// クリックの音4種類の設定
-// クリック音の音量設定
-
-//=============================================================================
 //常に正の数の答えを返す剰余演算をする関数 (負の数の剰余演算を処理するため)
 function mod(n, m) {
     return ((n % m) + m) % m;
@@ -33,28 +23,26 @@ function gcd(a, b) {
     }
     return gcd(b, a % b)
 };
+
 //=============================================================================
 let nextBeatTime;
 let beatInterval;
-let totalBeats = 4; // 4拍子を設定
-let yourAudioBuffer; // オーディオデータを格納する変数
-let bpm = 220; // BPMを設定する
+let totalBeats; // 拍子を設定
+let bpm = 120;
+// ----------------------------------------------------
 let rhythm1;
 let rhythm2;
 let lcmRhythm;
+// ----------------------------------------------------
 let isPlaying = false; // メトロノームが再生中かどうかを追跡するフラグ
 let beatCount = 1;
-// タイマーIDを保持するための配列
-let timerIds = [];
+// ----------------------------------------------------
+let timerIds = [];// タイマーIDを保持するための配列
 let timerId;
-
-// グローバル変数としてAudioContextとオーディオバッファを保持する変数を定義
-let audioContext;
-//GainNode のグローバル変数
-let gainNode;
-// オーディオバッファを保持するオブジェクト
-let audioBuffers = {};
-
+// ----------------------------------------------------
+let audioContext;// AudioContextとオーディオバッファを保持するグローバル変数
+let gainNode;//GainNode のグローバル変数
+let audioBuffers = {};// オーディオバッファを保持するオブジェクト
 // ----------------------------------------------------
 let rhythm1Muted = false; // リズム1のミュート状態
 let lcmMuted = false; // LCMのミュート状態
@@ -64,6 +52,25 @@ let beatHeadMuted = false; // 拍の頭のミュート状態
 let rhythm1BeatStates = [];  // リズム1のビート状態
 let lcmBeatStates = [];      // LCMのビート状態
 let rhythm2BeatStates = [];  // リズム2のビート状態
+// ----------------------------------------------------
+// 基準となるポリリズムの値を格納する変数
+let polyRhythmBasisValue;
+// 選択された音符の種類（2分音符、4分音符など）を格納する変数
+let polyRhythmBasisNote;
+
+// ロードするオーディオファイルの名前を配列で定義
+const fileNames = [
+    '808conga',
+    'kick',
+    'clap',
+    'clave',
+    'click',
+    'cowbell',
+    'edm_percussion',
+    'female_voice',
+    'hihat',
+    'naiki_voice',
+];
 
 //=============================================================================
 //ビート状態の配列を初期化する関数
@@ -93,8 +100,6 @@ function initializeAudioContext() {
 };
 
 //=============================================================================
-// ロードするオーディオファイルの名前を配列で定義
-const fileNames = ['HiHat', 'conga808', 'Kick', 'handClap'];
 
 // オーディオファイルを非同期にロードし、オーディオバッファに変換する関数
 async function loadAudioFiles() {
@@ -118,6 +123,12 @@ async function loadAudioFiles() {
 //=============================================================================
 // ビートの構成を保存しておく配列
 let beatPattern;
+//クリックの音色を格納するグローバル変数
+let rhythm1ClickSound;
+let lcmClickSound;
+let rhythm2ClickSound;
+let beatHeadClickSound;
+
 // ビートパターンの配列を作成する関数
 function generateBeatPattern(lcm, rhythm1, rhythm2) {
     let beatPattern = [];
@@ -129,25 +140,30 @@ function generateBeatPattern(lcm, rhythm1, rhythm2) {
     // console.log(lcm, rhythm1, rhythm2)
     // console.log(beatCount, rhythm1BeatCount, rhythm2BeatCount)
     // console.log(lcmMuted, beatHeadMuted, rhythm1Muted, rhythm2Muted)
+    rhythm1ClickSound = (document.getElementById("rhythm1ClickSound").value)
+    lcmClickSound = (document.getElementById("lcmClickSound").value)
+    rhythm2ClickSound = (document.getElementById("rhythm2ClickSound").value)
+    beatHeadClickSound = (document.getElementById("beatHeadClickSound").value)
+
     for (let i = 0; i < lcm; i++) {
         // -------------------------------------------
         // lcmの音を追加
         if (lcmBeatStates[i] === false) {
             sounds = [''];
         } else if (lcmMuted === false) {
-            sounds = ['HiHat']; // 基本的にHiHatは全てのビートに含まれる
+            sounds = [lcmClickSound]; // 基本的に全てのビートに含まれる
         } else {
             sounds = [''];
         }
         // -------------------------------------------
         // ビートの先頭の音を追加
         if (i === 0 && beatHeadMuted === false) {
-            sounds.push('Kick');
+            sounds.push(beatHeadClickSound);
         }
         // -------------------------------------------
         // rhythm1の音を追加
         if (i % rhythm1Interval === 0 && rhythm1Muted === false && rhythm1BeatStates[rhythm1Counter] === true) {
-            sounds.push('conga808');
+            sounds.push(rhythm1ClickSound);
             rhythm1Counter++
         } else if (i % rhythm1Interval === 0) {
             rhythm1Counter++
@@ -155,7 +171,7 @@ function generateBeatPattern(lcm, rhythm1, rhythm2) {
         // -------------------------------------------
         // rhythm2の音を追加
         if (i % rhythm2Interval === 0 && rhythm2Muted === false && rhythm2BeatStates[rhythm2Counter] === true) {
-            sounds.push('handClap');
+            sounds.push(rhythm2ClickSound);
             rhythm2Counter++
         } else if (i % rhythm2Interval === 0) {
             rhythm2Counter++
@@ -163,14 +179,10 @@ function generateBeatPattern(lcm, rhythm1, rhythm2) {
         // -------------------------------------------
         beatPattern.push({ sounds });
     }
-
     // 結果の確認
     return beatPattern;
 }
-// 基準となるポリリズムの値を取得
-let polyRhythmBasisValue;
-// 選択された音符の種類（2分音符、4分音符など）を取得
-let polyRhythmBasisNote;
+
 //=============================================================================
 // メトロノームをオンオフする関数
 async function metronomeOnOff() {
@@ -191,6 +203,7 @@ async function metronomeOnOff() {
             initializeAudioContext()
         }
         nextBeatTime = audioContext.currentTime;
+
         // BPMに基づいてビート間隔を秒単位で計算。
         if (polyRhythmBasisValue === 1) {
             beatInterval = (60 / (lcmRhythm / rhythm1 * bpm)) / (polyRhythmBasisNote / 4);
@@ -250,6 +263,7 @@ async function metronomeOnOff() {
 };
 
 //=============================================================================
+// ビートをスケジュールする関数
 function scheduleBeat(beatCount) {
     // メトロノームが停止状態かつnextBeatTimeが0以下の場合、処理を終了
     if (!isPlaying && nextBeatTime <= 0) {
@@ -259,7 +273,7 @@ function scheduleBeat(beatCount) {
     beatPattern = generateBeatPattern(lcmRhythm, rhythm1, rhythm2);
     // 現在のビートに対応するビートパターンを取得
     const beat = beatPattern[beatCount - 1];
-
+    // -------------------------------------------
     // ビートに対応する音を再生
     beat.sounds.forEach(sound => {
         // 新しいAudioBufferSourceNodeを作成
@@ -267,7 +281,7 @@ function scheduleBeat(beatCount) {
             playSound(audioBuffers[sound], nextBeatTime);
         };
     });
-
+    // -------------------------------------------
     const timeUntilNextBeat = nextBeatTime - audioContext.currentTime;
     // ビジュアル表示の更新をスケジュール
     timerId = setTimeout(() => highlightBeat(beatCount), timeUntilNextBeat * 1000);
@@ -280,8 +294,8 @@ function scheduleBeat(beatCount) {
 };
 
 //=============================================================================
-let rhythm1BeatCount = 1
-let rhythm2BeatCount = 1
+let rhythm1BeatCount;
+let rhythm2BeatCount;
 // ビジュアル表示の更新ロジックをここに実装
 function highlightBeat(beatCount) {
     if (!isPlaying) {
@@ -357,14 +371,20 @@ function playSound(buffer, time) {
 }
 
 // --------------------------------------------------------------
-
 //リズムテーブル更新を行う関数
 function updateCommonRhythmTable() {
     let rhythm1 = parseInt(document.getElementById('rhythm1').value);
     let rhythm2 = parseInt(document.getElementById('rhythm2').value);
     let lcmRhythm = lcm(rhythm1, rhythm2);
+
+    //clmの値をhtmlに描画する
+    document.getElementById('lcmValue').innerHTML = ''
+    document.getElementById('lcmValue').innerHTML = `【LCM】：${lcmRhythm}`
+
     // ビート状態の配列を初期化する関数
-    initializeBeatStates()
+    initializeBeatStates();
+
+    //拍のビジュアルをHTML上に描画する
     updateRhythmTable(rhythm1, 'rhythm1Beat', rhythm1BeatStates);
     updateRhythmTable(lcmRhythm, 'leastCommonMultipleBeat', lcmBeatStates);
     updateRhythmTable(rhythm2, 'rhythm2Beat', rhythm2BeatStates);
@@ -379,15 +399,34 @@ function updateRhythmTable(beats, idName, beatStates) {
 
     let row = document.getElementById(`${idName}Row`);
     row.innerHTML = '';
-
+    //------------------------------------------------------------------------
+    // 基準となるポリリズムの値を取得
+    polyRhythmBasisValue = parseInt(document.getElementById('polyRhythm_basis_Value').value);
+    // 選択された音符の種類（2分音符、4分音符など）を取得
+    polyRhythmBasisNote = parseInt(document.getElementById('polyRhythm_basis_note').value);
+    let note;
+    let rest;
+    console.log(polyRhythmBasisValue, idName)
+    //表示する音符を決定する処理
+    if (polyRhythmBasisValue === 1 && idName === 'rhythm1Beat') {
+        note = '♩'
+        rest = '&#x1D13D;'
+    } else if (polyRhythmBasisValue === 0 && idName === 'leastCommonMultipleBeat') {
+        note = '♩'
+        rest = '&#x1D13D;'
+    } else {
+        note = '●'
+        rest = '◯'
+    }
+    //------------------------------------------------------------------------
     for (let i = 1; i <= beats; i++) {
         let td = document.createElement('td');
         td.id = `${idName}${i}`;
         // beatStatesがfalseの場合に特定の文字列を出力
         if (!beatStates[i - 1]) {
-            td.innerHTML = i + '<br>&#x1D13D;';  // または '&#x2669;' または直接 '♩' を使用
+            td.innerHTML = `${i}<br>${rest}`;
         } else {
-            td.innerHTML = i + '<br>♩';
+            td.innerHTML = `${i}<br>${note}`;
         }
 
         td.addEventListener('click', function () {
@@ -396,9 +435,9 @@ function updateRhythmTable(beats, idName, beatStates) {
             console.log(rhythm1BeatStates, lcmBeatStates, rhythm2BeatStates)
 
             if (!beatStates[i - 1]) {
-                this.innerHTML = i + '<br>&#x1D13D;';
+                this.innerHTML = `${i}<br>${rest}`;
             } else {
-                this.innerHTML = i + '<br>♩';
+                this.innerHTML = `${i}<br>${note}`;
             }
             this.classList.toggle('muted');
         });
@@ -468,6 +507,7 @@ document.getElementById('polyRhythm_basis_Value').addEventListener('change', fun
     if (isPlaying) {
         metronomeOnOff()
     };
+    updateCommonRhythmTable()
 });
 
 document.getElementById('polyRhythm_basis_note').addEventListener('change', function () {
@@ -476,6 +516,7 @@ document.getElementById('polyRhythm_basis_note').addEventListener('change', func
     if (isPlaying) {
         metronomeOnOff()
     };
+    updateCommonRhythmTable()
 });
 
 //ミュートボタンのイベントリスナー

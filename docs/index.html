@@ -12,13 +12,17 @@
     <h1>ポリリズムメトロノーム</h1>
     <div>
         <!-- 拍のビジュアル表示 -->
-        <table id="rhythmTable">
+        <table>
             <tr id="rhythm1BeatRow">
                 <!-- 動的にセルが追加 -->
             </tr>
+        </table>
+        <table>
             <tr id="leastCommonMultipleBeatRow">
                 <!-- 動的にセルが追加 -->
             </tr>
+        </table>
+        <table>
             <tr id="rhythm2BeatRow">
                 <!-- 動的にセルが追加 -->
             </tr>
@@ -33,15 +37,17 @@
     </div>
     <!-- リズムの設定 -->
     <div>
-        <label for="rhythm1">リズム1:</label>
-        <input type="range" id="rhythm1" min="1" max="20" value="3">
+        <label for="rhythm1">【リズム1】:</label>
         <span id="rhythm1Value">3</span>
+        <input type="range" id="rhythm1" min="1" max="20" value="3">
     </div>
-
+    <div id="lcmValue">
+        <!-- 動的に生成 -->
+    </div>
     <div>
-        <label for="rhythm2">リズム2:</label>
-        <input type="range" id="rhythm2" min="1" max="20" value="2">
+        <label for="rhythm2">【リズム2】:</label>
         <span id="rhythm2Value">2</span>
+        <input type="range" id="rhythm2" min="1" max="20" value="2">
     </div>
 
     <!-- コントロールボタン -->
@@ -51,16 +57,75 @@
 
     <div>
         <div>
-            <button id="muteRhythm1">リズム1 ミュート/ミュート解除</button>
+            <button id="muteRhythm1">🔈</button>
+            <label for="" class="">【リズム1】：
+                <select id="rhythm1ClickSound" class="form-select" onchange="">
+                    <option value="kick">バスドラム</option>
+                    <option value="hihat">ハイハット</option>
+                    <option value="808conga" selected>808コンガ</option>
+                    <option value="clap">クラップ</option>
+                    <option value="clave">クラーベ</option>
+                    <option value="click">クリック</option>
+                    <option value="cowbell">カウベル</option>
+                    <option value="edm_percussion">デジタル</option>
+                    <option value="female_voice">声</option>
+                    <option value="naiki_voice">力強い声</option>
+                </select>
+            </label>
         </div>
+
         <div>
-            <button id="muteLCM">LCM ミュート/ミュート解除</button>
+            <button id="muteLCM">🔈</button>
+            <label for="" class="">【LCM】：
+                <select id="lcmClickSound" class="form-select" onchange="">
+                    <option value="kick">バスドラム</option>
+                    <option value="hihat" selected>ハイハット</option>
+                    <option value="808conga">808コンガ</option>
+                    <option value="clap">クラップ</option>
+                    <option value="clave">クラーベ</option>
+                    <option value="click">クリック</option>
+                    <option value="cowbell">カウベル</option>
+                    <option value="edm_percussion">デジタル</option>
+                    <option value="female_voice">声</option>
+                    <option value="naiki_voice">力強い声</option>
+                </select>
+            </label>
         </div>
+
         <div>
-            <button id="muteRhythm2">リズム2 ミュート/ミュート解除</button>
+            <button id="muteRhythm2">🔈</button>
+            <label for="" class="">【リズム2】：
+                <select id="rhythm2ClickSound" class="form-select" onchange="">
+                    <option value="kick">バスドラム</option>
+                    <option value="hihat">ハイハット</option>
+                    <option value="808conga">808コンガ</option>
+                    <option value="clap" selected>クラップ</option>
+                    <option value="clave">クラーベ</option>
+                    <option value="click">クリック</option>
+                    <option value="cowbell">カウベル</option>
+                    <option value="edm_percussion">デジタル</option>
+                    <option value="female_voice">声</option>
+                    <option value="naiki_voice">力強い声</option>
+                </select>
+            </label>
         </div>
+
         <div>
-            <button id="muteBeatHead">拍の頭 ミュート/ミュート解除</button>
+            <button id="muteBeatHead">🔈</button>
+            <label for="" class="">【拍の頭】：
+                <select id="beatHeadClickSound" class="form-select" onchange="">
+                    <option value="kick" selected>バスドラム</option>
+                    <option value="hihat">ハイハット</option>
+                    <option value="808conga">808コンガ</option>
+                    <option value="clap">クラップ</option>
+                    <option value="clave">クラーベ</option>
+                    <option value="click">クリック</option>
+                    <option value="cowbell">カウベル</option>
+                    <option value="edm_percussion">デジタル</option>
+                    <option value="female_voice">声</option>
+                    <option value="naiki_voice">力強い声</option>
+                </select>
+            </label>
         </div>
     </div>
 
