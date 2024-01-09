@@ -76,8 +76,10 @@ let rhythm2BeatStates = [];  // リズム2のビート状態
 let polyRhythmBasisValue;
 // 選択された音符の種類（2分音符、4分音符など）を格納する変数
 let polyRhythmBasisNote;
-//音色をロードしたか否か
+//音色をロードしたか否かを格納しておくグローバル変数
 let lordComplete = false;
+
+// --------------------------------------------------------------
 // ロードするオーディオファイルの名前を配列で定義
 const fileNames = [
     '808conga',
@@ -92,6 +94,7 @@ const fileNames = [
     'naiki_voice',
 ];
 
+// --------------------------------------------------------------
 //音符のバリエーションを格納した配列
 const MusicalNoteArray = [
     {
@@ -309,10 +312,12 @@ async function metronomeOnOff() {
     //------------------------------------------------------------------------
     if (!isPlaying) {
         // メトロノームが始まったことを示すためにボタンのテキストを「停止」に変更
-        document.getElementById('controlButton').textContent = '停止';
+        document.getElementById('controlButton').innerHTML
+            = `<i class="fa-solid fa-stop controlButtonIcon red">`;
     } else {
         // メトロノームを停止するためにボタンのテキストを「開始」に戻す
-        document.getElementById('controlButton').textContent = '開始';
+        document.getElementById('controlButton').innerHTML
+            = `<i class="fa-solid fa-play controlButtonIcon blue">`;
         // 音が実際に再生されているか判定する変数をfalseにする
         audioBuffersActive = false;
     }
@@ -320,12 +325,10 @@ async function metronomeOnOff() {
     // 本当に音が再生されているかチェックするための処理
     setTimeout(() => {
         if (audioBuffersActive === true) {
-            console.log("動作しちょる")
             document.getElementById("helpText").innerHTML = "";
         };
         if (audioBuffersActive === false && isPlaying === true) {
-            console.log("動作しちょらん")
-            document.getElementById("helpText").innerHTML = "再生が上手くいきませんでした。もう一度再生ボタンを押してください。";
+            document.getElementById("helpText").innerHTML = "※再生が上手くいきませんでした。<br>もう一度再生ボタンを押してください。";
             metronomeOnOff();
         };
     }, "200");
@@ -462,13 +465,13 @@ function updateCommonRhythmTable() {
     let gcdValue = gcd(rhythm1, rhythm2);
 
     //拍子記号をhtmlに描画する
-    if (isCoprime(rhythm1, rhythm2) === true && rhythm1 >= rhythm2 && polyRhythmBasisValue === 1) {
+    if (isCoprime(rhythm1, rhythm2) === true) {
         //ポリリズムである場合
         document.getElementById('infoText').innerHTML = ''
-        document.getElementById('infoText').innerHTML = `リズム1と2の値が互いに素(GCDが${gcdValue})なので、ポリリズムです。`
+        document.getElementById('infoText').innerHTML = `<br>GCDは${gcdValue}なので、ポリリズムです。<br>（リズム1と2の値は互いに素です。）`
         //拍子を書き込む
         document.getElementById('polyRhythmTimeSignature').innerHTML = ''
-        if (isPowerOfTwo(lcmRhythm / rhythm1 * polyRhythmBasisNote) === true) {
+        if (isPowerOfTwo(lcmRhythm / rhythm1 * polyRhythmBasisNote) === true && rhythm1 >= rhythm2 && polyRhythmBasisValue === 1) {
             document.getElementById('polyRhythmTimeSignature').innerHTML = `${lcmRhythm}<br>―<br>${lcmRhythm / rhythm1 * polyRhythmBasisNote}`
         } else {
             document.getElementById('polyRhythmTimeSignature').innerHTML = `${rhythm1}<br>―<br>${polyRhythmBasisNote}`
@@ -476,7 +479,7 @@ function updateCommonRhythmTable() {
     } else {
         //ポリリズムではない場合
         document.getElementById('infoText').innerHTML = ''
-        document.getElementById('infoText').innerHTML = `リズム1と2の値が互いに素ではない(GCDは${gcdValue})ので、ポリリズムではありません。`
+        document.getElementById('infoText').innerHTML = `<br>GCDは${gcdValue}なので、ポリリズムではありません。<br>（リズム1と2の値は互いに素ではありません。）`
         //拍子を書き込む
         document.getElementById('polyRhythmTimeSignature').innerHTML = ''
         if (polyRhythmBasisValue === 1) {
@@ -484,7 +487,7 @@ function updateCommonRhythmTable() {
         } else {
             document.getElementById('polyRhythmTimeSignature').innerHTML = `${lcmRhythm}<br>―<br>${polyRhythmBasisNote}`
         }
-    }
+    };
 
     // ビート状態の配列を初期化する関数
     initializeBeatStates();
@@ -495,6 +498,7 @@ function updateCommonRhythmTable() {
     updateRhythmTable(rhythm2, 'rhythm2Beat', rhythm2BeatStates);
 }
 
+// --------------------------------------------------------------
 // 音符の種類を決める関数
 function DetermineTypeOfNote(BasisNote, note, rest) {
     if (BasisNote === 2) {
@@ -515,7 +519,7 @@ function DetermineTypeOfNote(BasisNote, note, rest) {
     }
     return { note, rest };
 }
-
+// --------------------------------------------------------------
 // 拍のビジュアルをHTML上に描画する関数
 function updateRhythmTable(beats, idName, beatStates) {
     //メトロノームが動作中ならばいったん止める
@@ -580,6 +584,21 @@ function updateRhythmTable(beats, idName, beatStates) {
     rhythm2BeatCount = 1
 }
 
+// --------------------------------------------------------------
+// メトロノームが動作中なら一度止めた後に再度動かす関数
+function metronomeRestart() {
+    //メトロノームが動作中ならば
+    if (isPlaying) {
+        //いったん止める
+        metronomeOnOff()
+        //0.2秒後にメトロノームを再開する
+        setTimeout(() => {
+            if (!isPlaying) {
+                metronomeOnOff()
+            };
+        }, "200");
+    };
+}
 
 //=============================================================================
 // イベントリスナー
@@ -602,42 +621,24 @@ document.getElementById('controlButton').addEventListener('click', () => {
 
 // キーボードイベントのリスナーを追加
 document.addEventListener('keydown', function (event) {
-    // キーが押されたかチェック
-    if (event.key === "s", " ") {
+    // 特定のキーが押されたかチェックする
+    if (event.key === "s") {
         metronomeOnOff();
     }
 });
 
 //BPMが変更された時の処理
 document.getElementById('bpm').addEventListener('input', function () {
-    //メトロノームが動作中ならば
-    if (isPlaying) {
-        //いったん止める
-        metronomeOnOff()
-        //0.2秒後にメトロノームを再開する
-        setTimeout(() => {
-            if (!isPlaying) {
-                metronomeOnOff()
-            };
-        }, "200");
-    };
+    // メトロノームが動作中なら一度止めた後に再度動かす関数
+    metronomeRestart();
     document.getElementById('bpmValue').textContent = this.value;
     document.getElementById('basisBpmValue').textContent = this.value;
 });
 
 //リズム1の値が変更された時の処理
 document.getElementById('rhythm1').addEventListener('input', function () {
-    //メトロノームが動作中ならば
-    if (isPlaying) {
-        //いったん止める
-        metronomeOnOff()
-        //0.2秒後にメトロノームを再開する
-        setTimeout(() => {
-            if (!isPlaying) {
-                metronomeOnOff()
-            };
-        }, "200");
-    };
+    // メトロノームが動作中なら一度止めた後に再度動かす関数
+    metronomeRestart();
     document.getElementById('rhythm1Value').textContent = this.value;
     // 拍のビジュアルをHTML上に描画する関数
     updateCommonRhythmTable()
@@ -645,17 +646,8 @@ document.getElementById('rhythm1').addEventListener('input', function () {
 
 //リズム2の値が変更された時の処理
 document.getElementById('rhythm2').addEventListener('input', function () {
-    //メトロノームが動作中ならば
-    if (isPlaying) {
-        //いったん止める
-        metronomeOnOff()
-        //0.2秒後にメトロノームを再開する
-        setTimeout(() => {
-            if (!isPlaying) {
-                metronomeOnOff()
-            };
-        }, "200");
-    };
+    // メトロノームが動作中なら一度止めた後に再度動かす関数
+    metronomeRestart();
     document.getElementById('rhythm2Value').textContent = this.value;
     // 拍のビジュアルをHTML上に描画する関数
     updateCommonRhythmTable()
@@ -664,52 +656,59 @@ document.getElementById('rhythm2').addEventListener('input', function () {
 //基準となるリズムの種類を選択するドロップダウンリストのイベントリスナー
 document.getElementById('polyRhythm_basis_Value').addEventListener('change', function () {
     polyRhythmBasisValue = this.value;
-    //メトロノームが動作中ならば
-    if (isPlaying) {
-        //いったん止める
-        metronomeOnOff()
-        //0.2秒後にメトロノームを再開する
-        setTimeout(() => {
-            if (!isPlaying) {
-                metronomeOnOff()
-            };
-        }, "200");
-    };
+    // メトロノームが動作中なら一度止めた後に再度動かす関数
+    metronomeRestart();
+    // 拍のビジュアルをHTML上に描画する関数
     updateCommonRhythmTable()
 });
 
 //基準となる音符の種類を選択するドロップダウンリストのイベントリスナー
 document.getElementById('polyRhythm_basis_note').addEventListener('change', function () {
     polyRhythmBasisNote = this.value;
-    //メトロノームが動作中ならば
-    if (isPlaying) {
-        //いったん止める
-        metronomeOnOff()
-        //0.2秒後にメトロノームを再開する
-        setTimeout(() => {
-            if (!isPlaying) {
-                metronomeOnOff()
-            };
-        }, "200");
-    };
+    // メトロノームが動作中なら一度止めた後に再度動かす関数
+    metronomeRestart();
+    // 拍のビジュアルをHTML上に描画する関数
     updateCommonRhythmTable()
 });
+
+
+function toggleMuteIcon(muteData, muteId) {
+    document.getElementById(muteId).innerHTML
+        = `<img src="./image/loading.gif" alt="ロード中gif" title="ロード中gif" class="volumeIcon">`;
+    //スケジュールされているタイミングの分だけ切り替えを遅らせる
+    setTimeout(() => {
+        if (!muteData) {
+            //既にミュート済ならミュートをオフにする
+            document.getElementById(muteId).innerHTML
+                = `<img src="./image/volume_up_FILL0_wght400_GRAD0_opsz24.svg" alt="ヴォリュームアイコン" title="ヴォリュームアイコン" class="volumeIcon">`;
+        } else {
+            //ミュートする
+            document.getElementById(muteId).innerHTML
+                = `<img src="./image/volume_off_FILL0_wght400_GRAD0_opsz24.svg" alt="ミュートアイコン" title="ミュートアイコン" class="volumeIcon">`;
+        }
+        //現在スケジュールされている時間分処理を止める
+    }, ((nextBeatTime - audioContext.currentTime) * 1000));
+}
 
 //ミュートボタンのイベントリスナー
 document.getElementById('muteRhythm1').addEventListener('click', () => {
     rhythm1Muted = !rhythm1Muted;
     document.getElementById(`rhythm1BeatTable`).classList.toggle('muted');
+    toggleMuteIcon(rhythm1Muted, `muteRhythm1`)
 });
 document.getElementById('muteLCM').addEventListener('click', () => {
     lcmMuted = !lcmMuted;
     document.getElementById(`leastCommonMultiple1BeatTable`).classList.toggle('muted');
+    toggleMuteIcon(lcmMuted, 'muteLCM')
 });
 document.getElementById('muteRhythm2').addEventListener('click', () => {
     rhythm2Muted = !rhythm2Muted;
     document.getElementById(`rhythm2BeatTable`).classList.toggle('muted');
+    toggleMuteIcon(rhythm2Muted, `muteRhythm2`)
 });
 document.getElementById('muteBeatHead').addEventListener('click', () => {
     beatHeadMuted = !beatHeadMuted;
+    toggleMuteIcon(beatHeadMuted, `muteBeatHead`)
 });
 
 // ボリュームコントロールのイベントリスナー

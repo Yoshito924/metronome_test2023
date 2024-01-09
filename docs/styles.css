@@ -1,11 +1,9 @@
-
 table {
     width: 100%; /* テーブルを親要素の横幅いっぱいに設定 */
     border-collapse: collapse; /* セルの境界線を1本にする */
     text-align: center;
     table-layout: fixed; /* セルの幅を固定 */
 }
-
 /* オプションで、テーブルのヘッダーに別のスタイルを適用することもできます */
 td {
     text-align: center; /* テキストを中央揃えにする */
@@ -16,11 +14,42 @@ td {
     text-overflow: ellipsis; /* 内容が超えた場合には省略記号を表示します */
     white-space: nowrap; /* セルの内容を改行しないようにします */
 }
-
 td:hover{
     cursor: pointer;
     opacity: 0.7;
     background-color: bisque;
+}
+
+/* ---------------------------------------------- */
+#polyRhythmMetronomeController{
+    display:grid;
+        grid-template:
+        "... ... ... ... ..." 10px
+        "... m_r_controller ... m_s_controller... "
+        "... ... ... ... ..."20px
+            /5px 2fr 10px 3fr 5px;
+}
+
+#metronomeRhythmController{
+    grid-area: m_r_controller;
+    background-color: aliceblue;
+}
+#metronomeSoundController{
+    grid-area: m_s_controller;
+    background-color: aliceblue;
+}
+
+@media only screen and (max-width: 1024px) {
+    #polyRhythmMetronomeController{
+        display:grid;
+            grid-template:
+            "... ......... ..." 10px
+            "... m_r_controller ... "
+            "... ......... ..." 10px
+            "... m_s_controller..."
+            "... ......... ..." 10px
+                /5px 1fr 5px;
+    }
 }
 
 #polyRhythmTimeSignature{
@@ -31,38 +60,37 @@ td:hover{
     align-items: center;
     padding-right:5px;
 }
-/* ---------------------------------------------- */
 
+
+/* ---------------------------------------------- */
+/* メトロノームのカラー */
 .highlight1{
     background-color: salmon !important;;
 }
 .rhythm1Border{
     border-left: solid salmon;
 }
-
 .highlightLcm{
     background-color: aquamarine !important;;
 }
 .lcmBorder{
     border-left: solid aquamarine;
 }
-
 .highlight2{
     background-color: cyan !important;;
 }
 .rhythm2Border{
     border-left: solid cyan;
 }
-/* ---------------------------------------------- */
 .muted{
     background-color: #7a7a7a;
+    color:darkblue; /* テキストの色 */
 }
-
+/* ---------------------------------------------- */
 #polyRhythmMetronome{
     display: flex;
     padding-bottom: 20px;
 }
-
 /* ---------------------------------------------- */
 .note_image {
     padding: 5px;
@@ -71,4 +99,32 @@ td:hover{
     margin: 0 auto;
 }
 
+.volumeIcon {
+    width: 100%;
+    height: 30px; /* 高さを自動調整に設定 */
+}
+.controlButtonIcon{
+    text-align: center;
+    color: white;
+    padding: 20px 100px;
+    margin: 20px 20px;
+}
 
+.blue{
+    background-color: blue;
+}
+.red{
+    background-color: red;
+}
+.redText{
+    color: red;
+}
+
+/* ---------------------------------------------- */
+.container {
+    position: relative;
+}
+.none{
+    /* 画面から消す */
+    display: none;
+}

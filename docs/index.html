@@ -5,6 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ポリリズムメトロノーム</title>
+    <!-- Googleマテリアルアイコンを読み込む -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- font-awesomeを読み込む -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="styles.css" />
 </head>
 
@@ -36,153 +42,171 @@
     </div>
 
     <!-- メトロノームの設定 -->
-    <div>
-        <!-- コントロールボタン -->
-        <div>
-            <button id="controlButton">開始</button>
-            <a id="helpText"></a>
+    <div id="polyRhythmMetronomeController">
+        <div id="metronomeRhythmController">
+            <!-- コントロールボタン -->
+            <div>
+                <div id="controlButton">
+                    <i class="fa-solid fa-play controlButtonIcon blue"></i>
+                </div>
+                <a id="helpText" class="redText"></a>
+            </div>
+
+            <!-- リズムの設定 -->
+            <div class="rhythm1Border">
+                <label for="rhythm1">【リズム1】:</label>
+                <span id="rhythm1Value">3</span>
+                <input type="range" id="rhythm1" min="1" max="20" value="3">
+            </div>
+            <div id="lcmValue" class="lcmBorder">
+                <!-- 動的に生成 -->
+            </div>
+            <div class="rhythm2Border">
+                <label for="rhythm2">【リズム2】:</label>
+                <span id="rhythm2Value">2</span>
+                <input type="range" id="rhythm2" min="1" max="20" value="2">
+            </div>
+            <!-- ---------------------------------------------------- -->
+            <div>
+                <label for="bpm">BPM:</label>
+                <input type="range" id="bpm" min="1" max="300" value="120">
+                <span id="bpmValue">120</span>
+            </div>
+            <div>
+                <label for="polyRhythm_basis_Value" class="">現在は
+                    <select id="polyRhythm_basis_Value" class="form-select mt-1" onchange="">
+                        <option value="1" selected>リズム1</option>
+                        <option value="0">LCM（最小公倍数）</option>
+                    </select>
+                </label>
+                <label for="polyRhythm_basis_note" class="">がBPM=<span id="basisBpmValue">120</span>の
+                    <select id="polyRhythm_basis_note" class="form-select mt-1" onchange="">
+                        <option value="2">2分音符</option>
+                        <option value="4" selected>4分音符</option>
+                        <option value="8">8分音符</option>
+                        <option value="16">16分音符</option>
+                        <option value="32">32分音符</option>
+                    </select>
+                </label>
+                になるテンポ設定です。
+            </div>
+            <div id="infoText">
+                <!-- 動的に生成 -->
+            </div>
         </div>
-        <div>
-            <label for="bpm">BPM:</label>
-            <input type="range" id="bpm" min="1" max="300" value="120">
-            <span id="bpmValue">120</span>
-        </div>
-        <!-- リズムの設定 -->
-        <div class="rhythm1Border">
-            <label for="rhythm1">【リズム1】:</label>
-            <span id="rhythm1Value">3</span>
-            <input type="range" id="rhythm1" min="1" max="20" value="3">
-        </div>
-        <div id="lcmValue" class="lcmBorder">
-            <!-- 動的に生成 -->
-        </div>
-        <div class="rhythm2Border">
-            <label for="rhythm2">【リズム2】:</label>
-            <span id="rhythm2Value">2</span>
-            <input type="range" id="rhythm2" min="1" max="20" value="2">
-        </div>
-        <div id="infoText">
-            <!-- 動的に生成 -->
+        <!-- ---------------------------------------------------- -->
+        <div id="metronomeSoundController">
+            <div>
+                <button id="muteRhythm1" class="highlight1">
+                    <img src="./image/volume_up_FILL0_wght400_GRAD0_opsz24.svg" alt="ヴォリュームアイコン" title="ヴォリュームアイコン"
+                        class="volumeIcon">
+                </button>
+                <label for="" class="">【リズム1】：
+                    <select id="rhythm1ClickSound" class="form-select" onchange="">
+                        <option value="bass_drum">バスドラム</option>
+                        <option value="hi-hat">ハイハット</option>
+                        <option value="808conga">808コンガ</option>
+                        <option value="clap">クラップ</option>
+                        <option value="clave">クラーベ</option>
+                        <option value="click" selected>クリック</option>
+                        <option value="cowbell">カウベル</option>
+                        <option value="edm_percussion">デジタル</option>
+                        <option value="female_voice">声</option>
+                        <option value="naiki_voice">力強い声</option>
+                    </select>
+                </label>
+            </div>
+            <!-- ---------------------------------------------------- -->
+            <div>
+                <button id="muteLCM" class="highlightLcm">
+                    <img src="./image/volume_up_FILL0_wght400_GRAD0_opsz24.svg" alt="ヴォリュームアイコン" title="ヴォリュームアイコン"
+                        class="volumeIcon">
+                </button>
+                <label for="" class="">【LCM】：
+                    <select id="lcmClickSound" class="form-select" onchange="">
+                        <option value="bass_drum">バスドラム</option>
+                        <option value="hi-hat" selected>ハイハット</option>
+                        <option value="808conga">808コンガ</option>
+                        <option value="clap">クラップ</option>
+                        <option value="clave">クラーベ</option>
+                        <option value="click">クリック</option>
+                        <option value="cowbell">カウベル</option>
+                        <option value="edm_percussion">デジタル</option>
+                        <option value="female_voice">声</option>
+                        <option value="naiki_voice">力強い声</option>
+                    </select>
+                </label>
+            </div>
+            <!-- ---------------------------------------------------- -->
+            <div>
+                <button id="muteRhythm2" class="highlight2">
+                    <img src="./image/volume_up_FILL0_wght400_GRAD0_opsz24.svg" alt="ヴォリュームアイコン" title="ヴォリュームアイコン"
+                        class="volumeIcon">
+                </button>
+                <label for="" class="">【リズム2】：
+                    <select id="rhythm2ClickSound" class="form-select" onchange="">
+                        <option value="bass_drum">バスドラム</option>
+                        <option value="hi-hat">ハイハット</option>
+                        <option value="808conga">808コンガ</option>
+                        <option value="clap" selected>クラップ</option>
+                        <option value="clave">クラーベ</option>
+                        <option value="click">クリック</option>
+                        <option value="cowbell">カウベル</option>
+                        <option value="edm_percussion">デジタル</option>
+                        <option value="female_voice">声</option>
+                        <option value="naiki_voice">力強い声</option>
+                    </select>
+                </label>
+            </div>
+            <!-- ---------------------------------------------------- -->
+            <div>
+                <button id="muteBeatHead">
+                    <img src="./image/volume_up_FILL0_wght400_GRAD0_opsz24.svg" alt="ヴォリュームアイコン" title="ヴォリュームアイコン"
+                        class="volumeIcon">
+                </button>
+                <label for="" class="">【拍の頭】：
+                    <select id="beatHeadClickSound" class="form-select" onchange="">
+                        <option value="bass_drum" selected>バスドラム</option>
+                        <option value="hi-hat">ハイハット</option>
+                        <option value="808conga">808コンガ</option>
+                        <option value="clap">クラップ</option>
+                        <option value="clave">クラーベ</option>
+                        <option value="click">クリック</option>
+                        <option value="cowbell">カウベル</option>
+                        <option value="edm_percussion">デジタル</option>
+                        <option value="female_voice">声</option>
+                        <option value="naiki_voice">力強い声</option>
+                    </select>
+                </label>
+            </div>
+            <!-- ---------------------------------------------------- -->
+            <div>
+                <label for="rhythm2">音量：</label>
+                <input type="range" id="volumeControl" min="0" max="10" step="1" value="1">
+                <span id="volumeValue">1</span>
+            </div>
         </div>
     </div>
 
-    <!-- ---------------------------------------------------- -->
-    <div>
-        <div>
-            <button id="muteRhythm1">🔈</button>
-            <label for="" class="">【リズム1】：
-                <select id="rhythm1ClickSound" class="form-select" onchange="">
-                    <option value="bass_drum">バスドラム</option>
-                    <option value="hi-hat">ハイハット</option>
-                    <option value="808conga">808コンガ</option>
-                    <option value="clap">クラップ</option>
-                    <option value="clave">クラーベ</option>
-                    <option value="click" selected>クリック</option>
-                    <option value="cowbell">カウベル</option>
-                    <option value="edm_percussion">デジタル</option>
-                    <option value="female_voice">声</option>
-                    <option value="naiki_voice">力強い声</option>
-                </select>
-            </label>
-        </div>
-
-        <div>
-            <button id="muteLCM">🔈</button>
-            <label for="" class="">【LCM】：
-                <select id="lcmClickSound" class="form-select" onchange="">
-                    <option value="bass_drum">バスドラム</option>
-                    <option value="hi-hat" selected>ハイハット</option>
-                    <option value="808conga">808コンガ</option>
-                    <option value="clap">クラップ</option>
-                    <option value="clave">クラーベ</option>
-                    <option value="click">クリック</option>
-                    <option value="cowbell">カウベル</option>
-                    <option value="edm_percussion">デジタル</option>
-                    <option value="female_voice">声</option>
-                    <option value="naiki_voice">力強い声</option>
-                </select>
-            </label>
-        </div>
-
-        <div>
-            <button id="muteRhythm2">🔈</button>
-            <label for="" class="">【リズム2】：
-                <select id="rhythm2ClickSound" class="form-select" onchange="">
-                    <option value="bass_drum">バスドラム</option>
-                    <option value="hi-hat">ハイハット</option>
-                    <option value="808conga">808コンガ</option>
-                    <option value="clap" selected>クラップ</option>
-                    <option value="clave">クラーベ</option>
-                    <option value="click">クリック</option>
-                    <option value="cowbell">カウベル</option>
-                    <option value="edm_percussion">デジタル</option>
-                    <option value="female_voice">声</option>
-                    <option value="naiki_voice">力強い声</option>
-                </select>
-            </label>
-        </div>
-
-        <div>
-            <button id="muteBeatHead">🔈</button>
-            <label for="" class="">【拍の頭】：
-                <select id="beatHeadClickSound" class="form-select" onchange="">
-                    <option value="bass_drum" selected>バスドラム</option>
-                    <option value="hi-hat">ハイハット</option>
-                    <option value="808conga">808コンガ</option>
-                    <option value="clap">クラップ</option>
-                    <option value="clave">クラーベ</option>
-                    <option value="click">クリック</option>
-                    <option value="cowbell">カウベル</option>
-                    <option value="edm_percussion">デジタル</option>
-                    <option value="female_voice">声</option>
-                    <option value="naiki_voice">力強い声</option>
-                </select>
-            </label>
-        </div>
-    </div>
-    <!-- ---------------------------------------------------- -->
-    <div>
-        <label for="polyRhythm_basis_Value" class="">基準：
-            <select id="polyRhythm_basis_Value" class="form-select mt-1" onchange="">
-                <option value="1" selected>リズム1</option>
-                <option value="0">LCM（最小公倍数）</option>
-            </select>
-        </label>
-        <label for="polyRhythm_basis_note" class="">がBPM=<span id="basisBpmValue">120</span>の
-            <select id="polyRhythm_basis_note" class="form-select mt-1" onchange="">
-                <option value="2">2分音符</option>
-                <option value="4" selected>4分音符</option>
-                <option value="8">8分音符</option>
-                <option value="16">16分音符</option>
-                <option value="32">32分音符</option>
-            </select>
-        </label>
-    </div>
 
     <div>
-        <label for="rhythm2">音量：</label>
-        <input type="range" id="volumeControl" min="0" max="10" step="1" value="1">
-        <span id="volumeValue">1</span>
-    </div>
-
-    <div>
-        <h3 class="">音が出ない場合など</h3>
-        <p class="py-1 guideText">・ご利用の端末の「音量設定」や「ミュートの設定」を確認してください。</p>
-        <p class="py-1 guideText">・画面上のミュートボタンは、反映まで数秒のタイムラグがあります。</p>
-        <p class="py-1 guideText">・ページをロードした直後は再生/停止ボタンが上手く動作しない場合があります。何度か押してみてください。</p>
-        <p class="py-1 guideText">・上記の項目を試しても音が鳴らない場合は、お手数をおかけしますがコンタクトページからお知らせください。</p>
-
         <h3 class="">説明・使い方</h3>
-        <p class="py-1 guideText">・キーボードのスペースキーでもメトロノームの再生/停止が行えます。</p>
+        <p class="py-1 guideText">・キーボードの「s」キーでもメトロノームの再生/停止が行えます。</p>
         <p class="py-1 guideText">・《メトロノーム音の設定》から、各メトロノーム音の選択とミュートのON/OFFができます。</p>
-        <p class="py-1 guideText">・音符を個別にタップ/クリックすると、各メトロノーム音を個別にON/OFFできます。</p>
+        <p class="py-1 guideText">・音符を個別にタップ/クリックすると、メトロノーム音を1つずつON/OFFできます。</p>
         <p class="py-1 guideText">・GCDの値は、2つのリズムの最大公約数を表しています。</p>
         <p class="py-1 guideText">・LCMの値は、2つのリズムの最小公倍数を表しています。</p>
-        <p class="py-1 guideText">・キーボードの「F」キーでもメトロノームの拡大/縮小が行えます。</p>
-        <p class="py-2">　</p>
+
+        <h3 class="">音が出ない？そんなときは…</h3>
+        <p class="py-1 guideText">・ご利用の端末の「音量設定」や「ミュートの設定」を確認してください。</p>
+        <p class="py-1 guideText">・画面上のミュート機能は、反映まで数秒のタイムラグがあります。</p>
+        <p class="py-1 guideText">・時折、再生/停止ボタンが上手く動作しない場合があります。何度か押してみてください。</p>
+        <p class="py-1 guideText">・上記の項目を試しても音が鳴らない場合は、お手数をおかけしますがコンタクトページからお知らせください。</p>
+
+        <h3 class="">関連ページ</h3>
         <p class="py-2"><a class="linka" target="_blank" rel="noopener noreferrer"
-                href="https://khufrudamonotes.com/polyrhythm-map">「ポリリズム」の概念を詳しく解説した記事はこちら</a></p>
-        <p class="py-2"><a class="linka" href="metronome.html">「変拍子に対応したメトロノーム」はこちら</a></p>
+                href="https://khufrudamonotes.com/polyrhythm-map">「ポリリズム」の概念を詳しく解説した記事</a></p>
+        <p class="py-2"><a class="linka" href="metronome.html">「変拍子に対応したメトロノーム」</a></p>
 
     </div>
 
