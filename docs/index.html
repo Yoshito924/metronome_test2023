@@ -10,6 +10,7 @@
 
 <body>
     <h1>ポリリズムメトロノーム</h1>
+
     <div id="polyRhythmMetronome">
         <div id="polyRhythmTimeSignature">
             <!-- 動的に生成 -->
@@ -33,11 +34,13 @@
             </table>
         </div>
     </div>
+
     <!-- メトロノームの設定 -->
     <div>
         <!-- コントロールボタン -->
         <div>
             <button id="controlButton">開始</button>
+            <a id="helpText"></a>
         </div>
         <div>
             <label for="bpm">BPM:</label>
@@ -62,7 +65,6 @@
             <!-- 動的に生成 -->
         </div>
     </div>
-
 
     <!-- ---------------------------------------------------- -->
     <div>
@@ -142,8 +144,8 @@
     <div>
         <label for="polyRhythm_basis_Value" class="">基準：
             <select id="polyRhythm_basis_Value" class="form-select mt-1" onchange="">
-                <option value="0">LCM（最小公倍数）</option>
                 <option value="1" selected>リズム1</option>
+                <option value="0">LCM（最小公倍数）</option>
             </select>
         </label>
         <label for="polyRhythm_basis_note" class="">がBPM=<span id="basisBpmValue">120</span>の

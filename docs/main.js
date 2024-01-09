@@ -124,6 +124,9 @@ const MusicalNoteArray = [
     },
 ];
 
+// 音が実際に再生されているか判定する変数
+let audioBuffersActive = false;
+
 //=============================================================================
 //ビート状態の配列を初期化する関数
 function initializeBeatStates() {
@@ -296,18 +299,37 @@ async function metronomeOnOff() {
                 element.classList.remove("highlight2")
             }
         };
+        // 音が実際に再生されているか判定する変数をfalseにする
+        audioBuffersActive = false;
         //ビートのカウントをリセット
         beatCount = 1
         rhythm1BeatCount = 1
         rhythm2BeatCount = 1
     };
+    //------------------------------------------------------------------------
     if (!isPlaying) {
-        // メトロノームを停止するためにボタンのテキストを「開始」に戻す
-        document.getElementById('controlButton').textContent = '開始';
-    } else {
         // メトロノームが始まったことを示すためにボタンのテキストを「停止」に変更
         document.getElementById('controlButton').textContent = '停止';
+    } else {
+        // メトロノームを停止するためにボタンのテキストを「開始」に戻す
+        document.getElementById('controlButton').textContent = '開始';
+        // 音が実際に再生されているか判定する変数をfalseにする
+        audioBuffersActive = false;
     }
+    //------------------------------------------------------------------------
+    // 本当に音が再生されているかチェックするための処理
+    setTimeout(() => {
+        if (audioBuffersActive === true) {
+            console.log("動作しちょる")
+            document.getElementById("helpText").innerHTML = "";
+        };
+        if (audioBuffersActive === false && isPlaying === true) {
+            console.log("動作しちょらん")
+            document.getElementById("helpText").innerHTML = "再生が上手くいきませんでした。もう一度再生ボタンを押してください。";
+            metronomeOnOff();
+        };
+    }, "200");
+    //------------------------------------------------------------------------
     isPlaying = !isPlaying; // メトロノームの再生状態を切り替える
 };
 
@@ -416,6 +438,8 @@ function playSound(buffer, time) {
     source.connect(gainNode);
     // 指定された時間にオーディオバッファの再生を開始
     source.start(time);
+    //音が再生されているか否かを判定する変数をtrueにする。
+    audioBuffersActive = true;
 }
 
 // --------------------------------------------------------------
@@ -578,8 +602,8 @@ document.getElementById('controlButton').addEventListener('click', () => {
 
 // キーボードイベントのリスナーを追加
 document.addEventListener('keydown', function (event) {
-    // スペースキーが押されたかチェック
-    if (event.key === " ") {
+    // キーが押されたかチェック
+    if (event.key === "s", " ") {
         metronomeOnOff();
     }
 });
@@ -590,12 +614,12 @@ document.getElementById('bpm').addEventListener('input', function () {
     if (isPlaying) {
         //いったん止める
         metronomeOnOff()
-        //0.1秒後にメトロノームを再開する
+        //0.2秒後にメトロノームを再開する
         setTimeout(() => {
             if (!isPlaying) {
                 metronomeOnOff()
             };
-        }, "100");
+        }, "200");
     };
     document.getElementById('bpmValue').textContent = this.value;
     document.getElementById('basisBpmValue').textContent = this.value;
@@ -607,12 +631,12 @@ document.getElementById('rhythm1').addEventListener('input', function () {
     if (isPlaying) {
         //いったん止める
         metronomeOnOff()
-        //0.1秒後にメトロノームを再開する
+        //0.2秒後にメトロノームを再開する
         setTimeout(() => {
             if (!isPlaying) {
                 metronomeOnOff()
             };
-        }, "100");
+        }, "200");
     };
     document.getElementById('rhythm1Value').textContent = this.value;
     // 拍のビジュアルをHTML上に描画する関数
@@ -625,12 +649,12 @@ document.getElementById('rhythm2').addEventListener('input', function () {
     if (isPlaying) {
         //いったん止める
         metronomeOnOff()
-        //0.1秒後にメトロノームを再開する
+        //0.2秒後にメトロノームを再開する
         setTimeout(() => {
             if (!isPlaying) {
                 metronomeOnOff()
             };
-        }, "100");
+        }, "200");
     };
     document.getElementById('rhythm2Value').textContent = this.value;
     // 拍のビジュアルをHTML上に描画する関数
@@ -644,12 +668,12 @@ document.getElementById('polyRhythm_basis_Value').addEventListener('change', fun
     if (isPlaying) {
         //いったん止める
         metronomeOnOff()
-        //0.1秒後にメトロノームを再開する
+        //0.2秒後にメトロノームを再開する
         setTimeout(() => {
             if (!isPlaying) {
                 metronomeOnOff()
             };
-        }, "100");
+        }, "200");
     };
     updateCommonRhythmTable()
 });
@@ -661,12 +685,12 @@ document.getElementById('polyRhythm_basis_note').addEventListener('change', func
     if (isPlaying) {
         //いったん止める
         metronomeOnOff()
-        //0.1秒後にメトロノームを再開する
+        //0.2秒後にメトロノームを再開する
         setTimeout(() => {
             if (!isPlaying) {
                 metronomeOnOff()
             };
-        }, "100");
+        }, "200");
     };
     updateCommonRhythmTable()
 });
