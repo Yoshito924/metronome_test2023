@@ -564,17 +564,22 @@ function updateRhythmTable(beats, idName, beatStates) {
             td.innerHTML = `${i}<br>${note}`;
         }
 
+        //クリックされたときに動くイベントリスナーを設定する
         td.addEventListener('click', function () {
             beatStates[i - 1] = !beatStates[i - 1];
-            // 再度条件をチェックして、内容を切り替える
-            console.log(rhythm1BeatStates, lcmBeatStates, rhythm2BeatStates)
-
-            if (!beatStates[i - 1]) {
-                this.innerHTML = `${i}<br>${rest}`;
-            } else {
-                this.innerHTML = `${i}<br>${note}`;
-            }
-            this.classList.toggle('muted');
+            //lordアイコンを読み込む
+            this.innerHTML = `${i}<br><i class="fa-solid fa-spinner"></i>`
+            //スケジュールされているタイミングの分だけ切り替えを遅らせる
+            setTimeout(() => {
+                if (!beatStates[i - 1]) {
+                    this.innerHTML = `${i}<br>${rest}`;
+                } else {
+                    this.innerHTML = `${i}<br>${note}`;
+                }
+                //ミュートするためのクラスをトグルする
+                this.classList.toggle('muted');
+                //現在スケジュールされている時間分処理を止める
+            }, ((nextBeatTime - audioContext.currentTime) * 1000));
         });
         row.appendChild(td);
     }
