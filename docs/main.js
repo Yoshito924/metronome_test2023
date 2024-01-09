@@ -93,12 +93,35 @@ const fileNames = [
 ];
 
 //音符のバリエーションを格納した配列
-const noteArray = [
-    { note: '●', rest: '◯' },
-    { note: '&#x1D15E;', rest: '&#x1D13C;' },
-    { note: '♩', rest: '&#x1D13D;' },
-    { note: '&#9834;', rest: '&#x1D13E;' },
-    { note: '&#x1D161;', rest: '&#x1D13F;' },
+const MusicalNoteArray = [
+    {
+        note: '●',
+        rest: '◯'
+    },
+    {
+        note: `<img src="./image/note/harfNote.svg" alt="2分音符" title="2分音符 "class="note_image">`,
+        rest: `<img src="./image/note/harfRest.svg" alt="2分休符" title="2分休符 "class="note_image">`,
+    },
+    {
+        note: `<img src="./image/note/quarterNote.svg" alt="4分音符" title="4分音符 "class="note_image">`,
+        rest: `<img src="./image/note/quarterRest.svg" alt="4分休符" title="4分休符 "class="note_image">`,
+    },
+    {
+        note: `<img src="./image/note/8thNote.svg" alt="8分音符" title="8分音符 "class="note_image">`,
+        rest: `<img src="./image/note/8thRest.svg" alt="8分休符" title="8分休符 "class="note_image">`,
+    },
+    {
+        note: `<img src="./image/note/16thNote.svg" alt="16分音符" title="16分音符 "class="note_image">`,
+        rest: `<img src="./image/note/16thRest.svg" alt="16分休符" title="16分休符 "class="note_image">`,
+    },
+    {
+        note: `<img src="./image/note/32ndNote.svg" alt="32分音符" title="32分音符 "class="note_image">`,
+        rest: `<img src="./image/note/32ndRest.svg" alt="32分休符" title="32分休符 "class="note_image">`,
+    },
+    {
+        note: `<img src="./image/note/64thNote.svg" alt="64分音符" title="64分音符 "class="note_image">`,
+        rest: `<img src="./image/note/64thRest.svg" alt="64分休符" title="64分休符 "class="note_image">`,
+    },
 ];
 
 //=============================================================================
@@ -451,20 +474,20 @@ function updateCommonRhythmTable() {
 // 音符の種類を決める関数
 function DetermineTypeOfNote(BasisNote, note, rest) {
     if (BasisNote === 2) {
-        note = noteArray[1].note
-        rest = noteArray[1].rest
+        note = MusicalNoteArray[1].note
+        rest = MusicalNoteArray[1].rest
     } else if (BasisNote === 4) {
-        note = noteArray[2].note
-        rest = noteArray[2].rest
+        note = MusicalNoteArray[2].note
+        rest = MusicalNoteArray[2].rest
     } else if (BasisNote === 8) {
-        note = noteArray[3].note
-        rest = noteArray[3].rest
+        note = MusicalNoteArray[3].note
+        rest = MusicalNoteArray[3].rest
     } else if (BasisNote === 16) {
-        note = noteArray[4].note
-        rest = noteArray[4].rest
+        note = MusicalNoteArray[4].note
+        rest = MusicalNoteArray[4].rest
     } else {
-        note = noteArray[0].note
-        rest = noteArray[0].rest
+        note = MusicalNoteArray[0].note
+        rest = MusicalNoteArray[0].rest
     }
     return { note, rest };
 }
@@ -498,8 +521,8 @@ function updateRhythmTable(beats, idName, beatStates) {
         note = returnNote.note;
         rest = returnNote.rest;
     } else {
-        note = noteArray[0].note
-        rest = noteArray[0].rest
+        note = MusicalNoteArray[0].note
+        rest = MusicalNoteArray[0].rest
     }
 
     //------------------------------------------------------------------------

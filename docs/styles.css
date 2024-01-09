@@ -1,43 +1,4 @@
 
-.highlight1{
-    background-color: salmon !important;;
-}
-.rhythm1Border{
-    border-left: solid salmon;
-}
-
-.highlightLcm{
-    background-color: aquamarine !important;;
-}
-.lcmBorder{
-    border-left: solid aquamarine;
-}
-
-.highlight2{
-    background-color: cyan !important;;
-}
-.rhythm2Border{
-    border-left: solid cyan;
-}
-
-.muted{
-    background-color: #7a7a7a;
-}
-
-#polyRhythmMetronome{
-    display: flex;
-    padding-bottom: 20px;
-}
-
-#polyRhythmTimeSignature{
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding-right:5px;
-}
-
 table {
     width: 100%; /* テーブルを親要素の横幅いっぱいに設定 */
     border-collapse: collapse; /* セルの境界線を1本にする */
@@ -61,3 +22,53 @@ td:hover{
     opacity: 0.7;
     background-color: bisque;
 }
+
+#polyRhythmTimeSignature{
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-right:5px;
+}
+/* ---------------------------------------------- */
+
+.highlight1{
+    background-color: salmon !important;;
+}
+.rhythm1Border{
+    border-left: solid salmon;
+}
+
+.highlightLcm{
+    background-color: aquamarine !important;;
+}
+.lcmBorder{
+    border-left: solid aquamarine;
+}
+
+.highlight2{
+    background-color: cyan !important;;
+}
+.rhythm2Border{
+    border-left: solid cyan;
+}
+/* ---------------------------------------------- */
+.muted{
+    background-color: #7a7a7a;
+}
+
+#polyRhythmMetronome{
+    display: flex;
+    padding-bottom: 20px;
+}
+
+/* ---------------------------------------------- */
+.note_image {
+    padding: 5px;
+    height: clamp(2rem, 2rem + 1vw, 4rem);
+    /* 中央揃え */
+    margin: 0 auto;
+}
+
+
