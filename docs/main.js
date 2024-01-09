@@ -24,6 +24,25 @@ function gcd(a, b) {
     return gcd(b, a % b)
 };
 
+//互いに素であるかどうかを判定する関数--------------------------------------
+function isCoprime(a, b) {
+    // 2つの整数の最大公約数を求める関数
+    gcd(a, b)
+
+    // 最大公約数が1であれば、二つの数は互いに素
+    return gcd(a, b) === 1;
+}
+
+// 2の累乗数か否かを判定する関数--------------------------------------
+function isPowerOfTwo(n) {
+    // 0以下の数は2の累乗ではない
+    if (n <= 0) {
+        return false;
+    }
+    // nとn-1のビット単位のAND演算が0であれば、nは2の累乗
+    return (n & (n - 1)) === 0;
+}
+
 //=============================================================================
 let nextBeatTime;
 let beatInterval;
@@ -237,21 +256,21 @@ async function metronomeOnOff() {
             let element = document.getElementById(`rhythm1Beat${i}`);
             //要素がある場合のみ削除
             if (element) {
-                element.classList = '';
+                element.classList.remove("highlight1")
             }
         };
         for (let i = 1; i <= lcmRhythm; i++) {
             let element = document.getElementById(`leastCommonMultipleBeat${i}`);
             //要素がある場合のみ削除
             if (element) {
-                element.classList = '';
+                element.classList.remove("highlightLcm")
             }
         };
         for (let i = 1; i <= rhythm2; i++) {
             let element = document.getElementById(`rhythm2Beat${i}`);
             //要素がある場合のみ削除
             if (element) {
-                element.classList = '';
+                element.classList.remove("highlight2")
             }
         };
         //ビートのカウントをリセット
@@ -318,11 +337,11 @@ function highlightBeat(beatCount) {
             let element = document.getElementById(`rhythm1Beat${i}`);
             //要素がある場合のみ削除
             if (element) {
-                element.classList = '';
+                element.classList.remove("highlight1")
             }
         };
         //ハイライトを付ける
-        document.getElementById(`rhythm1Beat${rhythm1BeatCount}`).classList = 'highlight1';
+        document.getElementById(`rhythm1Beat${rhythm1BeatCount}`).classList.add('highlight1');
         rhythm1BeatCount++
     };
     //------------------------------------------------------------------------
@@ -331,11 +350,11 @@ function highlightBeat(beatCount) {
         let element = document.getElementById(`leastCommonMultipleBeat${i}`);
         //要素がある場合のみ削除
         if (element) {
-            element.classList = '';
+            element.classList.remove("highlightLcm")
         }
     };
     //ハイライトを付ける
-    document.getElementById(`leastCommonMultipleBeat${beatCount}`).classList = 'highlightLcm';
+    document.getElementById(`leastCommonMultipleBeat${beatCount}`).classList.add('highlightLcm');
     //------------------------------------------------------------------------
     if (beatCount % (lcmRhythm / rhythm2) === 1 || lcmRhythm === rhythm2) {
         //一度rhythm2ハイライトを全てリセットする
@@ -343,11 +362,11 @@ function highlightBeat(beatCount) {
             let element = document.getElementById(`rhythm2Beat${i}`);
             //要素がある場合のみ削除
             if (element) {
-                element.classList = '';
+                element.classList.remove("highlight2")
             }
         };
         //ハイライトを付ける
-        document.getElementById(`rhythm2Beat${rhythm2BeatCount}`).classList = 'highlight2';
+        document.getElementById(`rhythm2Beat${rhythm2BeatCount}`).classList.add('highlight2');
         rhythm2BeatCount++
     };
     //------------------------------------------------------------------------
@@ -386,6 +405,39 @@ function updateCommonRhythmTable() {
     //clmの値をhtmlに描画する
     document.getElementById('lcmValue').innerHTML = ''
     document.getElementById('lcmValue').innerHTML = `【LCM】：${lcmRhythm}`
+
+    // 基準となるポリリズムの値を取得
+    polyRhythmBasisValue = parseInt(document.getElementById('polyRhythm_basis_Value').value);
+    // 選択された音符の種類（2分音符、4分音符など）を取得
+    polyRhythmBasisNote = parseInt(document.getElementById('polyRhythm_basis_note').value);
+
+    // 最大公約数を求める
+    let gcdValue = gcd(rhythm1, rhythm2);
+
+    //拍子記号をhtmlに描画する
+    if (isCoprime(rhythm1, rhythm2) === true && rhythm1 >= rhythm2 && polyRhythmBasisValue === 1) {
+        //ポリリズムである場合
+        document.getElementById('infoText').innerHTML = ''
+        document.getElementById('infoText').innerHTML = `リズム1と2の値が互いに素(GCDが${gcdValue})なので、ポリリズムです。`
+        //拍子を書き込む
+        document.getElementById('polyRhythmTimeSignature').innerHTML = ''
+        if (isPowerOfTwo(lcmRhythm / rhythm1 * polyRhythmBasisNote) === true) {
+            document.getElementById('polyRhythmTimeSignature').innerHTML = `${lcmRhythm}<br>―<br>${lcmRhythm / rhythm1 * polyRhythmBasisNote}`
+        } else {
+            document.getElementById('polyRhythmTimeSignature').innerHTML = `${rhythm1}<br>―<br>${polyRhythmBasisNote}`
+        }
+    } else {
+        //ポリリズムではない場合
+        document.getElementById('infoText').innerHTML = ''
+        document.getElementById('infoText').innerHTML = `リズム1と2の値が互いに素ではない(GCDは${gcdValue})ので、ポリリズムではありません。`
+        //拍子を書き込む
+        document.getElementById('polyRhythmTimeSignature').innerHTML = ''
+        if (polyRhythmBasisValue === 1) {
+            document.getElementById('polyRhythmTimeSignature').innerHTML = `${rhythm1}<br>―<br>${polyRhythmBasisNote}`
+        } else {
+            document.getElementById('polyRhythmTimeSignature').innerHTML = `${lcmRhythm}<br>―<br>${polyRhythmBasisNote}`
+        }
+    }
 
     // ビート状態の配列を初期化する関数
     initializeBeatStates();
@@ -523,6 +575,7 @@ document.getElementById('bpm').addEventListener('input', function () {
         }, "100");
     };
     document.getElementById('bpmValue').textContent = this.value;
+    document.getElementById('basisBpmValue').textContent = this.value;
 });
 
 //リズム1の値が変更された時の処理
@@ -598,13 +651,15 @@ document.getElementById('polyRhythm_basis_note').addEventListener('change', func
 //ミュートボタンのイベントリスナー
 document.getElementById('muteRhythm1').addEventListener('click', () => {
     rhythm1Muted = !rhythm1Muted;
-    console.log(rhythm1Muted)
+    document.getElementById(`rhythm1BeatTable`).classList.toggle('muted');
 });
 document.getElementById('muteLCM').addEventListener('click', () => {
     lcmMuted = !lcmMuted;
+    document.getElementById(`leastCommonMultiple1BeatTable`).classList.toggle('muted');
 });
 document.getElementById('muteRhythm2').addEventListener('click', () => {
     rhythm2Muted = !rhythm2Muted;
+    document.getElementById(`rhythm2BeatTable`).classList.toggle('muted');
 });
 document.getElementById('muteBeatHead').addEventListener('click', () => {
     beatHeadMuted = !beatHeadMuted;

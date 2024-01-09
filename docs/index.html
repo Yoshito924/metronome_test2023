@@ -10,50 +10,60 @@
 
 <body>
     <h1>ポリリズムメトロノーム</h1>
-    <div>
-        <!-- 拍のビジュアル表示 -->
-        <table>
-            <tr id="rhythm1BeatRow">
-                <!-- 動的にセルが追加 -->
-            </tr>
-        </table>
-        <table>
-            <tr id="leastCommonMultipleBeatRow">
-                <!-- 動的にセルが追加 -->
-            </tr>
-        </table>
-        <table>
-            <tr id="rhythm2BeatRow">
-                <!-- 動的にセルが追加 -->
-            </tr>
-        </table>
+    <div id="polyRhythmMetronome">
+        <div id="polyRhythmTimeSignature">
+            <!-- 動的に生成 -->
+        </div>
+        <div id="polyRhythmMetronomeVisual">
+            <!-- 拍のビジュアル表示 -->
+            <table id="rhythm1BeatTable">
+                <tr id="rhythm1BeatRow">
+                    <!-- 動的にセルが追加 -->
+                </tr>
+            </table>
+            <table id="leastCommonMultiple1BeatTable">
+                <tr id="leastCommonMultipleBeatRow">
+                    <!-- 動的にセルが追加 -->
+                </tr>
+            </table>
+            <table id="rhythm2BeatTable">
+                <tr id="rhythm2BeatRow">
+                    <!-- 動的にセルが追加 -->
+                </tr>
+            </table>
+        </div>
     </div>
-
     <!-- メトロノームの設定 -->
     <div>
-        <label for="bpm">BPM:</label>
-        <input type="range" id="bpm" min="1" max="300" value="120">
-        <span id="bpmValue">120</span>
-    </div>
-    <!-- リズムの設定 -->
-    <div>
-        <label for="rhythm1">【リズム1】:</label>
-        <span id="rhythm1Value">3</span>
-        <input type="range" id="rhythm1" min="1" max="20" value="3">
-    </div>
-    <div id="lcmValue">
-        <!-- 動的に生成 -->
-    </div>
-    <div>
-        <label for="rhythm2">【リズム2】:</label>
-        <span id="rhythm2Value">2</span>
-        <input type="range" id="rhythm2" min="1" max="20" value="2">
+        <!-- コントロールボタン -->
+        <div>
+            <button id="controlButton">開始</button>
+        </div>
+        <div>
+            <label for="bpm">BPM:</label>
+            <input type="range" id="bpm" min="1" max="300" value="120">
+            <span id="bpmValue">120</span>
+        </div>
+        <!-- リズムの設定 -->
+        <div class="rhythm1Border">
+            <label for="rhythm1">【リズム1】:</label>
+            <span id="rhythm1Value">3</span>
+            <input type="range" id="rhythm1" min="1" max="20" value="3">
+        </div>
+        <div id="lcmValue" class="lcmBorder">
+            <!-- 動的に生成 -->
+        </div>
+        <div class="rhythm2Border">
+            <label for="rhythm2">【リズム2】:</label>
+            <span id="rhythm2Value">2</span>
+            <input type="range" id="rhythm2" min="1" max="20" value="2">
+        </div>
+        <div id="infoText">
+            <!-- 動的に生成 -->
+        </div>
     </div>
 
-    <!-- コントロールボタン -->
-    <div>
-        <button id="controlButton">開始</button>
-    </div>
+
     <!-- ---------------------------------------------------- -->
     <div>
         <div>
@@ -136,7 +146,7 @@
                 <option value="1" selected>リズム1</option>
             </select>
         </label>
-        <label for="polyRhythm_basis_note" class="">が
+        <label for="polyRhythm_basis_note" class="">がBPM=<span id="basisBpmValue">120</span>の
             <select id="polyRhythm_basis_note" class="form-select mt-1" onchange="">
                 <option value="2">2分音符</option>
                 <option value="4" selected>4分音符</option>
@@ -150,6 +160,27 @@
         <label for="rhythm2">音量：</label>
         <input type="range" id="volumeControl" min="0" max="10" step="1" value="1">
         <span id="volumeValue">1</span>
+    </div>
+
+    <div>
+        <h3 class="">音が出ない場合など</h3>
+        <p class="py-1 guideText">・ご利用の端末の「音量設定」や「ミュートの設定」を確認してください。</p>
+        <p class="py-1 guideText">・画面上のミュートボタンは、反映まで数秒のタイムラグがあります。</p>
+        <p class="py-1 guideText">・ページをロードした直後は再生/停止ボタンが上手く動作しない場合があります。何度か押してみてください。</p>
+        <p class="py-1 guideText">・上記の項目を試しても音が鳴らない場合は、お手数をおかけしますがコンタクトページからお知らせください。</p>
+
+        <h3 class="">説明・使い方</h3>
+        <p class="py-1 guideText">・キーボードのスペースキーでもメトロノームの再生/停止が行えます。</p>
+        <p class="py-1 guideText">・《メトロノーム音の設定》から、各メトロノーム音の選択とミュートのON/OFFができます。</p>
+        <p class="py-1 guideText">・音符を個別にタップ/クリックすると、各メトロノーム音を個別にON/OFFできます。</p>
+        <p class="py-1 guideText">・GCDの値は、2つのリズムの最大公約数を表しています。</p>
+        <p class="py-1 guideText">・LCMの値は、2つのリズムの最小公倍数を表しています。</p>
+        <p class="py-1 guideText">・キーボードの「F」キーでもメトロノームの拡大/縮小が行えます。</p>
+        <p class="py-2">　</p>
+        <p class="py-2"><a class="linka" target="_blank" rel="noopener noreferrer"
+                href="https://khufrudamonotes.com/polyrhythm-map">「ポリリズム」の概念を詳しく解説した記事はこちら</a></p>
+        <p class="py-2"><a class="linka" href="metronome.html">「変拍子に対応したメトロノーム」はこちら</a></p>
+
     </div>
 
     <script src="main.js"></script>

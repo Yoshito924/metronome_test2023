@@ -1,14 +1,41 @@
 
 .highlight1{
-    background-color: salmon;
+    background-color: salmon !important;;
+}
+.rhythm1Border{
+    border-left: solid salmon;
 }
 
 .highlightLcm{
-    background-color: aquamarine;
+    background-color: aquamarine !important;;
+}
+.lcmBorder{
+    border-left: solid aquamarine;
 }
 
 .highlight2{
-    background-color: cyan;
+    background-color: cyan !important;;
+}
+.rhythm2Border{
+    border-left: solid cyan;
+}
+
+.muted{
+    background-color: #7a7a7a;
+}
+
+#polyRhythmMetronome{
+    display: flex;
+    padding-bottom: 20px;
+}
+
+#polyRhythmTimeSignature{
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-right:5px;
 }
 
 table {
@@ -27,4 +54,10 @@ td {
     overflow: hidden; /* 内容がセルの幅を超える場合には非表示にします */
     text-overflow: ellipsis; /* 内容が超えた場合には省略記号を表示します */
     white-space: nowrap; /* セルの内容を改行しないようにします */
+}
+
+td:hover{
+    cursor: pointer;
+    opacity: 0.7;
+    background-color: bisque;
 }
