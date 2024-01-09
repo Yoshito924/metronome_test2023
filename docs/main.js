@@ -689,7 +689,7 @@ document.getElementById('polyRhythm_basis_note').addEventListener('change', func
 
 function toggleMuteIcon(muteData, muteId) {
     document.getElementById(muteId).innerHTML
-        = `<img src="./image/loading.gif" alt="ロード中gif" title="ロード中gif" class="volumeIcon">`;
+        = `<img src="./image/update_FILL0_wght400_GRAD0_opsz24.svg" alt="ロード中アイコン" title="ロード中アイコン" class="volumeIcon">`;;
     //スケジュールされているタイミングの分だけ切り替えを遅らせる
     setTimeout(() => {
         if (!muteData) {
