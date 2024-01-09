@@ -328,7 +328,7 @@ async function metronomeOnOff() {
             document.getElementById("helpText").innerHTML = "";
         };
         if (audioBuffersActive === false && isPlaying === true) {
-            document.getElementById("helpText").innerHTML = "※再生が上手くいきませんでした。<br>もう一度再生ボタンを押してください。";
+            document.getElementById("helpText").innerHTML = "※再生に失敗しました。<br>もう一度再生ボタン↓を押してください。";
             metronomeOnOff();
         };
     }, "200");
