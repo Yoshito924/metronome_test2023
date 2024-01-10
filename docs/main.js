@@ -695,10 +695,32 @@ document.getElementById('polyRhythm_basis_note').addEventListener('change', func
     updateCommonRhythmTable()
 });
 
+function clickSoundLoading(loadingId) {
+    document.getElementById(loadingId).innerHTML = `　音色の切り替え中…`;
+    setTimeout(() => {
+        document.getElementById(loadingId).innerHTML = "";
+        //現在スケジュールされている時間分処理を止める
+    }, ((nextBeatTime - audioContext.currentTime) * 1000));
+}
+
+
+//音色の種類を選択するドロップダウンリストのイベントリスナー
+document.getElementById('rhythm1ClickSound').addEventListener('change', function () {
+    clickSoundLoading(`rhythm1ClickSoundLoading`);
+});
+document.getElementById('lcmClickSound').addEventListener('change', function () {
+    clickSoundLoading(`lcmClickSoundLoading`);
+});
+document.getElementById('rhythm2ClickSound').addEventListener('change', function () {
+    clickSoundLoading(`rhythm2ClickSoundLoading`);
+});
+document.getElementById('beatHeadClickSound').addEventListener('change', function () {
+    clickSoundLoading(`beatHeadClickSoundLoading`);
+});
 
 function toggleMuteIcon(muteData, muteId, highlight) {
     document.getElementById(muteId).innerHTML
-        = `<img src="./image/update_FILL0_wght400_GRAD0_opsz24.svg" alt="ロード中アイコン" title="ロード中アイコン" class="volumeIcon">`;;
+        = `<img src="./image/update_FILL0_wght400_GRAD0_opsz24.svg" alt="ロード中アイコン" title="ロード中アイコン" class="volumeIcon">`;
     //スケジュールされているタイミングの分だけ切り替えを遅らせる
     setTimeout(() => {
         if (!muteData) {

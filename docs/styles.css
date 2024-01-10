@@ -52,6 +52,23 @@ td:hover{
     }
 }
 
+#rhythm1SoundController{
+    display: flex;
+    align-items: center; /* 子要素を垂直方向に中央揃え */
+}
+#lcmSoundController{
+    display: flex;
+    align-items: center; /* 子要素を垂直方向に中央揃え */
+}
+#rhythm2SoundController{
+    display: flex;
+    align-items: center; /* 子要素を垂直方向に中央揃え */
+}
+#beatHeadSoundController{
+    display: flex;
+    align-items: center; /* 子要素を垂直方向に中央揃え */
+}
+
 #polyRhythmTimeSignature{
     text-align: center;
     display: flex;

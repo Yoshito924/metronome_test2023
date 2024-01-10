@@ -96,8 +96,8 @@
         </div>
         <!-- ---------------------------------------------------- -->
         <div id="metronomeSoundController">
-            <div>
-                <button id="muteRhythm1" class="highlight1">
+            <div id="rhythm1SoundController">
+                <button id="muteRhythm1" class="highlight1 muted">
                     <img src="./image/volume_up_FILL0_wght400_GRAD0_opsz24.svg" alt="ヴォリュームアイコン" title="ヴォリュームアイコン"
                         class="volumeIcon">
                 </button>
@@ -115,9 +115,10 @@
                         <option value="naiki_voice">力強い声</option>
                     </select>
                 </label>
+                <span id="rhythm1ClickSoundLoading"></span>
             </div>
             <!-- ---------------------------------------------------- -->
-            <div>
+            <div id="lcmSoundController">
                 <button id="muteLCM" class="highlightLcm muted">
                     <img src="./image/volume_up_FILL0_wght400_GRAD0_opsz24.svg" alt="ヴォリュームアイコン" title="ヴォリュームアイコン"
                         class="volumeIcon">
@@ -136,9 +137,10 @@
                         <option value="naiki_voice">力強い声</option>
                     </select>
                 </label>
+                <span id="lcmClickSoundLoading"></span>
             </div>
             <!-- ---------------------------------------------------- -->
-            <div>
+            <div id="rhythm2SoundController">
                 <button id="muteRhythm2" class="highlight2 muted">
                     <img src="./image/volume_up_FILL0_wght400_GRAD0_opsz24.svg" alt="ヴォリュームアイコン" title="ヴォリュームアイコン"
                         class="volumeIcon">
@@ -157,9 +159,10 @@
                         <option value="naiki_voice">力強い声</option>
                     </select>
                 </label>
+                <span id="rhythm2ClickSoundLoading"></span>
             </div>
             <!-- ---------------------------------------------------- -->
-            <div>
+            <div id="beatHeadSoundController">
                 <button id="muteBeatHead" class="highlightBeatHead muted">
                     <img src="./image/volume_up_FILL0_wght400_GRAD0_opsz24.svg" alt="ヴォリュームアイコン" title="ヴォリュームアイコン"
                         class="volumeIcon">
@@ -178,6 +181,7 @@
                         <option value="naiki_voice">力強い声</option>
                     </select>
                 </label>
+                <span id="beatHeadClickSoundLoading"></span>
             </div>
             <!-- ---------------------------------------------------- -->
             <div>
@@ -209,8 +213,22 @@
         <p class="py-2"><a class="linka" href="metronome.html">「変拍子に対応したメトロノーム」</a></p>
     </div>
 
+    <!-- 使用するアイコン画像をバックグラウンドで読み込んでおく -->
     <div id="preload-image">
+        <img src="./image/volume_off_FILL0_wght400_GRAD0_opsz24.svg" alt="ミュートアイコン" title="ミュートアイコン" class="volumeIcon">
         <img src="./image/update_FILL0_wght400_GRAD0_opsz24.svg" alt="ロード中アイコン" title="ロード中アイコン" class="volumeIcon">
+        <img src="./image/note/harfNote.svg" alt="2分音符" title="2分音符 " class="note_image">
+        <img src="./image/note/harfRest.svg" alt="2分休符" title="2分休符 " class="note_image">
+        <img src="./image/note/quarterNote.svg" alt="4分音符" title="4分音符 " class="note_image">
+        <img src="./image/note/quarterRest.svg" alt="4分休符" title="4分休符 " class="note_image">
+        <img src="./image/note/8thNote.svg" alt="8分音符" title="8分音符 " class="note_image">
+        <img src="./image/note/8thRest.svg" alt="8分休符" title="8分休符 " class="note_image">
+        <img src="./image/note/16thNote.svg" alt="16分音符" title="16分音符 " class="note_image">
+        <img src="./image/note/16thRest.svg" alt="16分休符" title="16分休符 " class="note_image">
+        <img src="./image/note/32ndNote.svg" alt="32分音符" title="32分音符 " class="note_image">
+        <img src="./image/note/32ndRest.svg" alt="32分休符" title="32分休符 " class="note_image">
+        <img src="./image/note/64thNote.svg" alt="64分音符" title="64分音符 " class="note_image">
+        <img src="./image/note/64thRest.svg" alt="64分休符" title="64分休符 " class="note_image">
     </div>
 
     <script src="main.js"></script>
