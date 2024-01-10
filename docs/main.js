@@ -328,7 +328,12 @@ async function metronomeOnOff() {
             document.getElementById("helpText").innerHTML = "";
         };
         if (audioBuffersActive === false && isPlaying === true) {
-            document.getElementById("helpText").innerHTML = "※再生に失敗しました。<br>もう一度再生ボタン↓を押してください。";
+            document.getElementById("helpText").innerHTML = "";
+            setTimeout(() => {
+                if (!isPlaying) {
+                    document.getElementById("helpText").innerHTML = "※再生に失敗しました。<br>もう一度再生ボタン↓を押してください。";
+                };
+            }, "100");
             metronomeOnOff();
         };
     }, "200");
@@ -687,7 +692,7 @@ document.getElementById('polyRhythm_basis_note').addEventListener('change', func
 });
 
 
-function toggleMuteIcon(muteData, muteId) {
+function toggleMuteIcon(muteData, muteId, highlight) {
     document.getElementById(muteId).innerHTML
         = `<img src="./image/update_FILL0_wght400_GRAD0_opsz24.svg" alt="ロード中アイコン" title="ロード中アイコン" class="volumeIcon">`;;
     //スケジュールされているタイミングの分だけ切り替えを遅らせる
@@ -701,6 +706,7 @@ function toggleMuteIcon(muteData, muteId) {
             document.getElementById(muteId).innerHTML
                 = `<img src="./image/volume_off_FILL0_wght400_GRAD0_opsz24.svg" alt="ミュートアイコン" title="ミュートアイコン" class="volumeIcon">`;
         }
+        document.getElementById(muteId).classList.toggle(highlight);
         //現在スケジュールされている時間分処理を止める
     }, ((nextBeatTime - audioContext.currentTime) * 1000));
 }
@@ -709,21 +715,21 @@ function toggleMuteIcon(muteData, muteId) {
 document.getElementById('muteRhythm1').addEventListener('click', () => {
     rhythm1Muted = !rhythm1Muted;
     document.getElementById(`rhythm1BeatTable`).classList.toggle('muted');
-    toggleMuteIcon(rhythm1Muted, `muteRhythm1`)
+    toggleMuteIcon(rhythm1Muted, `muteRhythm1`, `highlight1`)
 });
 document.getElementById('muteLCM').addEventListener('click', () => {
     lcmMuted = !lcmMuted;
     document.getElementById(`leastCommonMultiple1BeatTable`).classList.toggle('muted');
-    toggleMuteIcon(lcmMuted, 'muteLCM')
+    toggleMuteIcon(lcmMuted, 'muteLCM', `highlightLcm`)
 });
 document.getElementById('muteRhythm2').addEventListener('click', () => {
     rhythm2Muted = !rhythm2Muted;
     document.getElementById(`rhythm2BeatTable`).classList.toggle('muted');
-    toggleMuteIcon(rhythm2Muted, `muteRhythm2`)
+    toggleMuteIcon(rhythm2Muted, `muteRhythm2`, `highlight2`)
 });
 document.getElementById('muteBeatHead').addEventListener('click', () => {
     beatHeadMuted = !beatHeadMuted;
-    toggleMuteIcon(beatHeadMuted, `muteBeatHead`)
+    toggleMuteIcon(beatHeadMuted, `muteBeatHead`, `highlightBeatHead`)
 });
 
 // ボリュームコントロールのイベントリスナー

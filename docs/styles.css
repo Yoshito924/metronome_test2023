@@ -82,6 +82,9 @@ td:hover{
 .rhythm2Border{
     border-left: solid cyan;
 }
+.highlightBeatHead{
+    background-color: floralwhite !important;;
+}
 .muted{
     background-color: #7a7a7a;
     color:darkblue; /* テキストの色 */
@@ -127,4 +130,10 @@ td:hover{
 .none{
     /* 画面から消す */
     display: none;
+}
+
+/* 事前にバックグラウンドで画像を読み込む */
+#preload-image {
+    background-image: url('path_to_your_image.svg');
+    display: none; /* 要素を表示しない */
 }
