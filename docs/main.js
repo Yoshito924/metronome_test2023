@@ -88,7 +88,7 @@ const fileNames = [
     'clave',
     'click',
     'cowbell',
-    'edm_percussion',
+    'snare',
     'female_voice',
     'hi-hat',
     'naiki_voice',
@@ -446,6 +446,8 @@ function playSound(buffer, time) {
     const source = audioContext.createBufferSource();
     // ソースノードにオーディオバッファを設定
     source.buffer = buffer;
+    let volume = parseInt(document.getElementById('volumeControl').value);
+    gainNode.gain.value = volume / 10; // 0-10 の値を 0-0.5 に変換
     // ソースをゲインノードに接続
     source.connect(gainNode);
     // 指定された時間にオーディオバッファの再生を開始
@@ -453,6 +455,7 @@ function playSound(buffer, time) {
     //音が再生されているか否かを判定する変数をtrueにする。
     audioBuffersActive = true;
 }
+
 
 // --------------------------------------------------------------
 //リズムテーブル更新を行う関数
@@ -696,7 +699,7 @@ document.getElementById('polyRhythm_basis_note').addEventListener('change', func
 });
 
 function clickSoundLoading(loadingId) {
-    document.getElementById(loadingId).innerHTML = `　音色の切り替え中…`;
+    document.getElementById(loadingId).innerHTML = `読み込み中…`;
     setTimeout(() => {
         document.getElementById(loadingId).innerHTML = "";
         //現在スケジュールされている時間分処理を止める

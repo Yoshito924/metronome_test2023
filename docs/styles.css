@@ -59,18 +59,30 @@ td {
 #rhythm1SoundController{
     display: flex;
     align-items: center; /* 子要素を垂直方向に中央揃え */
+    overflow: hidden; /* 内容がセルの幅を超える場合には非表示にします */
+    text-overflow: ellipsis; /* 内容が超えた場合には省略記号を表示します */
+    white-space: nowrap; /* セルの内容を改行しないようにします */
 }
 #lcmSoundController{
     display: flex;
     align-items: center; /* 子要素を垂直方向に中央揃え */
+    overflow: hidden; /* 内容がセルの幅を超える場合には非表示にします */
+    text-overflow: ellipsis; /* 内容が超えた場合には省略記号を表示します */
+    white-space: nowrap; /* セルの内容を改行しないようにします */
 }
 #rhythm2SoundController{
     display: flex;
     align-items: center; /* 子要素を垂直方向に中央揃え */
+    overflow: hidden; /* 内容がセルの幅を超える場合には非表示にします */
+    text-overflow: ellipsis; /* 内容が超えた場合には省略記号を表示します */
+    white-space: nowrap; /* セルの内容を改行しないようにします */
 }
 #beatHeadSoundController{
     display: flex;
     align-items: center; /* 子要素を垂直方向に中央揃え */
+    overflow: hidden; /* 内容がセルの幅を超える場合には非表示にします */
+    text-overflow: ellipsis; /* 内容が超えた場合には省略記号を表示します */
+    white-space: nowrap; /* セルの内容を改行しないようにします */
 }
 
 #polyRhythmTimeSignature{
