@@ -24,6 +24,10 @@ td {
     }
 }
 
+button {
+    cursor: pointer; /* ボタン上にマウスカーソルが来たときに手の形になる */
+}
+
 /* ---------------------------------------------- */
 #polyRhythmMetronome{
     display: flex;
@@ -139,7 +143,13 @@ td {
     width: 100%;
     height: 30px; /* 高さを自動調整に設定 */
 }
+
+/* ボタン */
+#controlButton{
+    cursor: pointer;
+}
 .controlButtonIcon{
+    cursor: pointer;
     text-align: center;
     color: white;
     padding: 20px 100px;

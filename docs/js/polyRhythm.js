@@ -328,7 +328,6 @@ function playSound(buffer, time) {
     audioBuffersActive = true;
 }
 
-
 // --------------------------------------------------------------
 //リズムテーブル更新を行う関数
 function updateCommonRhythmTable() {
@@ -352,7 +351,7 @@ function updateCommonRhythmTable() {
     if (isCoprime(rhythm1, rhythm2) === true) {
         //ポリリズムである場合（互いに素である場合）
         document.getElementById('infoText').innerHTML = ''
-        document.getElementById('infoText').innerHTML = `<br>GCDは${gcdValue}なので、ポリリズムです。<br>（リズム1と2の値は互いに素。）`
+        document.getElementById('infoText').innerHTML = `<br>GCD：${gcdValue}（リズム1と2の値は互いに素）<br>ポリリズムです。`
         //拍子を書き込む
         document.getElementById('polyRhythmTimeSignature').innerHTML = ''
         if (isPowerOfTwo(lcmRhythm / rhythm1 * polyRhythmBasisNote) === true && polyRhythmBasisValue === 1) {
@@ -368,7 +367,7 @@ function updateCommonRhythmTable() {
     } else {
         //ポリリズムではない場合
         document.getElementById('infoText').innerHTML = ''
-        document.getElementById('infoText').innerHTML = `<br>GCDは${gcdValue}なので、ポリリズムではありません。<br>（リズム1と2の値は互いに素ではない。）`
+        document.getElementById('infoText').innerHTML = `<br>GCD：${gcdValue}（リズム1と2の値は互いに素ではない）<br>ポリリズムではありません。`
         //拍子を書き込む
         document.getElementById('polyRhythmTimeSignature').innerHTML = ''
         if (polyRhythmBasisValue === 1) {
