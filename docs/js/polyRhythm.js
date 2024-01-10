@@ -1,48 +1,5 @@
 'use strict'
 
-//常に正の数の答えを返す剰余演算をする関数 (負の数の剰余演算を処理するため)
-function mod(n, m) {
-    return ((n % m) + m) % m;
-};
-
-// 四捨五入して小数点第3位までを表示する関数 (JavaScriptには元からそういう関数が無いっぽいので)
-function roundToThree(num) {
-    return +(Math.round(num + "e+3") + "e-3");
-};
-
-//2つの整数の最小公倍数を求める関数--------------------------------------
-function lcm(a, b) {
-    let g = (n, m) => m ? g(m, n % m) : n
-    return a * b / g(a, b)
-};
-
-//2つの整数の最大公約数を求める関数--------------------------------------
-function gcd(a, b) {
-    if (b === 0) {
-        return a
-    }
-    return gcd(b, a % b)
-};
-
-//互いに素であるかどうかを判定する関数--------------------------------------
-function isCoprime(a, b) {
-    // 2つの整数の最大公約数を求める関数
-    gcd(a, b)
-
-    // 最大公約数が1であれば、二つの数は互いに素
-    return gcd(a, b) === 1;
-}
-
-// 2の累乗数か否かを判定する関数--------------------------------------
-function isPowerOfTwo(n) {
-    // 0以下の数は2の累乗ではない
-    if (n <= 0) {
-        return false;
-    }
-    // nとn-1のビット単位のAND演算が0であれば、nは2の累乗
-    return (n & (n - 1)) === 0;
-}
-
 //=============================================================================
 let nextBeatTime;
 let beatInterval;
@@ -79,54 +36,6 @@ let polyRhythmBasisNote;
 //音色をロードしたか否かを格納しておくグローバル変数
 let lordComplete = false;
 
-// --------------------------------------------------------------
-// ロードするオーディオファイルの名前を配列で定義
-const fileNames = [
-    '808conga',
-    'bass_drum',
-    'clap',
-    'clave',
-    'click',
-    'cowbell',
-    'snare',
-    'female_voice',
-    'hi-hat',
-    'naiki_voice',
-];
-
-// --------------------------------------------------------------
-//音符のバリエーションを格納した配列
-const MusicalNoteArray = [
-    {
-        note: '●',
-        rest: '◯'
-    },
-    {
-        note: `<img src="./image/note/harfNote.svg" alt="2分音符" title="2分音符 "class="note_image">`,
-        rest: `<img src="./image/note/harfRest.svg" alt="2分休符" title="2分休符 "class="note_image">`,
-    },
-    {
-        note: `<img src="./image/note/quarterNote.svg" alt="4分音符" title="4分音符 "class="note_image">`,
-        rest: `<img src="./image/note/quarterRest.svg" alt="4分休符" title="4分休符 "class="note_image">`,
-    },
-    {
-        note: `<img src="./image/note/8thNote.svg" alt="8分音符" title="8分音符 "class="note_image">`,
-        rest: `<img src="./image/note/8thRest.svg" alt="8分休符" title="8分休符 "class="note_image">`,
-    },
-    {
-        note: `<img src="./image/note/16thNote.svg" alt="16分音符" title="16分音符 "class="note_image">`,
-        rest: `<img src="./image/note/16thRest.svg" alt="16分休符" title="16分休符 "class="note_image">`,
-    },
-    {
-        note: `<img src="./image/note/32ndNote.svg" alt="32分音符" title="32分音符 "class="note_image">`,
-        rest: `<img src="./image/note/32ndRest.svg" alt="32分休符" title="32分休符 "class="note_image">`,
-    },
-    {
-        note: `<img src="./image/note/64thNote.svg" alt="64分音符" title="64分音符 "class="note_image">`,
-        rest: `<img src="./image/note/64thRest.svg" alt="64分休符" title="64分休符 "class="note_image">`,
-    },
-];
-
 // 音が実際に再生されているか判定する変数
 let audioBuffersActive = false;
 
@@ -142,41 +51,7 @@ function initializeBeatStates() {
 };
 
 // AudioContextの初期化を行う関数
-function initializeAudioContext() {
-    try {
-        // 新しいAudioContextインスタンスを作成
-        audioContext = new AudioContext();
-        // ゲインノードの作成
-        gainNode = audioContext.createGain();
-        // 初期ボリュームを低めに設定
-        gainNode.gain.value = 0.1;
-        // ゲインノードをオーディオコンテキストの出力に接続
-        gainNode.connect(audioContext.destination);
-    } catch (e) {
-        console.error("Web Audio APIはこのブラウザではサポートされていません。", e);
-    }
-};
 
-//=============================================================================
-// オーディオファイルを非同期にロードし、オーディオバッファに変換する関数
-async function loadAudioFiles() {
-    // Promise.allを使って、各ファイルを非同期に読み込む
-    audioBuffers = await Promise.all(fileNames.map(async (fileName) => {
-        // fetch APIを使用してオーディオファイルを読み込む
-        const response = await fetch(`Audio/${fileName}.mp3`);
-        // レスポンスからArrayBufferを取得
-        const arrayBuffer = await response.arrayBuffer();
-        // ArrayBufferをAudioContextを使ってオーディオデータにデコード
-        return await audioContext.decodeAudioData(arrayBuffer);
-    })).then(buffers => {
-        // 読み込んだオーディオバッファをファイル名と関連付けてオブジェクトに格納
-        return fileNames.reduce((obj, name, index) => {
-            obj[name] = buffers[index];
-            return obj;
-        }, {});
-    });
-    lordComplete = true;
-};
 
 //=============================================================================
 // ビートの構成を保存しておく配列
@@ -340,7 +215,7 @@ async function metronomeOnOff() {
             }, "100");
             metronomeOnOff();
         };
-    }, "200");
+    }, 200);
     //------------------------------------------------------------------------
     isPlaying = !isPlaying; // メトロノームの再生状態を切り替える
 };
@@ -628,7 +503,7 @@ function metronomeRestart() {
             if (!isPlaying) {
                 metronomeOnOff()
             };
-        }, "200");
+        }, 200);
     };
 }
 
@@ -711,7 +586,6 @@ function clickSoundLoading(loadingId) {
     }, ((nextBeatTime - audioContext.currentTime) * 1000));
 }
 
-
 //音色の種類を選択するドロップダウンリストのイベントリスナー
 document.getElementById('rhythm1ClickSound').addEventListener('change', function () {
     clickSoundLoading(`rhythm1ClickSoundLoading`);
@@ -772,3 +646,65 @@ document.getElementById('volumeControl').addEventListener('input', function () {
     gainNode.gain.value = volume / 10; // 0-10 の値を 0-0.5 に変換
     document.getElementById('volumeValue').textContent = volume; // ボリューム値の表示更新
 });
+
+
+function rhythmPresetChange(num) {
+    // メトロノームが動作中なら一度止めた後に再度動かす関数
+    metronomeRestart();
+
+    //デフォルト設定
+    if (polyRhythmPreset[num].name === 'default') {
+        document.getElementById('polyRhythm_basis_Value').value = 1;
+        document.getElementById('polyRhythm_basis_note').value = 4;
+    } else if (polyRhythmPreset[num].name === '8Beat' ||
+        polyRhythmPreset[num].name === 'offBeat') {
+        document.getElementById('polyRhythm_basis_Value').value = 1;
+        document.getElementById('polyRhythm_basis_note').value = 8;
+    } else if (polyRhythmPreset[num].name === '16Beat1' ||
+        polyRhythmPreset[num].name === '16Beat2') {
+        document.getElementById('polyRhythm_basis_Value').value = 1;
+        document.getElementById('polyRhythm_basis_note').value = 16;
+    }
+
+    //リズムの値（ドロップダウンリスト）を編集する
+    document.getElementById('rhythm1').value = polyRhythmPreset[num].rhythm1;
+    document.getElementById('rhythm1Value').textContent = polyRhythmPreset[num].rhythm1;
+    document.getElementById('rhythm2').value = polyRhythmPreset[num].rhythm2;
+    document.getElementById('rhythm2Value').textContent = polyRhythmPreset[num].rhythm2;
+
+    //音色を編集する
+    document.getElementById(`rhythm1ClickSound`).value = polyRhythmPreset[num].rhythm1Sound;
+    document.getElementById(`lcmClickSound`).value = polyRhythmPreset[num].lcmSound;
+    document.getElementById(`rhythm2ClickSound`).value = polyRhythmPreset[num].rhythm2Sound;
+    document.getElementById(`beatHeadClickSound`).value = polyRhythmPreset[num].beatHeadSound;
+
+    //0.1秒後に実行する
+    setTimeout(() => {
+        //プリセットで指定されたリズム1の休符をクリックする
+        for (let i = 1; i <= polyRhythmPreset[num].rhythm1Beat.length; i++) {
+            if (polyRhythmPreset[num].rhythm1Beat[i - 1] === 0) {
+                document.getElementById(`rhythm1Beat${i}`).click();
+            }
+        }
+        for (let i = 1; i <= polyRhythmPreset[num].lcmBeat.length; i++) {
+            if (polyRhythmPreset[num].lcmBeat[i - 1] === 0) {
+                document.getElementById(`leastCommonMultipleBeat${i}`).click();
+            }
+        }
+        for (let i = 1; i <= polyRhythmPreset[num].rhythm2Beat.length; i++) {
+            if (polyRhythmPreset[num].rhythm2Beat[i - 1] === 0) {
+                document.getElementById(`rhythm2Beat${i}`).click();
+            }
+        }
+    }, 100);
+
+    // 拍のビジュアルをHTML上に描画する関数
+    updateCommonRhythmTable()
+}
+
+//プリセットのイベントリスナー
+document.getElementById('rhythmPreset').addEventListener('change', function () {
+    let num = parseInt(this.value);
+    rhythmPresetChange(num)
+});
+

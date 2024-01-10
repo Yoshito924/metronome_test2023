@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- テスト用サイトなのでクローラーを巡回させない -->
     <meta name="robots" content="noindex, nofollow">
-    <title>ポリリズムメトロノーム</title>
+    <title>変拍子メトロノーム</title>
     <!-- Googleマテリアルアイコンを読み込む -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <!-- font-awesomeを読み込む -->
@@ -17,7 +17,7 @@
 </head>
 
 <body>
-    <h1>ポリリズムメトロノーム</h1>
+    <h1>変拍子メトロノーム</h1>
 
     <div id="polyRhythmMetronome">
         <div id="polyRhythmTimeSignature">
@@ -107,17 +107,14 @@
                     <select id="rhythm1ClickSound" class="form-select" onchange="">
                         <option value="bass_drum">バスドラム</option>
                         <option value="hi-hat">ハイハット</option>
-                        <option value="hi-hat_open">ハイハット2</option>
                         <option value="808conga">808コンガ</option>
                         <option value="clap">クラップ</option>
                         <option value="clave">クラーベ</option>
                         <option value="click" selected>クリック</option>
                         <option value="cowbell">カウベル</option>
                         <option value="snare">スネアドラム</option>
-                        <option value="crash">クラッシュシンバル</option>
                         <option value="female_voice">声</option>
                         <option value="naiki_voice">力強い声</option>
-                        <option value=""></option>
                     </select>
                 </label>
                 <span id="rhythm1ClickSoundLoading"></span>
@@ -132,17 +129,14 @@
                     <select id="lcmClickSound" class="form-select" onchange="">
                         <option value="bass_drum">バスドラム</option>
                         <option value="hi-hat" selected>ハイハット</option>
-                        <option value="hi-hat_open">ハイハット2</option>
                         <option value="808conga">808コンガ</option>
                         <option value="clap">クラップ</option>
                         <option value="clave">クラーベ</option>
                         <option value="click">クリック</option>
                         <option value="cowbell">カウベル</option>
                         <option value="snare">スネアドラム</option>
-                        <option value="crash">クラッシュシンバル</option>
                         <option value="female_voice">声</option>
                         <option value="naiki_voice">力強い声</option>
-                        <option value=""></option>
                     </select>
                 </label>
                 <span id="lcmClickSoundLoading"></span>
@@ -157,17 +151,14 @@
                     <select id="rhythm2ClickSound" class="form-select" onchange="">
                         <option value="bass_drum">バスドラム</option>
                         <option value="hi-hat">ハイハット</option>
-                        <option value="hi-hat_open">ハイハット2</option>
                         <option value="808conga">808コンガ</option>
                         <option value="clap">クラップ</option>
                         <option value="clave">クラーベ</option>
                         <option value="click">クリック</option>
                         <option value="cowbell" selected>カウベル</option>
                         <option value="snare">スネアドラム</option>
-                        <option value="crash">クラッシュシンバル</option>
                         <option value="female_voice">声</option>
                         <option value="naiki_voice">力強い声</option>
-                        <option value=""></option>
                     </select>
                 </label>
                 <span id="rhythm2ClickSoundLoading"></span>
@@ -182,17 +173,14 @@
                     <select id="beatHeadClickSound" class="form-select" onchange="">
                         <option value="bass_drum" selected>バスドラム</option>
                         <option value="hi-hat">ハイハット</option>
-                        <option value="hi-hat_open">ハイハット2</option>
                         <option value="808conga">808コンガ</option>
                         <option value="clap">クラップ</option>
                         <option value="clave">クラーベ</option>
                         <option value="click">クリック</option>
                         <option value="cowbell">カウベル</option>
                         <option value="snare">スネアドラム</option>
-                        <option value="crash">クラッシュシンバル</option>
                         <option value="female_voice">声</option>
                         <option value="naiki_voice">力強い声</option>
-                        <option value=""></option>
                     </select>
                 </label>
                 <span id="beatHeadClickSoundLoading"></span>
@@ -203,17 +191,6 @@
                 <input type="range" id="volumeControl" min="0" max="10" step="1" value="1">
                 <span id="volumeValue">1</span>
             </div>
-
-            <label for="" class="">プリセット
-                <select id="rhythmPreset" class="form-select" onchange="">
-                    <option value=0 selected>デフォルト(3,2)</option>
-                    <option value=1>ヘミオラ(3,2)</option>
-                    <option value=2>8ビート</option>
-                    <option value=3>16ビート1</option>
-                    <option value=4>16ビート2</option>
-                    <option value=5>オフビート</option>
-                </select>
-            </label>
         </div>
     </div>
 
@@ -223,8 +200,6 @@
         <p class="py-1 guideText">・キーボードの「s」キーでもメトロノームの再生/停止が行えます。</p>
         <p class="py-1 guideText">・《メトロノーム音の設定》から、各メトロノーム音の選択とミュートのON/OFFができます。</p>
         <p class="py-1 guideText">・音符を個別にタップ/クリックすると、メトロノーム音を1つずつON/OFFできます。</p>
-        <p class="py-1 guideText">・GCDの値は、2つのリズムの最大公約数を表しています。</p>
-        <p class="py-1 guideText">・LCMの値は、2つのリズムの最小公倍数を表しています。</p>
 
         <h3 class="">音が出ない？そんなときは…</h3>
         <p class="py-1 guideText">・ご利用の端末の「音量設定」や「ミュートの設定」を確認してください。</p>
@@ -257,7 +232,7 @@
     </div>
 
     <script src="js/index.js"></script>
-    <script src="js/polyRhythm.js"></script>
+    <script src="js/cts.js"></script>
 </body>
 
-</html>
+</html>z
