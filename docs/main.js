@@ -324,11 +324,15 @@ async function metronomeOnOff() {
     //------------------------------------------------------------------------
     // 本当に音が再生されているかチェックするための処理
     setTimeout(() => {
+        //少し時間を待ってチェックする
         if (audioBuffersActive === true) {
             document.getElementById("helpText").innerHTML = "";
         };
+        // ちゃんと動いていない場合の処理
         if (audioBuffersActive === false && isPlaying === true) {
+            //一度テキストを空にする
             document.getElementById("helpText").innerHTML = "";
+            //一瞬消して再生に失敗しましたテキストを出す
             setTimeout(() => {
                 if (!isPlaying) {
                     document.getElementById("helpText").innerHTML = "※再生に失敗しました。<br>もう一度再生ボタン↓を押してください。";
