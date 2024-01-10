@@ -144,6 +144,26 @@ const polyRhythmPreset = [
         rhythm1Beat: [], lcmBeat: [], rhythm2Beat: [],
     },
     {
+        name: '5-9', rhythm1: 5, rhythm2: 9,
+        rhythm1Sound: 'click', lcmSound: 'hi-hat', rhythm2Sound: 'cowbell', beatHeadSound: 'bass_drum',
+        rhythm1Beat: [], lcmBeat: [], rhythm2Beat: [],
+    },
+    {
+        name: '7-8', rhythm1: 7, rhythm2: 8,
+        rhythm1Sound: 'click', lcmSound: 'hi-hat', rhythm2Sound: 'cowbell', beatHeadSound: 'bass_drum',
+        rhythm1Beat: [], lcmBeat: [], rhythm2Beat: [],
+    },
+    {
+        name: '7-9', rhythm1: 7, rhythm2: 9,
+        rhythm1Sound: 'click', lcmSound: 'hi-hat', rhythm2Sound: 'cowbell', beatHeadSound: 'bass_drum',
+        rhythm1Beat: [], lcmBeat: [], rhythm2Beat: [],
+    },
+    {
+        name: '9-8', rhythm1: 9, rhythm2: 8,
+        rhythm1Sound: 'click', lcmSound: 'hi-hat', rhythm2Sound: 'cowbell', beatHeadSound: 'bass_drum',
+        rhythm1Beat: [], lcmBeat: [], rhythm2Beat: [],
+    },
+    {
         name: '8Beat', rhythm1: 8, rhythm2: 8,
         rhythm1Sound: 'hi-hat', lcmSound: 'snare', rhythm2Sound: 'bass_drum', beatHeadSound: '',
         rhythm1Beat: [], lcmBeat: [0, 0, 1, 0, 0, 0, 1, 0], rhythm2Beat: [1, 0, 0, 0, 1, 1, 0, 1],
