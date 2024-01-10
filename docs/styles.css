@@ -14,10 +14,14 @@ td {
     text-overflow: ellipsis; /* 内容が超えた場合には省略記号を表示します */
     white-space: nowrap; /* セルの内容を改行しないようにします */
 }
-td:hover{
-    cursor: pointer;
-    opacity: 0.7;
-    background-color: bisque;
+
+/* PCはホバー時に色が変わったりする */
+@media only screen and (min-width: 1024px) {
+    td:hover{
+        cursor: pointer;
+        opacity: 0.7;
+        background-color: bisque;
+    }
 }
 
 /* ---------------------------------------------- */
