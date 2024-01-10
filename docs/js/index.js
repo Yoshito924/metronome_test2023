@@ -79,7 +79,7 @@ const polyRhythmPreset = [
         rhythm1Beat: [], lcmBeat: [], rhythm2Beat: [],
     },
     {
-        name: '4-3', rhythm1: 4, rhythm2: 3,
+        name: '3-4s', rhythm1: 3, rhythm2: 4,
         rhythm1Sound: 'click', lcmSound: 'hi-hat', rhythm2Sound: 'cowbell', beatHeadSound: 'bass_drum',
         rhythm1Beat: [], lcmBeat: [], rhythm2Beat: [],
     },
@@ -119,7 +119,7 @@ const polyRhythmPreset = [
         rhythm1Beat: [], lcmBeat: [], rhythm2Beat: [],
     },
     {
-        name: '6-5', rhythm1: 6, rhythm2: 5,
+        name: '5-6', rhythm1: 5, rhythm2: 6,
         rhythm1Sound: 'click', lcmSound: 'hi-hat', rhythm2Sound: 'cowbell', beatHeadSound: 'bass_drum',
         rhythm1Beat: [], lcmBeat: [], rhythm2Beat: [],
     },
@@ -135,6 +135,11 @@ const polyRhythmPreset = [
     },
     {
         name: '7-6', rhythm1: 7, rhythm2: 6,
+        rhythm1Sound: 'click', lcmSound: 'hi-hat', rhythm2Sound: 'cowbell', beatHeadSound: 'bass_drum',
+        rhythm1Beat: [], lcmBeat: [], rhythm2Beat: [],
+    },
+    {
+        name: '5-8', rhythm1: 5, rhythm2: 8,
         rhythm1Sound: 'click', lcmSound: 'hi-hat', rhythm2Sound: 'cowbell', beatHeadSound: 'bass_drum',
         rhythm1Beat: [], lcmBeat: [], rhythm2Beat: [],
     },

@@ -19,24 +19,14 @@
 <body>
     <h1>変拍子メトロノーム</h1>
 
-    <div id="polyRhythmMetronome">
-        <div id="polyRhythmTimeSignature">
+    <div id="ctsMetronome">
+        <div id="ctsTimeSignature">
             <!-- 動的に生成 -->
         </div>
-        <div id="polyRhythmMetronomeVisual">
+        <div id="ctsMetronomeVisual">
             <!-- 拍のビジュアル表示 -->
             <table id="rhythm1BeatTable">
                 <tr id="rhythm1BeatRow">
-                    <!-- 動的にセルが追加 -->
-                </tr>
-            </table>
-            <table id="leastCommonMultiple1BeatTable">
-                <tr id="leastCommonMultipleBeatRow">
-                    <!-- 動的にセルが追加 -->
-                </tr>
-            </table>
-            <table id="rhythm2BeatTable">
-                <tr id="rhythm2BeatRow">
                     <!-- 動的にセルが追加 -->
                 </tr>
             </table>
@@ -44,7 +34,7 @@
     </div>
 
     <!-- メトロノームの設定 -->
-    <div id="polyRhythmMetronomeController">
+    <div id="ctsMetronomeController">
         <div id="metronomeRhythmController">
             <!-- コントロールボタン -->
             <div>
@@ -75,14 +65,14 @@
                 <span id="bpmValue">120</span>
             </div>
             <div>
-                <label for="polyRhythm_basis_Value" class="">現在は
-                    <select id="polyRhythm_basis_Value" class="form-select mt-1" onchange="">
+                <label for="cts_basis_Value" class="">現在は
+                    <select id="cts_basis_Value" class="form-select mt-1" onchange="">
                         <option value="1" selected>リズム1</option>
                         <option value="0">LCM（最小公倍数）</option>
                     </select>
                 </label>
-                <label for="polyRhythm_basis_note" class="">がBPM=<span id="basisBpmValue">120</span>の
-                    <select id="polyRhythm_basis_note" class="form-select mt-1" onchange="">
+                <label for="cts_basis_note" class="">がBPM=<span id="basisBpmValue">120</span>の
+                    <select id="cts_basis_note" class="form-select mt-1" onchange="">
                         <option value="2">2分音符</option>
                         <option value="4" selected>4分音符</option>
                         <option value="8">8分音符</option>
