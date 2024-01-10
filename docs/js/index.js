@@ -66,25 +66,87 @@ const polyRhythmPreset = [
     {
         name: 'default', rhythm1: 3, rhythm2: 2,
         rhythm1Sound: 'click', lcmSound: 'hi-hat', rhythm2Sound: 'cowbell', beatHeadSound: 'bass_drum',
-        rhythm1Beat: [1, 1, 1], lcmBeat: [1, 1, 1, 1, 1, 1], rhythm2Beat: [1, 1],
+        rhythm1Beat: [], lcmBeat: [], rhythm2Beat: [],
     },
     {
         name: 'hemiola', rhythm1: 3, rhythm2: 2,
         rhythm1Sound: 'click', lcmSound: 'hi-hat', rhythm2Sound: 'cowbell', beatHeadSound: 'bass_drum',
-        rhythm1Beat: [1, 0, 1], lcmBeat: [1, 1, 1, 1, 1, 1], rhythm2Beat: [1, 1],
+        rhythm1Beat: [], lcmBeat: [], rhythm2Beat: [],
+    },
+    {
+        name: '5-2', rhythm1: 5, rhythm2: 2,
+        rhythm1Sound: 'click', lcmSound: 'hi-hat', rhythm2Sound: 'cowbell', beatHeadSound: 'bass_drum',
+        rhythm1Beat: [], lcmBeat: [], rhythm2Beat: [],
+    },
+    {
+        name: '4-3', rhythm1: 4, rhythm2: 3,
+        rhythm1Sound: 'click', lcmSound: 'hi-hat', rhythm2Sound: 'cowbell', beatHeadSound: 'bass_drum',
+        rhythm1Beat: [], lcmBeat: [], rhythm2Beat: [],
+    },
+    {
+        name: '7-2', rhythm1: 7, rhythm2: 2,
+        rhythm1Sound: 'click', lcmSound: 'hi-hat', rhythm2Sound: 'cowbell', beatHeadSound: 'bass_drum',
+        rhythm1Beat: [], lcmBeat: [], rhythm2Beat: [],
+    },
+    {
+        name: '5-3', rhythm1: 5, rhythm2: 3,
+        rhythm1Sound: 'click', lcmSound: 'hi-hat', rhythm2Sound: 'cowbell', beatHeadSound: 'bass_drum',
+        rhythm1Beat: [], lcmBeat: [], rhythm2Beat: [],
+    },
+    {
+        name: '9-2', rhythm1: 9, rhythm2: 2,
+        rhythm1Sound: 'click', lcmSound: 'hi-hat', rhythm2Sound: 'cowbell', beatHeadSound: 'bass_drum',
+        rhythm1Beat: [], lcmBeat: [], rhythm2Beat: [],
+    },
+    {
+        name: '5-4', rhythm1: 5, rhythm2: 4,
+        rhythm1Sound: 'click', lcmSound: 'hi-hat', rhythm2Sound: 'cowbell', beatHeadSound: 'bass_drum',
+        rhythm1Beat: [], lcmBeat: [], rhythm2Beat: [],
+    },
+    {
+        name: '7-3', rhythm1: 7, rhythm2: 3,
+        rhythm1Sound: 'click', lcmSound: 'hi-hat', rhythm2Sound: 'cowbell', beatHeadSound: 'bass_drum',
+        rhythm1Beat: [], lcmBeat: [], rhythm2Beat: [],
+    },
+    {
+        name: '8-3', rhythm1: 8, rhythm2: 3,
+        rhythm1Sound: 'click', lcmSound: 'hi-hat', rhythm2Sound: 'cowbell', beatHeadSound: 'bass_drum',
+        rhythm1Beat: [], lcmBeat: [], rhythm2Beat: [],
+    },
+    {
+        name: '7-4', rhythm1: 7, rhythm2: 4,
+        rhythm1Sound: 'click', lcmSound: 'hi-hat', rhythm2Sound: 'cowbell', beatHeadSound: 'bass_drum',
+        rhythm1Beat: [], lcmBeat: [], rhythm2Beat: [],
+    },
+    {
+        name: '6-5', rhythm1: 6, rhythm2: 5,
+        rhythm1Sound: 'click', lcmSound: 'hi-hat', rhythm2Sound: 'cowbell', beatHeadSound: 'bass_drum',
+        rhythm1Beat: [], lcmBeat: [], rhythm2Beat: [],
+    },
+    {
+        name: '7-5', rhythm1: 7, rhythm2: 5,
+        rhythm1Sound: 'click', lcmSound: 'hi-hat', rhythm2Sound: 'cowbell', beatHeadSound: 'bass_drum',
+        rhythm1Beat: [], lcmBeat: [], rhythm2Beat: [],
+    },
+    {
+        name: '9-4', rhythm1: 9, rhythm2: 4,
+        rhythm1Sound: 'click', lcmSound: 'hi-hat', rhythm2Sound: 'cowbell', beatHeadSound: 'bass_drum',
+        rhythm1Beat: [], lcmBeat: [], rhythm2Beat: [],
+    },
+    {
+        name: '7-6', rhythm1: 7, rhythm2: 6,
+        rhythm1Sound: 'click', lcmSound: 'hi-hat', rhythm2Sound: 'cowbell', beatHeadSound: 'bass_drum',
+        rhythm1Beat: [], lcmBeat: [], rhythm2Beat: [],
     },
     {
         name: '8Beat', rhythm1: 8, rhythm2: 8,
         rhythm1Sound: 'hi-hat', lcmSound: 'snare', rhythm2Sound: 'bass_drum', beatHeadSound: '',
-        rhythm1Beat: [1, 1, 1, 1, 1, 1, 1, 1],
-        lcmBeat: [0, 0, 1, 0, 0, 0, 1, 0],
-        rhythm2Beat: [1, 0, 0, 0, 1, 1, 0, 1],
+        rhythm1Beat: [], lcmBeat: [0, 0, 1, 0, 0, 0, 1, 0], rhythm2Beat: [1, 0, 0, 0, 1, 1, 0, 1],
     },
     {
         name: '16Beat1', rhythm1: 16, rhythm2: 16,
         rhythm1Sound: 'hi-hat', lcmSound: 'snare', rhythm2Sound: 'bass_drum', beatHeadSound: '',
-        rhythm1Beat: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-        lcmBeat: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+        rhythm1Beat: [], lcmBeat: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
         rhythm2Beat: [1, 0, 0, 1, 0, 0, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1],
     },
     {

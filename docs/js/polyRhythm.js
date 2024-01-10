@@ -405,6 +405,12 @@ function DetermineTypeOfNote(BasisNote, note, rest) {
     } else if (BasisNote === 16) {
         note = MusicalNoteArray[4].note
         rest = MusicalNoteArray[4].rest
+    } else if (BasisNote === 32) {
+        note = MusicalNoteArray[5].note
+        rest = MusicalNoteArray[5].rest
+    } else if (BasisNote === 64) {
+        note = MusicalNoteArray[6].note
+        rest = MusicalNoteArray[6].rest
     } else {
         note = MusicalNoteArray[0].note
         rest = MusicalNoteArray[0].rest
