@@ -55,6 +55,11 @@
             </div>
 
             <!-- リズムの設定 -->
+            <div>
+                <label for="bpm">BPM:</label>
+                <input type="range" id="bpm" min="1" max="300" value="120">
+                <span id="bpmValue">120</span>
+            </div>
             <div class="rhythm1Border">
                 <label for="rhythm1">【リズム1】:</label>
                 <span id="rhythm1Value">3</span>
@@ -70,43 +75,40 @@
             </div>
             <!-- ---------------------------------------------------- -->
             <div>　</div>
+            <label for="" class="">プリセット：
+                <select id="rhythmPreset" class="form-select" onchange="">
+                    <option value=0 selected>デフォルト(3,2)</option>
+                    <option value=1>ポリリズム(3,2)</option>
+                    <option value=2>ポリリズム(5,2)</option>
+                    <option value=3>ポリリズム(3,4)</option>
+                    <option value=4>ポリリズム(7,2)</option>
+                    <option value=5>ポリリズム(5,3)</option>
+                    <option value=6>ポリリズム(9,2)</option>
+                    <option value=7>ポリリズム(5,4)</option>
+                    <option value=8>ポリリズム(7,3)</option>
+                    <option value=9>ポリリズム(8,3)</option>
+                    <option value=10>ポリリズム(7,4)</option>
+                    <option value=11>ポリリズム(5,6)</option>
+                    <option value=12>ポリリズム(7,5)</option>
+                    <option value=13>ポリリズム(9,4)</option>
+                    <option value=14>ポリリズム(7,6)</option>
+                    <option value=15>ポリリズム(5,8)</option>
+                    <option value=16>8ビート</option>
+                    <option value=17>16ビート1</option>
+                    <option value=18>16ビート2</option>
+                    <option value=19>オフビート</option>
+                    <option value=20>ヘミオラ</option>
+                    <option value=21>シャッフル</option>
+                </select>
+            </label>
+            <div>　</div>
             <div>
-                <label for="" class="">プリセット：
-                    <select id="rhythmPreset" class="form-select" onchange="">
-                        <option value=0 selected>デフォルト(3,2)</option>
-                        <option value=1>ポリリズム(3,2)</option>
-                        <option value=2>ポリリズム(5,2)</option>
-                        <option value=3>ポリリズム(3,4)</option>
-                        <option value=4>ポリリズム(7,2)</option>
-                        <option value=5>ポリリズム(5,3)</option>
-                        <option value=6>ポリリズム(9,2)</option>
-                        <option value=7>ポリリズム(5,4)</option>
-                        <option value=8>ポリリズム(7,3)</option>
-                        <option value=9>ポリリズム(8,3)</option>
-                        <option value=10>ポリリズム(7,4)</option>
-                        <option value=11>ポリリズム(5,6)</option>
-                        <option value=12>ポリリズム(7,5)</option>
-                        <option value=13>ポリリズム(9,4)</option>
-                        <option value=14>ポリリズム(7,6)</option>
-                        <option value=15>ポリリズム(5,8)</option>
-                        <option value=16>8ビート</option>
-                        <option value=17>16ビート1</option>
-                        <option value=18>16ビート2</option>
-                        <option value=19>オフビート</option>
-                    </select>
-                </label>
+                <button id="rhythmExchangeButton" class="">
+                    リズム1と2を入れ替える
+                </button>
             </div>
-
-            <button id="rhythmExchangeButton" class="">
-                リズム1と2を入れ替える
-            </button>
             <div>　</div>
             <!-- ---------------------------------------------------- -->
-            <div>
-                <label for="bpm">BPM:</label>
-                <input type="range" id="bpm" min="1" max="300" value="120">
-                <span id="bpmValue">120</span>
-            </div>
             <div>
                 <label for="polyRhythm_basis_Value" class="">現在は
                     <select id="polyRhythm_basis_Value" class="form-select mt-1" onchange="">
@@ -125,9 +127,14 @@
                 </label>
                 になるテンポ設定です。
             </div>
-
+            <div id="infoText">
+                <!-- 動的に生成 -->
+            </div>
+            <div>　</div>
         </div>
         <!-- ---------------------------------------------------- -->
+        <!-- ---------------------------------------------------- -->
+
         <div id="metronomeSoundController">
             <div id="rhythm1SoundController">
                 <button id="muteRhythm1" class="highlight1 muted">
@@ -236,10 +243,6 @@
                 <span id="volumeValue">1</span>
             </div>
 
-            <!-- ---------------------------------------------------- -->
-            <div id="infoText">
-                <!-- 動的に生成 -->
-            </div>
         </div>
     </div>
 

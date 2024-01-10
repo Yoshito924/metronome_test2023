@@ -69,7 +69,7 @@ const polyRhythmPreset = [
         rhythm1Beat: [], lcmBeat: [], rhythm2Beat: [],
     },
     {
-        name: 'hemiola', rhythm1: 3, rhythm2: 2,
+        name: '3-2', rhythm1: 3, rhythm2: 2,
         rhythm1Sound: 'click', lcmSound: 'hi-hat', rhythm2Sound: 'cowbell', beatHeadSound: 'bass_drum',
         rhythm1Beat: [], lcmBeat: [], rhythm2Beat: [],
     },
@@ -159,7 +159,7 @@ const polyRhythmPreset = [
         rhythm1Sound: 'hi-hat', lcmSound: 'snare', rhythm2Sound: 'bass_drum', beatHeadSound: '',
         rhythm1Beat: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0],
         lcmBeat: [0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1],
-        rhythm2Beat: [1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0],
+        rhythm2Beat: [1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0],
     },
     {
         name: 'offBeat', rhythm1: 8, rhythm2: 8,
@@ -167,6 +167,20 @@ const polyRhythmPreset = [
         rhythm1Beat: [0, 1, 0, 1, 0, 1, 0, 1],
         lcmBeat: [0, 0, 1, 0, 0, 0, 1, 0],
         rhythm2Beat: [1, 0, 1, 0, 1, 0, 1, 0],
+    },
+    {
+        name: 'hemiola', rhythm1: 6, rhythm2: 6,
+        rhythm1Sound: 'hi-hat', lcmSound: 'snare', rhythm2Sound: 'bass_drum', beatHeadSound: '',
+        rhythm1Beat: [],
+        lcmBeat: [0, 0, 0, 1, 0, 0],
+        rhythm2Beat: [1, 0, 1, 0, 0, 1],
+    },
+    {
+        name: 'shuffle', rhythm1: 12, rhythm2: 12,
+        rhythm1Sound: 'hi-hat', lcmSound: 'snare', rhythm2Sound: 'bass_drum', beatHeadSound: '',
+        rhythm1Beat: [1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1],
+        lcmBeat: [0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+        rhythm2Beat: [1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0],
     },
 ]
 // --------------------------------------------------------------
