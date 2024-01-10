@@ -50,7 +50,6 @@ function initializeBeatStates() {
     rhythm2BeatStates = new Array(rhythm2Length).fill(true);
 };
 
-/
 //=============================================================================
 // ビートの構成を保存しておく配列
 let beatPattern;
