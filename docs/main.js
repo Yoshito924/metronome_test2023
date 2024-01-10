@@ -478,20 +478,25 @@ function updateCommonRhythmTable() {
 
     //拍子記号をhtmlに描画する
     if (isCoprime(rhythm1, rhythm2) === true) {
-        //ポリリズムである場合
+        //ポリリズムである場合（互いに素である場合）
         document.getElementById('infoText').innerHTML = ''
-        document.getElementById('infoText').innerHTML = `<br>GCDは${gcdValue}なので、ポリリズムです。<br>（リズム1と2の値は互いに素です。）`
+        document.getElementById('infoText').innerHTML = `<br>GCDは${gcdValue}なので、ポリリズムです。<br>（リズム1と2の値は互いに素。）`
         //拍子を書き込む
         document.getElementById('polyRhythmTimeSignature').innerHTML = ''
-        if (isPowerOfTwo(lcmRhythm / rhythm1 * polyRhythmBasisNote) === true && rhythm1 >= rhythm2 && polyRhythmBasisValue === 1) {
+        if (isPowerOfTwo(lcmRhythm / rhythm1 * polyRhythmBasisNote) === true && polyRhythmBasisValue === 1) {
+            // 基準がリズム1のポリリズム
             document.getElementById('polyRhythmTimeSignature').innerHTML = `${lcmRhythm}<br>―<br>${lcmRhythm / rhythm1 * polyRhythmBasisNote}`
+        } else if (polyRhythmBasisValue === 0) {
+            // 基準がLCMのポリリズム
+            document.getElementById('polyRhythmTimeSignature').innerHTML = `${lcmRhythm}<br>―<br>${polyRhythmBasisNote}`
         } else {
+            // 基準がリズム1のポリリズムのうち分母が変わらないもの
             document.getElementById('polyRhythmTimeSignature').innerHTML = `${rhythm1}<br>―<br>${polyRhythmBasisNote}`
         }
     } else {
         //ポリリズムではない場合
         document.getElementById('infoText').innerHTML = ''
-        document.getElementById('infoText').innerHTML = `<br>GCDは${gcdValue}なので、ポリリズムではありません。<br>（リズム1と2の値は互いに素ではありません。）`
+        document.getElementById('infoText').innerHTML = `<br>GCDは${gcdValue}なので、ポリリズムではありません。<br>（リズム1と2の値は互いに素ではない。）`
         //拍子を書き込む
         document.getElementById('polyRhythmTimeSignature').innerHTML = ''
         if (polyRhythmBasisValue === 1) {
