@@ -566,6 +566,24 @@ document.getElementById('rhythm2').addEventListener('input', function () {
     updateCommonRhythmTable()
 });
 
+//rhythm1とrhythm2を入れ替えるボタンのイベントリスナー
+document.getElementById('rhythmExchangeButton').addEventListener('click', () => {
+    // メトロノームが動作中なら一度止めた後に再度動かす関数
+    metronomeRestart();
+
+    let rhythm1Value = parseInt(document.getElementById('rhythm1').value);
+    let rhythm2Value = parseInt(document.getElementById('rhythm2').value);
+
+    document.getElementById('rhythm1Value').textContent = rhythm2Value;
+    document.getElementById('rhythm2Value').textContent = rhythm1Value;
+    document.getElementById('rhythm1').value = rhythm2Value;
+    document.getElementById('rhythm2').value = rhythm1Value;
+
+    // 拍のビジュアルをHTML上に描画する関数
+    updateCommonRhythmTable()
+});
+
+
 //基準となるリズムの種類を選択するドロップダウンリストのイベントリスナー
 document.getElementById('polyRhythm_basis_Value').addEventListener('change', function () {
     polyRhythmBasisValue = this.value;
@@ -711,6 +729,6 @@ function rhythmPresetChange(num) {
 //プリセットのイベントリスナー
 document.getElementById('rhythmPreset').addEventListener('change', function () {
     let num = parseInt(this.value);
-    rhythmPresetChange(num)
+    rhythmPresetChange(num);
 });
 
