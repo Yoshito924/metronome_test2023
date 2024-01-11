@@ -236,6 +236,25 @@ const MusicalNoteArray = [
         rest: `<img src="./image/note/64thRest.svg" alt="64分休符" title="64分休符 "class="note_image">`,
     },
 ];
+//=============================================================================
+let nextBeatTime;
+let beatInterval;
+let totalBeats; // 拍子を格納するグローバル変数
+let bpm = 120;//BPMを格納するグローバル変数
+let beatCount = 1;
+
+// ----------------------------------------------------
+let isPlaying = false; // メトロノームが再生中かどうかを追跡するフラグ
+
+let timerIds = [];// タイマーIDを保持するための配列
+let timerId;
+// ----------------------------------------------------
+let audioContext;// AudioContextとオーディオバッファを保持するグローバル変数
+let gainNode;//GainNode のグローバル変数
+let audioBuffers = {};// オーディオバッファを保持するオブジェクト
+
+let lordComplete = false;//音色をロードしたか否かを格納しておくグローバル変数
+let audioBuffersActive = false;// 音が実際に再生されているか判定する変数
 
 //=============================================================================
 // AudioContextの初期化を行う関数
@@ -273,5 +292,40 @@ async function loadAudioFiles() {
     });
     lordComplete = true;
 };
-//=============================================================================
 
+
+// 音符の種類を決める関数
+function DetermineTypeOfNote(BasisNote, note, rest) {
+    if (BasisNote === 2) {
+        note = MusicalNoteArray[1].note
+        rest = MusicalNoteArray[1].rest
+    } else if (BasisNote === 4) {
+        note = MusicalNoteArray[2].note
+        rest = MusicalNoteArray[2].rest
+    } else if (BasisNote === 8) {
+        note = MusicalNoteArray[3].note
+        rest = MusicalNoteArray[3].rest
+    } else if (BasisNote === 16) {
+        note = MusicalNoteArray[4].note
+        rest = MusicalNoteArray[4].rest
+    } else if (BasisNote === 32) {
+        note = MusicalNoteArray[5].note
+        rest = MusicalNoteArray[5].rest
+    } else if (BasisNote === 64) {
+        note = MusicalNoteArray[6].note
+        rest = MusicalNoteArray[6].rest
+    } else {
+        note = MusicalNoteArray[0].note
+        rest = MusicalNoteArray[0].rest
+    }
+    return { note, rest };
+};
+
+//=============================================================================
+// ボリュームコントロールのイベントリスナー
+document.getElementById('volumeControl').addEventListener('input', function () {
+    console.log("q")
+    let volume = this.value;
+    gainNode.gain.value = volume / 10; // 0-10 の値を 0-0.5 に変換
+    document.getElementById('volumeValue').textContent = volume; // ボリューム値の表示更新
+});

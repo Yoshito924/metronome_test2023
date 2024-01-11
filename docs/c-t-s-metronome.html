@@ -19,45 +19,18 @@
 <body>
     <h1>変拍子メトロノーム</h1>
 
-    <div id="ctsMetronome">
-        <div id="ctsTimeSignature">
-            <!-- 動的に生成 -->
-        </div>
-        <div id="ctsMetronomeVisual">
-            <!-- 拍のビジュアル表示 -->
-            <table id="rhythm1BeatTable">
-                <tr id="rhythm1BeatRow">
-                    <!-- 動的にセルが追加 -->
-                </tr>
-            </table>
-        </div>
-    </div>
-
     <!-- メトロノームの設定 -->
     <div id="ctsMetronomeController">
         <div id="metronomeRhythmController">
             <!-- コントロールボタン -->
             <div>
                 <a id="helpText" class="redText"></a>
-                <div id="controlButton">
+                <div id="ctsMetronomeControlButton">
                     <i class="fa-solid fa-play controlButtonIcon blue"></i>
                 </div>
             </div>
 
             <!-- リズムの設定 -->
-            <div class="rhythm1Border">
-                <label for="rhythm1">【リズム1】:</label>
-                <span id="rhythm1Value">3</span>
-                <input type="range" id="rhythm1" min="1" max="20" value="3">
-            </div>
-            <div id="lcmValue" class="lcmBorder">
-                <!-- 動的に生成 -->
-            </div>
-            <div class="rhythm2Border">
-                <label for="rhythm2">【リズム2】:</label>
-                <span id="rhythm2Value">2</span>
-                <input type="range" id="rhythm2" min="1" max="20" value="2">
-            </div>
             <!-- ---------------------------------------------------- -->
             <div>
                 <label for="bpm">BPM:</label>
@@ -65,125 +38,163 @@
                 <span id="bpmValue">120</span>
             </div>
             <div>
-                <label for="cts_basis_Value" class="">現在は
-                    <select id="cts_basis_Value" class="form-select mt-1" onchange="">
-                        <option value="1" selected>リズム1</option>
-                        <option value="0">LCM（最小公倍数）</option>
-                    </select>
-                </label>
-                <label for="cts_basis_note" class="">がBPM=<span id="basisBpmValue">120</span>の
-                    <select id="cts_basis_note" class="form-select mt-1" onchange="">
-                        <option value="2">2分音符</option>
-                        <option value="4" selected>4分音符</option>
-                        <option value="8">8分音符</option>
-                        <option value="16">16分音符</option>
-                        <option value="32">32分音符</option>
-                    </select>
-                </label>
-                になるテンポ設定です。
+                <label for="volumeControl">音量：</label>
+                <input type="range" id="volumeControl" min="0" max="10" step="1" value="1">
+                <span id="volumeValue">1</span>
             </div>
+
             <div id="infoText">
                 <!-- 動的に生成 -->
             </div>
         </div>
         <!-- ---------------------------------------------------- -->
         <div id="metronomeSoundController">
-            <div id="rhythm1SoundController">
+            <div id="ctsMetronomeSoundController">
                 <button id="muteRhythm1" class="highlight1 muted">
                     <img src="./image/volume_up_FILL0_wght400_GRAD0_opsz24.svg" alt="ヴォリュームアイコン" title="ヴォリュームアイコン"
                         class="volumeIcon">
                 </button>
                 <label for="" class="">【リズム1】：
-                    <select id="rhythm1ClickSound" class="form-select" onchange="">
+                    <select id="ctsMetronomeClickSound" class="form-select" onchange="">
                         <option value="bass_drum">バスドラム</option>
                         <option value="hi-hat">ハイハット</option>
+                        <option value="hi-hat_open">ハイハット2</option>
                         <option value="808conga">808コンガ</option>
                         <option value="clap">クラップ</option>
                         <option value="clave">クラーベ</option>
                         <option value="click" selected>クリック</option>
                         <option value="cowbell">カウベル</option>
                         <option value="snare">スネアドラム</option>
+                        <option value="crash">クラッシュシンバル</option>
                         <option value="female_voice">声</option>
                         <option value="naiki_voice">力強い声</option>
+                        <option value=""></option>
                     </select>
                 </label>
-                <span id="rhythm1ClickSoundLoading"></span>
+                <span id="ctsMetronomeClickSoundLoading"></span>
             </div>
             <!-- ---------------------------------------------------- -->
-            <div id="lcmSoundController">
-                <button id="muteLCM" class="highlightLcm muted">
+            <div id="ctsMetronomeBeatHeadSoundController">
+                <button id="muteBeatHead" class="highlightBeatHead muted">
                     <img src="./image/volume_up_FILL0_wght400_GRAD0_opsz24.svg" alt="ヴォリュームアイコン" title="ヴォリュームアイコン"
                         class="volumeIcon">
                 </button>
-                <label for="" class="">【LCM】：
-                    <select id="lcmClickSound" class="form-select" onchange="">
-                        <option value="bass_drum">バスドラム</option>
-                        <option value="hi-hat" selected>ハイハット</option>
-                        <option value="808conga">808コンガ</option>
-                        <option value="clap">クラップ</option>
-                        <option value="clave">クラーベ</option>
-                        <option value="click">クリック</option>
-                        <option value="cowbell">カウベル</option>
-                        <option value="snare">スネアドラム</option>
-                        <option value="female_voice">声</option>
-                        <option value="naiki_voice">力強い声</option>
-                    </select>
-                </label>
-                <span id="lcmClickSoundLoading"></span>
-            </div>
-            <!-- ---------------------------------------------------- -->
-            <div id="rhythm2SoundController">
-                <button id="muteRhythm2" class="highlight2 muted">
-                    <img src="./image/volume_up_FILL0_wght400_GRAD0_opsz24.svg" alt="ヴォリュームアイコン" title="ヴォリュームアイコン"
-                        class="volumeIcon">
-                </button>
-                <label for="" class="">【リズム2】：
-                    <select id="rhythm2ClickSound" class="form-select" onchange="">
+                <label for="" class="">【拍の頭】：
+                    <select id="ctsMetronomeBeatHeadClickSound" class="form-select" onchange="">
                         <option value="bass_drum">バスドラム</option>
                         <option value="hi-hat">ハイハット</option>
+                        <option value="hi-hat_open">ハイハット2</option>
                         <option value="808conga">808コンガ</option>
                         <option value="clap">クラップ</option>
                         <option value="clave">クラーベ</option>
                         <option value="click">クリック</option>
                         <option value="cowbell" selected>カウベル</option>
                         <option value="snare">スネアドラム</option>
+                        <option value="crash">クラッシュシンバル</option>
                         <option value="female_voice">声</option>
                         <option value="naiki_voice">力強い声</option>
+                        <option value=""></option>
                     </select>
                 </label>
-                <span id="rhythm2ClickSoundLoading"></span>
+                <span id="ctsMetronomebeatHeadClickSoundLoading"></span>
             </div>
             <!-- ---------------------------------------------------- -->
-            <div id="beatHeadSoundController">
-                <button id="muteBeatHead" class="highlightBeatHead muted">
-                    <img src="./image/volume_up_FILL0_wght400_GRAD0_opsz24.svg" alt="ヴォリュームアイコン" title="ヴォリュームアイコン"
-                        class="volumeIcon">
-                </button>
-                <label for="" class="">【拍の頭】：
-                    <select id="beatHeadClickSound" class="form-select" onchange="">
-                        <option value="bass_drum" selected>バスドラム</option>
-                        <option value="hi-hat">ハイハット</option>
-                        <option value="808conga">808コンガ</option>
-                        <option value="clap">クラップ</option>
-                        <option value="clave">クラーベ</option>
-                        <option value="click">クリック</option>
-                        <option value="cowbell">カウベル</option>
-                        <option value="snare">スネアドラム</option>
-                        <option value="female_voice">声</option>
-                        <option value="naiki_voice">力強い声</option>
-                    </select>
-                </label>
-                <span id="beatHeadClickSoundLoading"></span>
-            </div>
-            <!-- ---------------------------------------------------- -->
-            <div>
-                <label for="volumeControl">音量：</label>
-                <input type="range" id="volumeControl" min="0" max="10" step="1" value="1">
-                <span id="volumeValue">1</span>
-            </div>
+
         </div>
     </div>
 
+    <!-- ---------------------------------------------------- -->
+
+    <div id="ctsMetronome">
+
+        <table>
+            <tr>
+                <td id="" class="">
+                    <!-- 動的に生成 -->
+                    4<br>―<br>4
+                </td>
+                <td id="" class="">
+                    <!-- 動的に生成 -->
+                    4<br>―<br>4
+                </td>
+                <td id="" class="">
+                    <!-- 動的に生成 -->
+                    4<br>―<br>4
+                </td>
+                <td id="" class="">
+                    <!-- 動的に生成 -->
+                    4<br>―<br>4
+                </td>
+            </tr>
+        </table>
+        <div>　</div>
+        <div id="ctsMetronomeVisual">
+
+            <div id="ctsBeatContainer1" class="ctsBeatContainer">
+                <div id="ctstimeSignature1" class="ctstimeSignature">
+                    <!-- 動的に生成 -->
+                    4<br>―<br>4
+                </div>
+                <!-- 拍のビジュアル表示 -->
+                <table id="ctsBeatTable1" class="ctsBeatTable">
+                    <tr id="ctsBeatRow1" class="ctsBeatRow">
+                        <!-- 動的にセルが追加 -->
+                        <td id="ctsBeat1-1">
+                            1<br>
+                            <img src="./image/note/quarterNote.svg" alt="4分音符" title="4分音符 " class="note_image">
+                        </td>
+                        <!-- 動的にセルが追加 -->
+                        <td id="ctsBeat1-2">
+                            2<br>
+                            <img src="./image/note/quarterNote.svg" alt="4分音符" title="4分音符 " class="note_image">
+                        </td>
+                        <td id="ctsBeat1-3">
+                            3<br>
+                            <img src="./image/note/quarterNote.svg" alt="4分音符" title="4分音符 " class="note_image">
+                        </td>
+                        <!-- 動的にセルが追加 -->
+                        <td id="ctsBeat1-4">
+                            4<br>
+                            <img src="./image/note/quarterNote.svg" alt="4分音符" title="4分音符 " class="note_image">
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <div id="ctsBeatContainer1" class="ctsBeatContainer">
+                <div id="ctstimeSignature1" class="ctstimeSignature">
+                    <!-- 動的に生成 -->
+                    4<br>―<br>4
+                </div>
+                <!-- 拍のビジュアル表示 -->
+                <table id="ctsBeatTable1" class="ctsBeatTable">
+                    <tr id="ctsBeatRow1" class="ctsBeatRow">
+                        <!-- 動的にセルが追加 -->
+                        <td id="ctsBeat1-1">
+                            1<br>
+                            <img src="./image/note/quarterNote.svg" alt="4分音符" title="4分音符 " class="note_image">
+                        </td>
+                        <!-- 動的にセルが追加 -->
+                        <td id="ctsBeat1-2">
+                            2<br>
+                            <img src="./image/note/quarterNote.svg" alt="4分音符" title="4分音符 " class="note_image">
+                        </td>
+                        <td id="ctsBeat1-3">
+                            3<br>
+                            <img src="./image/note/quarterNote.svg" alt="4分音符" title="4分音符 " class="note_image">
+                        </td>
+                        <!-- 動的にセルが追加 -->
+                        <td id="ctsBeat1-4">
+                            4<br>
+                            <img src="./image/note/quarterNote.svg" alt="4分音符" title="4分音符 " class="note_image">
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+        </div>
+
+    </div>
 
     <div>
         <h3 class="">説明・使い方</h3>
@@ -198,9 +209,7 @@
         <p class="py-1 guideText">・上記の項目を試しても音が鳴らない場合は、お手数をおかけしますがコンタクトページからお知らせください。</p>
 
         <h3 class="">関連ページ</h3>
-        <p class="py-2"><a class="linka" target="_blank" rel="noopener noreferrer"
-                href="https://khufrudamonotes.com/polyrhythm-map">「ポリリズム」の概念を詳しく解説した記事</a></p>
-        <p class="py-2"><a class="linka" href="metronome.html">「変拍子に対応したメトロノーム」</a></p>
+        <p class="py-2"><a class="linka" href="index.html">「変拍子に対応したメトロノーム」</a></p>
     </div>
 
     <!-- 使用するアイコン画像をバックグラウンドで読み込んでおく -->
@@ -225,4 +234,4 @@
     <script src="js/cts.js"></script>
 </body>
 
-</html>z
+</html>

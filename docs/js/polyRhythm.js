@@ -1,24 +1,8 @@
 'use strict'
 
-//=============================================================================
-let nextBeatTime;
-let beatInterval;
-let totalBeats; // 拍子を設定
-let bpm = 120;
-// ----------------------------------------------------
 let rhythm1;
 let rhythm2;
 let lcmRhythm;
-// ----------------------------------------------------
-let isPlaying = false; // メトロノームが再生中かどうかを追跡するフラグ
-let beatCount = 1;
-// ----------------------------------------------------
-let timerIds = [];// タイマーIDを保持するための配列
-let timerId;
-// ----------------------------------------------------
-let audioContext;// AudioContextとオーディオバッファを保持するグローバル変数
-let gainNode;//GainNode のグローバル変数
-let audioBuffers = {};// オーディオバッファを保持するオブジェクト
 // ----------------------------------------------------
 let rhythm1Muted = false; // リズム1のミュート状態
 let lcmMuted = false; // LCMのミュート状態
@@ -33,11 +17,6 @@ let rhythm2BeatStates = [];  // リズム2のビート状態
 let polyRhythmBasisValue;
 // 選択された音符の種類（2分音符、4分音符など）を格納する変数
 let polyRhythmBasisNote;
-//音色をロードしたか否かを格納しておくグローバル変数
-let lordComplete = false;
-
-// 音が実際に再生されているか判定する変数
-let audioBuffersActive = false;
 
 //=============================================================================
 //ビート状態の配列を初期化する関数
@@ -106,10 +85,10 @@ function generateBeatPattern(lcm, rhythm1, rhythm2) {
         }
         // -------------------------------------------
         beatPattern.push({ sounds });
-    }
+    };
     // 結果の確認
     return beatPattern;
-}
+};
 
 //=============================================================================
 // メトロノームをオンオフする関数
@@ -127,14 +106,14 @@ async function metronomeOnOff() {
         // メトロノームを開始したときの処理
         if (!audioContext) {
             initializeAudioContext()
-        }
+        };
         nextBeatTime = audioContext.currentTime;
         // BPMに基づいて最小のクリックの間隔を計算(ms)。
         if (polyRhythmBasisValue === 1) {
             beatInterval = (60 / (lcmRhythm / rhythm1 * bpm)) / (polyRhythmBasisNote / 4);
         } else if (polyRhythmBasisValue === 0) {
             beatInterval = (60 / bpm) / (polyRhythmBasisNote / 4);
-        }
+        };
         // 各ビートをスケジュールする。totalBeatsの数だけ繰り返す。
         for (let i = 0; i < totalBeats; i++) {
             scheduleBeat(i % totalBeats + 1);
@@ -192,7 +171,7 @@ async function metronomeOnOff() {
             = `<i class="fa-solid fa-play controlButtonIcon blue">`;
         // 音が実際に再生されているか判定する変数をfalseにする
         audioBuffersActive = false;
-    }
+    };
     //------------------------------------------------------------------------
     // 本当に音が再生されているかチェックするための処理
     setTimeout(() => {
@@ -225,7 +204,7 @@ function scheduleBeat(beatCount) {
         return;
     };
     // 配列を生成
-    beatPattern = generateBeatPattern(lcmRhythm, rhythm1, rhythm2);
+    let beatPattern = generateBeatPattern(lcmRhythm, rhythm1, rhythm2);
     // 現在のビートに対応するビートパターンを取得
     const beat = beatPattern[beatCount - 1];
     // -------------------------------------------
@@ -387,33 +366,6 @@ function updateCommonRhythmTable() {
 }
 
 // --------------------------------------------------------------
-// 音符の種類を決める関数
-function DetermineTypeOfNote(BasisNote, note, rest) {
-    if (BasisNote === 2) {
-        note = MusicalNoteArray[1].note
-        rest = MusicalNoteArray[1].rest
-    } else if (BasisNote === 4) {
-        note = MusicalNoteArray[2].note
-        rest = MusicalNoteArray[2].rest
-    } else if (BasisNote === 8) {
-        note = MusicalNoteArray[3].note
-        rest = MusicalNoteArray[3].rest
-    } else if (BasisNote === 16) {
-        note = MusicalNoteArray[4].note
-        rest = MusicalNoteArray[4].rest
-    } else if (BasisNote === 32) {
-        note = MusicalNoteArray[5].note
-        rest = MusicalNoteArray[5].rest
-    } else if (BasisNote === 64) {
-        note = MusicalNoteArray[6].note
-        rest = MusicalNoteArray[6].rest
-    } else {
-        note = MusicalNoteArray[0].note
-        rest = MusicalNoteArray[0].rest
-    }
-    return { note, rest };
-}
-// --------------------------------------------------------------
 // 拍のビジュアルをHTML上に描画する関数
 function updateRhythmTable(beats, idName, beatStates) {
     //メトロノームが動作中ならばいったん止める
@@ -570,6 +522,35 @@ function rhythmPresetChange(num) {
     updateCommonRhythmTable();
 };
 
+//ロード中に「読み込み中…」テキストを表示する関数
+function clickSoundLoading(loadingId) {
+    document.getElementById(loadingId).innerHTML = `読み込み中…`;
+    setTimeout(() => {
+        document.getElementById(loadingId).innerHTML = "";
+        //現在スケジュールされている時間分処理を止める
+    }, ((nextBeatTime - audioContext.currentTime) * 1000));
+};
+
+//ロード中のアイコンを切り替える関数
+function toggleMuteIcon(muteData, muteId, highlight) {
+    document.getElementById(muteId).innerHTML
+        = `<img src="./image/update_FILL0_wght400_GRAD0_opsz24.svg" alt="ロード中アイコン" title="ロード中アイコン" class="volumeIcon">`;
+    //スケジュールされているタイミングの分だけ切り替えを遅らせる
+    setTimeout(() => {
+        if (!muteData) {
+            //既にミュート済ならミュートをオフにする
+            document.getElementById(muteId).innerHTML
+                = `<img src="./image/volume_up_FILL0_wght400_GRAD0_opsz24.svg" alt="ヴォリュームアイコン" title="ヴォリュームアイコン" class="volumeIcon">`;
+        } else {
+            //ミュートする
+            document.getElementById(muteId).innerHTML
+                = `<img src="./image/volume_off_FILL0_wght400_GRAD0_opsz24.svg" alt="ミュートアイコン" title="ミュートアイコン" class="volumeIcon">`;
+        }
+        document.getElementById(muteId).classList.toggle(highlight);
+        //現在スケジュールされている時間分処理を止める
+    }, ((nextBeatTime - audioContext.currentTime) * 1000));
+};
+
 //=============================================================================
 // イベントリスナー
 // ページが読み込まれた時に実行する関数
@@ -658,14 +639,6 @@ document.getElementById('polyRhythm_basis_note').addEventListener('change', func
     updateCommonRhythmTable();
 });
 
-function clickSoundLoading(loadingId) {
-    document.getElementById(loadingId).innerHTML = `読み込み中…`;
-    setTimeout(() => {
-        document.getElementById(loadingId).innerHTML = "";
-        //現在スケジュールされている時間分処理を止める
-    }, ((nextBeatTime - audioContext.currentTime) * 1000));
-};
-
 //音色の種類を選択するドロップダウンリストのイベントリスナー
 document.getElementById('rhythm1ClickSound').addEventListener('change', function () {
     clickSoundLoading(`rhythm1ClickSoundLoading`);
@@ -679,25 +652,6 @@ document.getElementById('rhythm2ClickSound').addEventListener('change', function
 document.getElementById('beatHeadClickSound').addEventListener('change', function () {
     clickSoundLoading(`beatHeadClickSoundLoading`);
 });
-
-function toggleMuteIcon(muteData, muteId, highlight) {
-    document.getElementById(muteId).innerHTML
-        = `<img src="./image/update_FILL0_wght400_GRAD0_opsz24.svg" alt="ロード中アイコン" title="ロード中アイコン" class="volumeIcon">`;
-    //スケジュールされているタイミングの分だけ切り替えを遅らせる
-    setTimeout(() => {
-        if (!muteData) {
-            //既にミュート済ならミュートをオフにする
-            document.getElementById(muteId).innerHTML
-                = `<img src="./image/volume_up_FILL0_wght400_GRAD0_opsz24.svg" alt="ヴォリュームアイコン" title="ヴォリュームアイコン" class="volumeIcon">`;
-        } else {
-            //ミュートする
-            document.getElementById(muteId).innerHTML
-                = `<img src="./image/volume_off_FILL0_wght400_GRAD0_opsz24.svg" alt="ミュートアイコン" title="ミュートアイコン" class="volumeIcon">`;
-        }
-        document.getElementById(muteId).classList.toggle(highlight);
-        //現在スケジュールされている時間分処理を止める
-    }, ((nextBeatTime - audioContext.currentTime) * 1000));
-};
 
 //ミュートボタンのイベントリスナー
 document.getElementById('muteRhythm1').addEventListener('click', () => {
@@ -718,13 +672,6 @@ document.getElementById('muteRhythm2').addEventListener('click', () => {
 document.getElementById('muteBeatHead').addEventListener('click', () => {
     beatHeadMuted = !beatHeadMuted;
     toggleMuteIcon(beatHeadMuted, `muteBeatHead`, `highlightBeatHead`)
-});
-
-// ボリュームコントロールのイベントリスナー
-document.getElementById('volumeControl').addEventListener('input', function () {
-    let volume = this.value;
-    gainNode.gain.value = volume / 10; // 0-10 の値を 0-0.5 に変換
-    document.getElementById('volumeValue').textContent = volume; // ボリューム値の表示更新
 });
 
 //プリセットのイベントリスナー

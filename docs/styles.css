@@ -177,3 +177,44 @@ button {
     background-image: url('path_to_your_image.svg');
     display: none; /* 要素を表示しない */
 }
+
+/* ---------------------------------------------- */
+/* ctsメトロノームのcss */
+#ctsMetronome{
+    background-color: azure;
+}
+
+.ctsMetronomeVisual{
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-right:5px;
+}
+
+
+.ctsBeatContainer{
+    text-align: center;
+    display: flex;
+}
+
+.ctstimeSignature{
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-right:5px;
+}
+
+
+.ctsBeatTable{
+    text-align: center;
+}
+
+.ctsBeatRow{
+
+}
+
+
