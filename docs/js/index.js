@@ -43,6 +43,13 @@ function isPowerOfTwo(n) {
     return (n & (n - 1)) === 0;
 }
 
+// 全角の数字、アルファベット、スペース、記号を対応する半角文字に変換する関数
+function toHalfWidth(str) {
+    return str.replace(/[Ａ-Ｚａ-ｚ０-９！-～]/g, function (s) {
+        return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+    }).replace(/　/g, ' ');
+}
+
 //=============================================================================
 // ロードするオーディオファイルの名前を配列で定義
 const fileNames = [
@@ -59,8 +66,130 @@ const fileNames = [
     'hi-hat_open',
     'naiki_voice',
 ];
-
 //=============================================================================
+//変拍子メトロノームのプリセット
+const ctsMetronomePreset = [
+    {
+        name: '5拍子',
+        cts: `3/8 + 3/8 + 2/4`,
+        bpm: 176,
+        exampleMusic: "Mission Impossible Theme (0:06 - 0:19)",
+        exampleMusicURL: "https://youtu.be/XAYhNHhxN0A?si=D-EMIbyfV7Lnhonq&t=6",
+        info: "",
+    },
+    {
+        name: '7拍子',
+        cts: `4/4 + 3/4`,
+        bpm: 170,
+        exampleMusic: "スピッツ - 美しい鰭 (0:20 - 1:42)",
+        exampleMusicURL: "https://youtu.be/KbGPM9jFeGg?si=i6o27RDvAXUKy49Y&t=69",
+        info: ""
+    },
+    {
+        name: '13拍子 『Electric Sunrise』',
+        cts: `3/8 + 3/8 + 3/8 + 3/8 + 1/8`,
+        bpm: 138,
+        exampleMusic: "Plini - Electric Sunrise (0:00 - 1:42)",
+        exampleMusicURL: "https://youtu.be/Rv_a6rlRjZk?si=Z4FFztFUqjqZmqn5&t=80",
+        info: ""
+    },
+    {
+        name: '15拍子',
+        cts: `4/8 + 4/8 + 4/8 + 3/16 + 3/16`,
+        bpm: 89,
+        exampleMusic: "Led Zeppelin - The Ocean (0:09 - 1:42)",
+        exampleMusicURL: "https://youtu.be/oqAmnEKlIZw?si=UvAEg6vxIVKcZpYo&t=8",
+        info: ""
+    },
+    {
+        name: '17拍子',
+        cts: `2/16 + 3/16 +\n2/16 + 3/16 +\n4/16 + 3/16`,
+        bpm: 110,
+        exampleMusic: "Dream Theater - The Alien (0:01 - 1:14)",
+        exampleMusicURL: "https://youtu.be/V462IsOV3js?si=5oPRULzF6we8vzu9",
+        info: ""
+    },
+    {
+        name: '19拍子 『Pale Blue Dot』',
+        cts: `4/16 + 4/16 + 4/16 + 4/16 + 3/16`,
+        bpm: 144,
+        exampleMusic: "Dream Theater - Pale Blue Dot (1:05 - 1:46)",
+        exampleMusicURL: "https://youtu.be/hX3dYtIrWIk?si=fpuxRi-DdyzurA98&t=66",
+        info: ""
+    },
+    {
+        name: '23拍子',
+        cts: `6/16 + 6/16 + 6/16 + 5/16`,
+        bpm: 106,
+        exampleMusic: "Dream Theater - A View from the Top of the World (0:31 - 2:41)",
+        exampleMusicURL: "https://youtu.be/8DeiV0ryQDY?si=VR3g_SDdeNQVR4fx&t=31",
+        info: ""
+    },
+    {
+        name: '27拍子',
+        cts: `2/4 + 3/16 + 2/16 + 2/4 + 3/16 + 3/16`,
+        bpm: 148,
+        exampleMusic: "上原ひろみ - Alive (0:50 - 1:08)",
+        exampleMusicURL: "https://youtu.be/4ptrsQ9Ju98?si=lW0WX5yECoPaRyrA&t=49",
+        info: ""
+    },
+    {
+        name: '『ゴジラ(1954)のテーマ』',
+        cts: `4/4 + 2/4 + 3/4 +
+        4/4 + 2/4 + 3/4 +
+        4/4 + 2/4 + 3/4 +
+        4/4 + 4/4 + 4/4`,
+        bpm: 140,
+        exampleMusic: "伊福部昭 - ゴジラ(1954) (0:04 - 0:34)",
+        exampleMusicURL: "https://youtu.be/V462IsOV3js?si=5oPRULzF6we8vzu9",
+        info: ""
+    },
+    {
+        name: '『Monomyth』',
+        cts: `5/8 + 7/8 + 7/8 + 5/8 + 5/8 + 7/8`,
+        bpm: 225,
+        exampleMusic: "Animals as Leaders - Monomyth (0:13 - 0:46)",
+        exampleMusicURL: "https://youtu.be/1Gi5KtoWY8U?feature=shared&t=12",
+        info: ""
+    },
+    {
+        name: '『運鈍根(Chaos Carnival)』',
+        cts: `4/4 +\n4/4 + 2/8 + 4/4 + 3/8 + 4/4 + 4/8 + 4/4 + 5/8 +
+        4/4 + 6/8 + 4/4 + 7/8 + 4/4 + 8/8 + 4/4 + (4/8+5/8) +
+        4/4 + 10/8 + 4/4 + 11/8 + 4/4 + 12/8 + 4/4 + 13/8 +
+        4/4 + 14/8 + 4/4 + 15/8 + 4/4 + 16/8 +
+        4/4 + 16/8`,
+        bpm: 175,
+        exampleMusic: "スプラトゥーン3 運鈍根(Chaos Carnival)",
+        exampleMusicURL: "https://youtu.be/8_Ax_-RohHk?si=1y-WK84dxa6R0p96&t=2",
+        info: ""
+    },
+    {
+        name: '『Breaking All Illusions』',
+        cts: `4/4 + 5/8 + 2/4 + 4/4 + 4/4 + 3/8 + 2/8 + 2/8 +
+        4/4 + 5/8 + 2/4 + 4/4 + 4/4 + 3/8 + 2/8 + 4/8`,
+        bpm: 150,
+        exampleMusic: "Dream Theater - Breaking All Illusions (0:00 - 0:32)",
+        exampleMusicURL: "https://youtu.be/HZlYCvamxKM?feature=shared",
+        info: ""
+    },
+    {
+        name: '『KUMOGAKURE』',
+        cts: `5/16 + 5/16 + 3/16 + 2/4 +
+        5/16 + 5/16 + 3/16 + 5/8 +
+        5/16 + 5/16 + 3/16 + 2/4 +
+        5/16 + 5/16 + 3/16 + 3/4 +
+        5/16 + 5/16 + 3/16 + 2/4 +
+        5/16 + 5/16 + 3/16 + 5/8 +
+        5/16 + 5/16 + 3/16 + 2/4 +
+        5/16 + 5/16 + 3/16 + 4/4`,
+        bpm: 152,
+        exampleMusic: "KHUFRUDAMO NOTES - KUMOGAKURE (2:38 + 3:14)",
+        exampleMusicURL: "https://youtu.be/VWp20KS4AnY?feature=shared&t=157",
+        info: ""
+    },
+]
+
 //ポリリズムメトロノームのプリセット
 const polyRhythmPreset = [
     {

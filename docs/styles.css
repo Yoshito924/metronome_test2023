@@ -104,7 +104,7 @@ button {
 }
 
 /* ---------------------------------------------- */
-/* メトロノームのカラー */
+/* メトロノームのハイライト */
 .highlight1{
     background-color: salmon !important;;
 }
@@ -130,6 +130,14 @@ button {
     background-color: #7a7a7a;
     color:darkblue; /* テキストの色 */
 }
+/* ---------------------------------------------- */
+/* メトロノームのハイライト */
+.highlightCts{
+    background-color: yellow !important;
+    font-weight:bold;
+    border: solid 3px red;
+}
+
 /* ---------------------------------------------- */
 
 .note_image {
