@@ -70,6 +70,14 @@ const fileNames = [
 //変拍子メトロノームのプリセット
 const ctsMetronomePreset = [
     {
+        name: '4拍子',
+        cts: `4/4 + 4/4 + 4/4 + 4/4`,
+        bpm: 120,
+        exampleMusic: "",
+        exampleMusicURL: "",
+        info: "",
+    },
+    {
         name: '5拍子',
         cts: `3/8 + 3/8 + 2/4`,
         bpm: 176,
@@ -81,8 +89,8 @@ const ctsMetronomePreset = [
         name: '7拍子',
         cts: `4/4 + 3/4`,
         bpm: 170,
-        exampleMusic: "スピッツ - 美しい鰭 (0:20 - 1:42)",
-        exampleMusicURL: "https://youtu.be/KbGPM9jFeGg?si=i6o27RDvAXUKy49Y&t=69",
+        exampleMusic: "",
+        exampleMusicURL: "",
         info: ""
     },
     {

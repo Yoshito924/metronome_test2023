@@ -38,17 +38,15 @@
                     <!-- 変拍子のプリセット項目を動的に生成 -->
                 </div>
                 <div id="ctsPresetExample">
-
                 </div>
                 <div id="ctsPresetInfo">
-
                 </div>
             </div>
 
             <!-- 拍子の入力欄 -->
             <div>
                 <label for="ctsTextarea"></label>
-                <textarea name="ctsTextarea" id="ctsTextarea" cols="60" rows="10"></textarea>
+                <textarea name="ctsTextarea" id="ctsTextarea" class="full-width" cols="" rows=""></textarea>
             </div>
 
             <div>
@@ -67,7 +65,7 @@
             </div>
         </div>
         <!-- ---------------------------------------------------- -->
-        <div id="metronomeSoundController">
+        <div id="metronomeSoundController">《メトロノーム音の設定》
             <div id="ctsMetronomeSoundController">
                 <button id="muteCtsRhythm" class="highlight1 muted">
                     <img src="./image/volume_up_FILL0_wght400_GRAD0_opsz24.svg" alt="ヴォリュームアイコン" title="ヴォリュームアイコン"
@@ -118,98 +116,31 @@
                 <span id="ctsMetronomebeatHeadClickSoundLoading"></span>
             </div>
             <!-- ---------------------------------------------------- -->
-
         </div>
     </div>
 
     <!-- ---------------------------------------------------- -->
 
     <div id="ctsMetronome">
-
+        <div>　</div>
         <table class="ctsVisual">
             <tr id="ctsVisualRow">
                 <!-- 動的に生成 -->
             </tr>
         </table>
         <div>　</div>
-        <div id="ctsMetronomeVisual">
-
-            <div id="ctsBeatContainer1" class="ctsBeatContainer">
-                <div id="ctstimeSignature1" class="ctstimeSignature">
-                    <!-- 動的に生成 -->
-                    4<br>―<br>4
-                </div>
-                <!-- 拍のビジュアル表示 -->
-                <table id="ctsBeatTable1" class="ctsBeatTable">
-                    <tr id="ctsBeatRow1" class="ctsBeatRow">
-                        <!-- 動的にセルが追加 -->
-                        <td id="ctsBeat1-1">
-                            1<br>
-                            <img src="./image/note/quarterNote.svg" alt="4分音符" title="4分音符 " class="note_image">
-                        </td>
-                        <!-- 動的にセルが追加 -->
-                        <td id="ctsBeat1-2">
-                            2<br>
-                            <img src="./image/note/quarterNote.svg" alt="4分音符" title="4分音符 " class="note_image">
-                        </td>
-                        <td id="ctsBeat1-3">
-                            3<br>
-                            <img src="./image/note/quarterNote.svg" alt="4分音符" title="4分音符 " class="note_image">
-                        </td>
-                        <!-- 動的にセルが追加 -->
-                        <td id="ctsBeat1-4">
-                            4<br>
-                            <img src="./image/note/quarterNote.svg" alt="4分音符" title="4分音符 " class="note_image">
-                        </td>
-                    </tr>
-                </table>
-            </div>
-
-            <div id="ctsBeatContainer1" class="ctsBeatContainer">
-                <div id="ctstimeSignature1" class="ctstimeSignature">
-                    <!-- 動的に生成 -->
-                    4<br>―<br>4
-                </div>
-                <!-- 拍のビジュアル表示 -->
-                <table id="ctsBeatTable1" class="ctsBeatTable">
-                    <tr id="ctsBeatRow1" class="ctsBeatRow">
-                        <!-- 動的にセルが追加 -->
-                        <td id="ctsBeat1-1">
-                            1<br>
-                            <img src="./image/note/quarterNote.svg" alt="4分音符" title="4分音符 " class="note_image">
-                        </td>
-                        <!-- 動的にセルが追加 -->
-                        <td id="ctsBeat1-2">
-                            2<br>
-                            <img src="./image/note/quarterNote.svg" alt="4分音符" title="4分音符 " class="note_image">
-                        </td>
-                        <td id="ctsBeat1-3">
-                            3<br>
-                            <img src="./image/note/quarterNote.svg" alt="4分音符" title="4分音符 " class="note_image">
-                        </td>
-                        <!-- 動的にセルが追加 -->
-                        <td id="ctsBeat1-4">
-                            4<br>
-                            <img src="./image/note/quarterNote.svg" alt="4分音符" title="4分音符 " class="note_image">
-                        </td>
-                    </tr>
-                </table>
-            </div>
-
-        </div>
-
     </div>
 
     <div>
         <h3 class="">説明・使い方</h3>
         <p class="py-1 guideText">・キーボードの「s」キーでもメトロノームの再生/停止が行えます。</p>
         <p class="py-1 guideText">・《メトロノーム音の設定》から、各メトロノーム音の選択とミュートのON/OFFができます。</p>
-        <p class="py-1 guideText">・音符を個別にタップ/クリックすると、メトロノーム音を1つずつON/OFFできます。</p>
 
         <h3 class="">音が出ない？そんなときは…</h3>
-        <p class="py-1 guideText">・ご利用の端末の「音量設定」や「ミュートの設定」を確認してください。</p>
-        <p class="py-1 guideText">・画面上のミュート機能は、反映まで数秒のタイムラグがあります。</p>
-        <p class="py-1 guideText">・時折、再生/停止ボタンが上手く動作しない場合があります。何度か押してみてください。</p>
+        <p class="py-1 guideText">・ご利用の端末の「<b>音量設定</b>」や「<b>ミュートの設定</b>」を確認してください。</p>
+        <p class="py-1 guideText">・"音色切り替え"及び"ミュート機能"は、反映まで<b>数秒のタイムラグ</b>があります。</p>
+        <p class="py-1 guideText">・時折、再生/停止ボタンが<b>上手く動作しない場合</b>があります。何度か押してみてください。</p>
+        <p class="py-1 guideText">・ページを<b>リロード</b>（再読み込み）してみてください。</p>
         <p class="py-1 guideText">・上記の項目を試しても音が鳴らない場合は、お手数をおかけしますがコンタクトページからお知らせください。</p>
 
         <h3 class="">関連ページ</h3>

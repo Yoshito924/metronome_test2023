@@ -78,6 +78,7 @@ selectElement.onchange = function () {
     updatePresetInfo(this.value);
     //拍子のビートの合計値を計算する関数
     calculateCtsBeat();
+
     // 拍のビジュアルをHTML上に描画する関数
     updateCtsRhythmTable('ctsVisual', ctsBeatStates)
 };
@@ -94,8 +95,33 @@ ctsMetronomePreset.forEach((preset, index) => {
 const divElement = document.getElementById('ctsMetronomePreset'); // div要素を取得
 divElement.appendChild(selectElement); // div要素にselect要素を追加
 
+// ------------------------------------------------------------------------------------------------
+function adjustTextareaHeight(textarea) {
+    // テキストエリアを一度リセット
+    textarea.style.height = 'auto';
 
+    // テキストエリアの行数を計算（改行文字で分割）
+    const lines = textarea.value.split('\n').length;
 
+    // 最小行数を2行、最大行数を10行とする
+    const minLines = 6;
+    const maxLines = 10;
+
+    // 行数に基づいて高さを調整
+    const newLines = Math.min(Math.max(lines, minLines), maxLines);
+    textarea.style.height = `${newLines * 1.2}em`;  // 1行あたりの高さを1.2emと仮定
+}
+
+// テキストエリア要素を取得
+const textarea = document.getElementById('ctsTextarea');
+
+// 'input' イベントリスナーを追加
+textarea.addEventListener('input', function () {
+    adjustTextareaHeight(this);
+});
+
+// 初期ロード時にも高さを調整
+adjustTextareaHeight(textarea);
 // ------------------------------------------------------------------------------------------------
 //拍子のビートの合計値を計算する関数
 function calculateCtsBeat() {
@@ -103,6 +129,7 @@ function calculateCtsBeat() {
     timeSignatureText = ""
     // テキストエリアの「全角の数字、アルファベット、スペース、記号」を「対応する半角文字」に変換してから変数に格納する
     timeSignatureText = toHalfWidth(document.getElementById('ctsTextarea').value);
+
     //ハイフン (-)、カンマ (,）、スラッシュ (/) 以外のすべての記号や文字を削除する
     timeSignatureText = timeSignatureText.replace(/[^\d\+,/]/g, '');
     //拍子を分子と分母に分割して配列に格納
