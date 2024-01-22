@@ -68,18 +68,57 @@ const fileNames = [
 ];
 //=============================================================================
 //変拍子メトロノームのプリセット
+let selectedPreset = `『Breaking All Illusions』`;
 const ctsMetronomePreset = [
     {
-        name: '4拍子',
-        cts: `4/4 + 4/4 + 4/4 + 4/4`,
+        name: '3拍子',
+        cts: `3/4 + 3/4 + 3/4 + 3/4`,
+        timeSig: 3,
         bpm: 120,
         exampleMusic: "",
         exampleMusicURL: "",
         info: "",
     },
     {
-        name: '5拍子',
+        name: '4拍子',
+        cts: `4/4 + 4/4 + 4/4 + 4/4`,
+        bpm: 120,
+        timeSig: 4,
+        exampleMusic: "",
+        exampleMusicURL: "",
+        info: "",
+    },
+    {
+        name: '『Take Five』',
+        cts: `3/4 + 2/4`,
+        timeSig: 5,
+        bpm: 174,
+        exampleMusic: "Dave Brubeck - Take Five",
+        exampleMusicURL: "https://youtu.be/vmDDOFXSgAs?si=hGYcOfDhziH0Ju1R&t=1",
+        info: "",
+    },
+    {
+        name: '『Mission Impossible Theme』',
         cts: `3/8 + 3/8 + 2/4`,
+        timeSig: 5,
+        bpm: 176,
+        exampleMusic: "Mission Impossible Theme (0:06 - 0:19)",
+        exampleMusicURL: "https://youtu.be/XAYhNHhxN0A?si=D-EMIbyfV7Lnhonq&t=6",
+        info: "",
+    },
+    {
+        name: '『Tarkus』',
+        cts: `4/8 + 3/8 + 3/8`,
+        timeSig: 5,
+        bpm: 200,
+        exampleMusic: "Emerson, Lake and Palmer - Tarkus (0:32 - 0:57)",
+        exampleMusicURL: "https://youtu.be/H8Ht7xtiXqI?si=Bl9jKTBSpkZJPQV_&t=32",
+        info: "",
+    },
+    {
+        name: '6拍子',
+        cts: `3/8 + 3/8 + 2/4`,
+        timeSig: 6,
         bpm: 176,
         exampleMusic: "Mission Impossible Theme (0:06 - 0:19)",
         exampleMusicURL: "https://youtu.be/XAYhNHhxN0A?si=D-EMIbyfV7Lnhonq&t=6",
@@ -88,54 +127,61 @@ const ctsMetronomePreset = [
     {
         name: '7拍子',
         cts: `4/4 + 3/4`,
+        timeSig: 7,
         bpm: 170,
         exampleMusic: "",
         exampleMusicURL: "",
         info: ""
     },
     {
-        name: '13拍子 『Electric Sunrise』',
+        name: '『Electric Sunrise』',
         cts: `3/8 + 3/8 + 3/8 + 3/8 + 1/8`,
+        timeSig: 13,
         bpm: 138,
         exampleMusic: "Plini - Electric Sunrise (0:00 - 1:42)",
         exampleMusicURL: "https://youtu.be/Rv_a6rlRjZk?si=Z4FFztFUqjqZmqn5&t=80",
         info: ""
     },
     {
-        name: '15拍子',
+        name: '『The Ocean』',
         cts: `4/8 + 4/8 + 4/8 + 3/16 + 3/16`,
+        timeSig: 15,
         bpm: 89,
         exampleMusic: "Led Zeppelin - The Ocean (0:09 - 1:42)",
         exampleMusicURL: "https://youtu.be/oqAmnEKlIZw?si=UvAEg6vxIVKcZpYo&t=8",
         info: ""
     },
     {
-        name: '17拍子',
+        name: '『The Alien』',
         cts: `2/16 + 3/16 +\n2/16 + 3/16 +\n4/16 + 3/16`,
+        timeSig: 17,
         bpm: 110,
         exampleMusic: "Dream Theater - The Alien (0:01 - 1:14)",
         exampleMusicURL: "https://youtu.be/V462IsOV3js?si=5oPRULzF6we8vzu9",
         info: ""
     },
     {
-        name: '19拍子 『Pale Blue Dot』',
+        name: '『Pale Blue Dot』',
         cts: `4/16 + 4/16 + 4/16 + 4/16 + 3/16`,
+        timeSig: 19,
         bpm: 144,
         exampleMusic: "Dream Theater - Pale Blue Dot (1:05 - 1:46)",
         exampleMusicURL: "https://youtu.be/hX3dYtIrWIk?si=fpuxRi-DdyzurA98&t=66",
         info: ""
     },
     {
-        name: '23拍子',
+        name: '『A View from the Top of the World』',
         cts: `6/16 + 6/16 + 6/16 + 5/16`,
+        timeSig: 23,
         bpm: 106,
         exampleMusic: "Dream Theater - A View from the Top of the World (0:31 - 2:41)",
         exampleMusicURL: "https://youtu.be/8DeiV0ryQDY?si=VR3g_SDdeNQVR4fx&t=31",
         info: ""
     },
     {
-        name: '27拍子',
+        name: '『Alive』',
         cts: `2/4 + 3/16 + 2/16 + 2/4 + 3/16 + 3/16`,
+        timeSig: 27,
         bpm: 148,
         exampleMusic: "上原ひろみ - Alive (0:50 - 1:08)",
         exampleMusicURL: "https://youtu.be/4ptrsQ9Ju98?si=lW0WX5yECoPaRyrA&t=49",
@@ -147,6 +193,7 @@ const ctsMetronomePreset = [
         4/4 + 2/4 + 3/4 +
         4/4 + 2/4 + 3/4 +
         4/4 + 4/4 + 4/4`,
+        timeSig: "その他の",
         bpm: 140,
         exampleMusic: "伊福部昭 - ゴジラ(1954) (0:04 - 0:34)",
         exampleMusicURL: "https://youtu.be/V462IsOV3js?si=5oPRULzF6we8vzu9",
@@ -155,30 +202,34 @@ const ctsMetronomePreset = [
     {
         name: '『Monomyth』',
         cts: `5/8 + 7/8 + 7/8 + 5/8 + 5/8 + 7/8`,
+        timeSig: 19,
         bpm: 225,
         exampleMusic: "Animals as Leaders - Monomyth (0:13 - 0:46)",
         exampleMusicURL: "https://youtu.be/1Gi5KtoWY8U?feature=shared&t=12",
         info: ""
     },
     {
-        name: '『運鈍根(Chaos Carnival)』',
-        cts: `4/4 +\n4/4 + 2/8 + 4/4 + 3/8 + 4/4 + 4/8 + 4/4 + 5/8 +
-        4/4 + 6/8 + 4/4 + 7/8 + 4/4 + 8/8 + 4/4 + (4/8+5/8) +
-        4/4 + 10/8 + 4/4 + 11/8 + 4/4 + 12/8 + 4/4 + 13/8 +
-        4/4 + 14/8 + 4/4 + 15/8 + 4/4 + 16/8 +
-        4/4 + 16/8`,
-        bpm: 175,
-        exampleMusic: "スプラトゥーン3 運鈍根(Chaos Carnival)",
-        exampleMusicURL: "https://youtu.be/8_Ax_-RohHk?si=1y-WK84dxa6R0p96&t=2",
-        info: ""
-    },
-    {
         name: '『Breaking All Illusions』',
         cts: `4/4 + 5/8 + 2/4 + 4/4 + 4/4 + 3/8 + 2/8 + 2/8 +
         4/4 + 5/8 + 2/4 + 4/4 + 4/4 + 3/8 + 2/8 + 4/8`,
+        timeSig: "その他の",
         bpm: 150,
         exampleMusic: "Dream Theater - Breaking All Illusions (0:00 - 0:32)",
         exampleMusicURL: "https://youtu.be/HZlYCvamxKM?feature=shared",
+        info: ""
+    },
+    {
+        name: '『世界五分前仮説』',
+        cts: `5/8 + 3/8 + 5/8 + 4/8 + 4/4 + 4/4 +
+        5/8 + 3/8 + 5/8 + 4/8 + 4/4 + 4/4 +
+        5/4 + 5/4 + 5/4 + 4/4 +
+        5/4 + 5/4 + 5/4 + 4/4 +
+        5/4 + 5/4 + 5/4 + 4/4 +
+        5/4 + 5/4 + 5/4 + 4/4 + 4/4`,
+        timeSig: "その他の",
+        bpm: 142,
+        exampleMusic: "有形ランペイジ - 世界五分前仮説 (0:18 - 1:06)",
+        exampleMusicURL: "https://youtu.be/gOrzlgiPkbc?si=saS2u_nG1BOz0_Nx&t=18",
         info: ""
     },
     {
@@ -191,9 +242,23 @@ const ctsMetronomePreset = [
         5/16 + 5/16 + 3/16 + 5/8 +
         5/16 + 5/16 + 3/16 + 2/4 +
         5/16 + 5/16 + 3/16 + 4/4`,
+        timeSig: "その他の",
         bpm: 152,
         exampleMusic: "KHUFRUDAMO NOTES - KUMOGAKURE (2:38 + 3:14)",
         exampleMusicURL: "https://youtu.be/VWp20KS4AnY?feature=shared&t=157",
+        info: ""
+    },
+    {
+        name: '『運鈍根』',
+        cts: `4/4 +\n4/4 + 2/8 + 4/4 + 3/8 + 4/4 + 4/8 + 4/4 + 5/8 +
+        4/4 + 6/8 + 4/4 + 7/8 + 4/4 + 8/8 + 4/4 + (4/8+5/8) +
+        4/4 + 10/8 + 4/4 + 11/8 + 4/4 + 12/8 + 4/4 + 13/8 +
+        4/4 + 14/8 + 4/4 + 15/8 + 4/4 + 16/8 +
+        4/4 + 16/8`,
+        timeSig: "その他の",
+        bpm: 175,
+        exampleMusic: "スプラトゥーン3 運鈍根(Chaos Carnival)",
+        exampleMusicURL: "https://youtu.be/8_Ax_-RohHk?si=1y-WK84dxa6R0p96&t=2",
         info: ""
     },
 ]
@@ -373,6 +438,33 @@ const MusicalNoteArray = [
         rest: `<img src="./image/note/64thRest.svg" alt="64分休符" title="64分休符 "class="note_image">`,
     },
 ];
+
+// 音符の種類を決める関数
+function DetermineTypeOfNote(BasisNote, note, rest) {
+    if (BasisNote === 2) {
+        note = MusicalNoteArray[1].note
+        rest = MusicalNoteArray[1].rest
+    } else if (BasisNote === 4) {
+        note = MusicalNoteArray[2].note
+        rest = MusicalNoteArray[2].rest
+    } else if (BasisNote === 8) {
+        note = MusicalNoteArray[3].note
+        rest = MusicalNoteArray[3].rest
+    } else if (BasisNote === 16) {
+        note = MusicalNoteArray[4].note
+        rest = MusicalNoteArray[4].rest
+    } else if (BasisNote === 32) {
+        note = MusicalNoteArray[5].note
+        rest = MusicalNoteArray[5].rest
+    } else if (BasisNote === 64) {
+        note = MusicalNoteArray[6].note
+        rest = MusicalNoteArray[6].rest
+    } else {
+        note = MusicalNoteArray[0].note
+        rest = MusicalNoteArray[0].rest
+    }
+    return { note, rest };
+};
 //=============================================================================
 let nextBeatTime;
 let beatInterval;
@@ -430,33 +522,6 @@ async function loadAudioFiles() {
     lordComplete = true;
 };
 
-
-// 音符の種類を決める関数
-function DetermineTypeOfNote(BasisNote, note, rest) {
-    if (BasisNote === 2) {
-        note = MusicalNoteArray[1].note
-        rest = MusicalNoteArray[1].rest
-    } else if (BasisNote === 4) {
-        note = MusicalNoteArray[2].note
-        rest = MusicalNoteArray[2].rest
-    } else if (BasisNote === 8) {
-        note = MusicalNoteArray[3].note
-        rest = MusicalNoteArray[3].rest
-    } else if (BasisNote === 16) {
-        note = MusicalNoteArray[4].note
-        rest = MusicalNoteArray[4].rest
-    } else if (BasisNote === 32) {
-        note = MusicalNoteArray[5].note
-        rest = MusicalNoteArray[5].rest
-    } else if (BasisNote === 64) {
-        note = MusicalNoteArray[6].note
-        rest = MusicalNoteArray[6].rest
-    } else {
-        note = MusicalNoteArray[0].note
-        rest = MusicalNoteArray[0].rest
-    }
-    return { note, rest };
-};
 
 //=============================================================================
 // ボリュームコントロールのイベントリスナー
