@@ -68,7 +68,8 @@ const fileNames = [
 ];
 //=============================================================================
 //変拍子メトロノームのプリセット
-let selectedPreset = `『Breaking All Illusions』`;
+// let selectedPreset = `『Breaking All Illusions』`;
+let selectedPreset = `4拍子`;
 const ctsMetronomePreset = [
     {
         name: '3拍子',

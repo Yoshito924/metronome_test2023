@@ -28,6 +28,7 @@ button {
     cursor: pointer; /* ボタン上にマウスカーソルが来たときに手の形になる */
 }
 
+
 /* ---------------------------------------------- */
 #polyRhythmMetronome{
     display: flex;
@@ -171,6 +172,12 @@ button {
 .redText{
     color: red;
 }
+.grayText{
+    color: gray;
+}
+.fontBold{
+    font-weight: bold;
+}
 .none{
     /* 画面から消す */
     display: none;
@@ -184,7 +191,7 @@ button {
 
 /* ---------------------------------------------- */
 #ctsMetronome{
-        font-weight: bold;
+        
 }
 
 /* ctsメトロノームのcss */

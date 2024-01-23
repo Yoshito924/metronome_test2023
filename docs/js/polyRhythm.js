@@ -397,8 +397,7 @@ function updateRhythmTable(beats, idName, beatStates) {
     } else {
         note = MusicalNoteArray[0].note
         rest = MusicalNoteArray[0].rest
-    }
-
+    };
     //------------------------------------------------------------------------
     for (let i = 1; i <= beats; i++) {
         let td = document.createElement('td');
@@ -408,10 +407,10 @@ function updateRhythmTable(beats, idName, beatStates) {
             td.innerHTML = `${i}<br>${rest}`;
         } else {
             td.innerHTML = `${i}<br>${note}`;
-        }
-
+        };
         //クリックされたときに動くイベントリスナーを設定する
         td.addEventListener('click', function () {
+            //beatStatesを反転させる
             beatStates[i - 1] = !beatStates[i - 1];
             if (isPlaying) {
                 //lordアイコンを読み込む
@@ -438,12 +437,12 @@ function updateRhythmTable(beats, idName, beatStates) {
             };
         });
         row.appendChild(td);
-    }
+    };
     //ビートのカウントをリセット
     beatCount = 1
     rhythm1BeatCount = 1
     rhythm2BeatCount = 1
-}
+};
 
 // --------------------------------------------------------------
 // メトロノームが動作中なら一度止めた後に再度動かす関数

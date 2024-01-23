@@ -139,7 +139,7 @@ function calculateCtsBeat() {
     timeSignatureText = ""
     // テキストエリアの「全角の数字、アルファベット、スペース、記号」を「対応する半角文字」に変換してから変数に格納する
     timeSignatureText = toHalfWidth(document.getElementById('ctsTextarea').value);
-    //ハイフン (-)、カンマ (,）、スラッシュ (/) 以外のすべての記号や文字を削除する
+    //プラス (+)、カンマ (,）、スラッシュ (/) 以外のすべての記号や文字を削除する
     timeSignatureText = timeSignatureText.replace(/[^\d\+,/]/g, '');
     //拍子を分子と分母に分割して配列に格納
     timeSignatureArray = timeSignatureText.split(/[+,]+/);
@@ -151,17 +151,56 @@ function calculateCtsBeat() {
     //最も細かい拍子に合わせて「通分した値」を格納する配列：tsR (Time Signature Reduce to a common denominator)
     let tsR = { numerator: [], denominator: [] };
     // ------------------------------------------------------------------------------
+    //一度拍子テキスト入力のエラー表示エリアを空にする
+    document.getElementById(`ctsTextareaInfo`).innerHTML = ``;
+    // ------------------------------------------------------------------------------
     // 配列に格納された拍子テキストの分母と分子を分割し整数型にする
     for (let i = 0; i < timeSignatureArray.length; i++) {
         ts = timeSignatureArray[i].split("/");
         //整数型に変換して配列に格納する
         tsInt.numerator.push(parseInt(ts[0]))
         tsInt.denominator.push(parseInt(ts[1]))
-        //拍子の値が2の累乗数じゃないか1である場合はここで判定する
-        if (isPowerOfTwo(tsInt.denominator[i]) === false || tsInt.denominator[i] === 1) {
+        //分母と分子の値に以上がないかエラーチェックする
+        if (Number.isNaN(tsInt.denominator[i])) {
+            //分母エラーチェック
+            document.getElementById(`ctsTextareaInfo`).innerHTML = `<span class="redText">※拍子の入力エラー：分母の値が存在しない拍子が含まれています。</span>`;
+            //メトロノームを停止したときの処理
+            metronomeStop()
+            return;
+        } else if (Number.isNaN(tsInt.numerator[i])) {
+            //分子エラーチェック
+            document.getElementById(`ctsTextareaInfo`).innerHTML = `<span class="redText">※拍子の入力エラー：分子の値が存在しない拍子が含まれています。</span>`;
+            //メトロノームを停止したときの処理
+            metronomeStop()
+            return;
+        } else if (tsInt.denominator[i] === 1) {
+            //分母が1のエラーチェック
+            document.getElementById(`ctsTextareaInfo`).innerHTML = `<span class="redText">※拍子の入力エラー：分母の値が「1」の拍子には非対応です。</span>`;
+            //メトロノームを停止したときの処理
+            metronomeStop()
+            return;
+        } else if (isPowerOfTwo(tsInt.denominator[i]) === false) {
+            //拍子の値が2の累乗数かチェック
+            document.getElementById(`ctsTextareaInfo`).innerHTML = `<span class="redText">※拍子の入力エラー：分母の値が2の累乗数（例:2,4,8,16...）ではない拍子には非対応です。</span>`;
+            //メトロノームを停止したときの処理
+            metronomeStop();
+            return;
+        } else if (tsInt.numerator[i] > 100) {
+            //分子の値が大きすぎる場合のエラーチェック
+            document.getElementById(`ctsTextareaInfo`).innerHTML = `<span class="redText">※拍子の入力エラー：分子の値は100以下の値を入力してください。</span>`;
+            //メトロノームを停止したときの処理
+            metronomeStop()
+            return;
+        } else if (tsInt.denominator[i] > 1024) {
+            //分子の値が大きすぎる場合のエラーチェック
+            document.getElementById(`ctsTextareaInfo`).innerHTML = `<span class="redText">※拍子の入力エラー：分母の値は1024以下の値を入力してください。</span>`;
+            //メトロノームを停止したときの処理
+            metronomeStop()
             return;
         };
     };
+    //拍子テキスト入力のエラーチェックに引っかからなければ空にする
+    document.getElementById(`ctsTextareaInfo`).innerHTML = ``;
     // ------------------------------------------------------------------------------
     //最も細かい拍子の分母を見つける
     let smallestDenominator = Math.max.apply(null, tsInt.denominator);
@@ -188,8 +227,7 @@ function calculateCtsBeat() {
     ctsBeatArrayR = tsR;
     //------------------------------------------------------------------------------
     //クリックを管理する配列を初期化する
-    ctsBeatStates = new Array().fill(true);
-    //変拍子の数だけループ
+    ctsBeatStates = new Array().fill(true);        //変拍子の数だけループ
     for (let i = 0; i < tsInt.numerator.length; i++) {
         //通分しても分母が変わらない拍子の場合
         if (tsR.numerator[i] === tsInt.numerator[i]) {
@@ -209,6 +247,44 @@ function calculateCtsBeat() {
             };
         };
     };
+};
+
+
+//メトロノームを停止したときの処理
+function metronomeStop() {
+    // メトロノームが既に再生中の場合、AudioContextを閉じて初期化します。
+    if (audioContext) {
+        audioContext.close(); // AudioContextを閉じる
+        audioContext = null; // AudioContextをリセット
+        initializeAudioContext()
+    };
+    // 保存された全てのタイマーIDに対してclearTimeoutを実行
+    timerIds.forEach(id => clearTimeout(id));
+    // タイマーIDの配列をクリア
+    timerIds = [];
+    //すべてのハイライトを削除する
+    for (let i = 0; i <= ctsBeatArray.numerator.length; i++) {
+        let element = document.getElementById(`ctsVisual${i}`);
+        //要素がある場合のみ削除
+        if (element) {
+            element.classList.remove("highlightCts")
+        };
+    };
+    //一度すべてのハイライトを削除する
+    for (let i = 1; i <= beatTotalValue; i++) {
+        let element = document.getElementById(`ctsBarVisual_${i}`);
+        //要素がある場合のみ削除
+        if (element) {
+            element.classList.remove("highlightBarCts")
+        };
+    };
+    // 音が実際に再生されているか判定する変数をfalseにする
+    audioBuffersActive = false;
+    //ビートのカウントをリセット
+    beatCount = 1;
+    timeSignatureBeatCount = 1;
+    oneBarBeatCount = 0;
+    measureLocation = 0;
 };
 
 // メトロノームをオンオフする関数
@@ -233,39 +309,7 @@ async function ctsMetronomeOnOff() {
         };
     } else {
         //メトロノームを停止したときの処理
-        // メトロノームが既に再生中の場合、AudioContextを閉じて初期化します。
-        if (audioContext) {
-            audioContext.close(); // AudioContextを閉じる
-            audioContext = null; // AudioContextをリセット
-            initializeAudioContext()
-        };
-        // 保存された全てのタイマーIDに対してclearTimeoutを実行
-        timerIds.forEach(id => clearTimeout(id));
-        // タイマーIDの配列をクリア
-        timerIds = [];
-        //すべてのハイライトを削除する
-        for (let i = 0; i <= ctsBeatArray.numerator.length; i++) {
-            let element = document.getElementById(`ctsVisual${i}`);
-            //要素がある場合のみ削除
-            if (element) {
-                element.classList.remove("highlightCts")
-            };
-        };
-        //一度すべてのハイライトを削除する
-        for (let i = 1; i <= beatTotalValue; i++) {
-            let element = document.getElementById(`ctsBarVisual_${i}`);
-            //要素がある場合のみ削除
-            if (element) {
-                element.classList.remove("highlightBarCts")
-            };
-        };
-        // 音が実際に再生されているか判定する変数をfalseにする
-        audioBuffersActive = false;
-        //ビートのカウントをリセット
-        beatCount = 1;
-        timeSignatureBeatCount = 1;
-        oneBarBeatCount = 0;
-        measureLocation = 0;
+        metronomeStop();
     };
     //------------------------------------------------------------------------
     if (!isPlaying) {
@@ -282,7 +326,7 @@ async function ctsMetronomeOnOff() {
     //------------------------------------------------------------------------
     // 本当に音が再生されているかチェックするための処理
     setTimeout(() => {
-        //少し時間を待ってチェックする
+        //少し時間を待って再生されているかチェックする
         if (audioBuffersActive === true) {
             document.getElementById("helpText").innerHTML = "";
         };
@@ -394,8 +438,6 @@ function highlightBeat(beatCount) {
         timeSignatureBeatCount++
         barBeatCount = 1;
     };
-
-    // console.log(ctsBeatHeadStates.length)
     // 何小節目かをカウントする
     for (let i = 0; i <= ctsBeatHeadStates.length; i++) {
         if (ctsBeatHeadStates[i] === beatCount - 1) {
@@ -403,19 +445,16 @@ function highlightBeat(beatCount) {
             measureLocation++
         };
     };
-
     // 1小節のビジュアルを管理する変数の処理
     if (ctsBeatArray.denominator[measureLocation - 1] === smallestBeat) {
         oneBarBeatCount++
     } else {
         //分母が最小の数ではないときの処理
         oneBarBeatCount = oneBarBeatCount + (1 * (ctsBeatArray.denominator[measureLocation - 1] / smallestBeat))
-    }
-
+    };
     // 1小節のビジュアル内の要素を着色する関数
     ctsBarVisualColored();
-
-    // //------------------------------------------------------------------------
+    // ------------------------------------------------------------------------
     // カウンターの数字を管理する
     if (beatCount >= beatTotalValue) {
         timeSignatureBeatCount = 1;
@@ -434,7 +473,7 @@ function updateCtsRhythmTable(idName) {
     if (isPlaying) {
         ctsMetronomeOnOff();
     };
-    // //------------------------------------------------------------------------
+    //------------------------------------------------------------------------
     // 既存の<tr>要素を削除
     document.getElementById(`${idName}Row`).innerHTML = '';
     // <td>要素を生成して追加
@@ -442,11 +481,18 @@ function updateCtsRhythmTable(idName) {
         // 新しい<td>要素を作成
         let newTd = document.createElement('td');
         newTd.id = `ctsVisual${i + 1}`;  // IDを設定
-        newTd.innerHTML = `${ctsBeatArray.numerator[i]}<br>―<br>${ctsBeatArray.denominator[i]}`;   // 内容を設定
+        newTd.innerHTML
+            = `<span class="grayText">(${i + 1})</span><br>
+            <span class="fontBold">
+            ${ctsBeatArray.numerator[i]}<br>
+            ―
+            <br>${ctsBeatArray.denominator[i]}
+            </span>`;   // 内容を設定
         // <tr>要素に新しい<td>要素を追加
         document.getElementById(`${idName}Row`).appendChild(newTd);
     };
 };
+
 //=============================================================================
 // 1小節テーブルのビジュアル内の要素を着色する関数
 function ctsBarVisualColored() {
@@ -458,14 +504,13 @@ function ctsBarVisualColored() {
             element.classList.remove("highlightBarCts")
         };
     };
-
     //ハイライトを付ける
     let element = document.getElementById(`ctsBarVisual_${Math.ceil(oneBarBeatCount)}`);
     if (element) {
         element.classList.add('highlightBarCts');
     } else {
         console.log('要素が存在しない');
-    }
+    };
 };
 
 
@@ -487,16 +532,16 @@ function updateCtsBarVisualTable(timeSignatureBeatCount = 1, oneBarBeatCount = 1
     //------------------------------------------------------------------------
     // 既存の<tr>要素を一旦削除
     document.getElementById(`ctsBarVisualRow`).innerHTML = '';
-
     // <td>要素を生成して追加
     for (let i = 0; i < ctsBeatArray.numerator[timeSignatureBeatCount - 1]; i++) {
         // 新しい<td>要素を作成
         let newTd = document.createElement('td');
         newTd.id = `ctsBarVisual_${i + 1 + oneBarBeatCount}`;  // IDを設定
-        newTd.innerHTML = `${i + 1}<br>${note}`;   // 内容を設定
+        newTd.innerHTML = `<span class="grayText">(${measureLocation + 1})-${i + 1}</span><br>${note}`;   // 内容を設定
         // <tr>要素に新しい<td>要素を追加
         document.getElementById(`ctsBarVisualRow`).appendChild(newTd);
     };
+    //------------------------------------------------------------------------
 };
 
 //=============================================================================
