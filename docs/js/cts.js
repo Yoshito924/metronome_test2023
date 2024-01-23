@@ -124,14 +124,14 @@ function adjustTextareaHeight() {
     // テキストエリアを一度リセット
     document.getElementById("ctsTextarea").style.height = 'auto';
     // テキストエリアの行数を計算（改行文字で分割）
-    const lines = document.getElementById("ctsTextarea").value.split('\n').length;
+    let lines = document.getElementById("ctsTextarea").value.split('\n').length;
 
-    // 最小行数を2行、最大行数を10行とする
+    // 最小行数と、最大行数を設定する
     const minLines = 2;
     const maxLines = 10;
 
     // 行数に基づいて高さを調整
-    const newLines = Math.min(Math.max(lines, minLines), maxLines);
+    let newLines = Math.min(Math.max(lines, minLines), maxLines);
     document.getElementById("ctsTextarea").style.height = `${newLines * 1.2}em`;  // 1行あたりの高さを1.2emと仮定
 };
 
@@ -155,9 +155,15 @@ function calculateCtsBeat() {
     // ------------------------------------------------------------------------------
     //一度拍子テキスト入力のエラー表示エリアを空にする
     document.getElementById(`ctsTextareaInfo`).innerHTML = ``;
+    //拍子が何もない場合はここでreturn
+    if (timeSignatureText === undefined || timeSignatureText === null || timeSignatureText === 0 || timeSignatureText === "") {
+        document.getElementById(`ctsTextareaInfo`).innerHTML = ``;
+        return;
+    };
     // ------------------------------------------------------------------------------
     // 配列に格納された拍子テキストの分母と分子を分割し整数型にする
     for (let i = 0; i < timeSignatureArray.length; i++) {
+        console.log(timeSignatureArray[i])
         ts = timeSignatureArray[i].split("/");
         //整数型に変換して配列に格納する
         tsInt.numerator.push(parseInt(ts[0]))
@@ -257,7 +263,6 @@ function calculateCtsBeat() {
     };
 };
 
-
 //メトロノームを停止したときの処理
 function metronomeStop() {
     // メトロノームが既に再生中の場合、AudioContextを閉じて初期化。（メトロノームが重複して鳴るのを防ぐため）
@@ -267,16 +272,12 @@ function metronomeStop() {
         // AudioContextの初期化を行う関数
         initializeAudioContext();
     };
-    // 保存された全てのタイマーIDに対してclearTimeoutを実行
-    timerIds.forEach(id => clearTimeout(id));
-    // タイマーIDの配列をクリア
-    timerIds = [];
     //すべてのハイライトを削除する
     for (let i = 0; i <= ctsBeatArray.numerator.length; i++) {
         let element = document.getElementById(`ctsVisual${i}`);
         //要素がある場合のみ削除
         if (element) {
-            element.classList.remove("highlightCts")
+            element.classList.remove("highlightBeatHeadCts")
         };
     };
     //一度すべてのハイライトを削除する
@@ -307,7 +308,7 @@ async function ctsMetronomeOnOff() {
     //1周期の長さを格納する変数
     totalBeats = beatTotalValue;
     //拍子のビートの合計値を計算する関数
-    calculateCtsBeat()
+    calculateCtsBeat();
     if (!isPlaying) {
         // メトロノームを開始したときの処理
         if (!audioContext) {
@@ -326,6 +327,10 @@ async function ctsMetronomeOnOff() {
     } else {
         //メトロノームを停止したときの処理
         metronomeStop();
+        // 保存された全てのタイマーIDに対してclearTimeoutを実行
+        timerIds.forEach(id => clearTimeout(id));
+        // タイマーIDの配列をクリア
+        timerIds = [];
     };
     //------------------------------------------------------------------------
     if (!isPlaying) {
@@ -355,7 +360,7 @@ async function ctsMetronomeOnOff() {
                 if (!isPlaying) {
                     document.getElementById("helpText").innerHTML = "※再生に失敗しました。<br>もう一度再生ボタン↓を押してください。";
                 };
-            }, "100");
+            }, 100);
             ctsMetronomeOnOff();
         };
     }, 200);
@@ -469,10 +474,33 @@ function updateCtsRhythmTable(idName) {
         reducingFractionsBeatTotalValue = reducingFractionsBeatTotalValue /= 2;
         reducingFractionsSmallestBeat = reducingFractionsSmallestBeat /= 2;
     };
-    //合計の拍子を表示する
+    //------------------------------------------------------------------------
+    // 変拍子ではない場合の判定
+    let isNumeratorUniform = true;
+    let isDenominatorUniform = true;
+
+    // 分子の全ての要素が最初の要素と同じかどうかを検証
+    for (let i = 1; i < ctsBeatArray.numerator.length; i++) {
+        if (ctsBeatArray.numerator[i] !== ctsBeatArray.numerator[0]) {
+            isNumeratorUniform = false;
+            break;
+        }
+    }
+    // 分母の全ての要素が最初の要素と同じかどうかを検証
+    for (let i = 1; i < ctsBeatArray.denominator.length; i++) {
+        if (ctsBeatArray.denominator[i] !== ctsBeatArray.denominator[0]) {
+            isDenominatorUniform = false;
+            break;
+        }
+    }
+    //変拍子（途中で拍子が変わる）場合は合計の拍子を表示する
     document.getElementById(`ctsTotalTimeSignature`).innerHTML
-        = ``;
-    if (reducingFractionsBeatTotalValue !== beatTotalValue) {
+        = "";
+    if (isNumeratorUniform === true && isDenominatorUniform === true) {
+        //拍子が全て同じ
+        document.getElementById(`ctsTotalTimeSignature`).innerHTML
+            = "";
+    } else if (reducingFractionsBeatTotalValue !== beatTotalValue) {
         document.getElementById(`ctsTotalTimeSignature`).innerHTML
             = `<span class="fontBold">
             ${reducingFractionsBeatTotalValue}<br>
@@ -539,7 +567,7 @@ function highlightBeat(beatCount) {
         oneBarBeatCount = 0;
         measureLocation = 0;
     } else {
-        beatCount++
+        beatCount++;
     };
 };
 

@@ -45,11 +45,12 @@
             <!-- 拍子の入力欄 -->
             <div>
                 <label for="ctsTextarea">
-                    拍子テキストの入力欄：<span class="grayText">（※テキストの保存機能はありません。複数の拍子を記入する場合は「+」でつなげてください。）</span>
+                    拍子テキストの入力欄：<span class="grayText"></span>
                 </label>
                 <div id="ctsTextareaInfo">
                 </div>
-                <textarea name="ctsTextarea" id="ctsTextarea" class="full-width" cols="" rows=""></textarea>
+                <textarea placeholder="ここに拍子のテキストを入力してください。複数の拍子を記入する場合は「+」でつなげて記述ください。（※テキストの保存機能はありません。）"
+                    name="ctsTextarea" id="ctsTextarea" class="full-width" cols="" rows=""></textarea>
             </div>
 
             <div>
@@ -123,9 +124,7 @@
             <!-- ---------------------------------------------------- -->
         </div>
     </div>
-
     <!-- ---------------------------------------------------- -->
-
     <div id="ctsMetronome">
         <div>　</div>
         <div class="ctsBarVisual">
