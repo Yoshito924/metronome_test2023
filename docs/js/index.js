@@ -498,6 +498,7 @@ function initializeAudioContext() {
         gainNode.gain.value = 0.1;
         // ゲインノードをオーディオコンテキストの出力に接続
         gainNode.connect(audioContext.destination);
+        console.log("AudioContext initialized.")
     } catch (e) {
         console.error("Web Audio APIはこのブラウザではサポートされていません。", e);
     }

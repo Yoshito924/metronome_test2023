@@ -11,13 +11,12 @@ td {
     border-collapse: collapse; /* セルの境界線を1本にする */
     padding: 10px 0px;
     overflow: hidden; /* 内容がセルの幅を超える場合には非表示にします */
-    text-overflow: ellipsis; /* 内容が超えた場合には省略記号を表示します */
     white-space: nowrap; /* セルの内容を改行しないようにします */
 }
 
-/* PCはホバー時に色が変わったりする */
+/* PC表示時はホバー時に色が変わったりする */
 @media only screen and (min-width: 1400px) {
-    td:hover{
+    #polyRhythmMetronome td:hover{
         cursor: pointer;
         opacity: 0.7;
         background-color: bisque;
@@ -27,7 +26,6 @@ td {
 button {
     cursor: pointer; /* ボタン上にマウスカーソルが来たときに手の形になる */
 }
-
 
 /* ---------------------------------------------- */
 #polyRhythmMetronome{
@@ -70,28 +68,24 @@ button {
     display: flex;
     align-items: center; /* 子要素を垂直方向に中央揃え */
     overflow: hidden; /* 内容がセルの幅を超える場合には非表示にします */
-    text-overflow: ellipsis; /* 内容が超えた場合には省略記号を表示します */
     white-space: nowrap; /* セルの内容を改行しないようにします */
 }
 #lcmSoundController{
     display: flex;
     align-items: center; /* 子要素を垂直方向に中央揃え */
     overflow: hidden; /* 内容がセルの幅を超える場合には非表示にします */
-    text-overflow: ellipsis; /* 内容が超えた場合には省略記号を表示します */
     white-space: nowrap; /* セルの内容を改行しないようにします */
 }
 #rhythm2SoundController{
     display: flex;
     align-items: center; /* 子要素を垂直方向に中央揃え */
     overflow: hidden; /* 内容がセルの幅を超える場合には非表示にします */
-    text-overflow: ellipsis; /* 内容が超えた場合には省略記号を表示します */
     white-space: nowrap; /* セルの内容を改行しないようにします */
 }
 #beatHeadSoundController{
     display: flex;
     align-items: center; /* 子要素を垂直方向に中央揃え */
     overflow: hidden; /* 内容がセルの幅を超える場合には非表示にします */
-    text-overflow: ellipsis; /* 内容が超えた場合には省略記号を表示します */
     white-space: nowrap; /* セルの内容を改行しないようにします */
 }
 
@@ -134,13 +128,22 @@ button {
 /* ---------------------------------------------- */
 /* メトロノームのハイライト */
 .highlightCts{
-    background-color: yellow !important;
+    background-color: aquamarine !important;
+}
+.highlightBeatHeadCts{
+    background-color: rgb(255, 255, 0) !important;
 }
 /* メトロノームのハイライト */
 .highlightBarCts{
-    background-color: rgb(144, 255, 231) !important;
+    background-color: aquamarine; /* 初期の背景色（青） */
+    animation: fadeOutBackgroundColor 0.2s ease 0.2s forwards; /* アニメーションの設定 */
 }
-
+/* キーフレームで背景色のフェードアウトを定義 */
+@keyframes fadeOutBackgroundColor {
+  to {
+    background-color: rgba(0, 0, 255, 0); /* 透明度を0に */
+  }
+}
 /* ---------------------------------------------- */
 .note_image {
     padding: 5px;
@@ -182,6 +185,10 @@ button {
     /* 画面から消す */
     display: none;
 }
+/* 小節数を表す文字 */
+.measureDigit{
+    font-size: 0.7rem;
+}
 /* ---------------------------------------------- */
 /* 事前にバックグラウンドで画像を読み込む */
 #preload-image {
@@ -190,10 +197,6 @@ button {
 }
 
 /* ---------------------------------------------- */
-#ctsMetronome{
-        
-}
-
 /* ctsメトロノームのcss */
 .ctsBarVisualContainer {
     display: flex;
@@ -209,9 +212,18 @@ button {
     font-weight:bold;
     height: 200%;
 }
+.timeSignature {
+    text-align: center;
+    margin: 0px 10px;
+    font-size: 2rem;
+    font-weight:bold;
+    height: 200%;
+}
 
 .ctsBarVisual {
-    /* 必要に応じてスタイルを追加 */
+    display: flex;
+    text-align: center;
+    align-items: center;
     background-color: rgb(245, 245, 245);
 }
 

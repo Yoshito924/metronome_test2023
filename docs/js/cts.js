@@ -112,6 +112,8 @@ selectElement.onchange = function () {
     calculateCtsBeat();
     // 拍のビジュアルをHTML上に描画する関数
     updateCtsRhythmTable('ctsVisual', ctsBeatStates);
+    // 1小節のビジュアルをHTML上に描画する関数
+    updateCtsBarVisualTable()
     // テキストエリアの高さを制御する関数
     adjustTextareaHeight();
 };
@@ -161,7 +163,13 @@ function calculateCtsBeat() {
         tsInt.numerator.push(parseInt(ts[0]))
         tsInt.denominator.push(parseInt(ts[1]))
         //分母と分子の値に以上がないかエラーチェックする
-        if (Number.isNaN(tsInt.denominator[i])) {
+        if (Number.isNaN(tsInt.denominator[i]) && Number.isNaN(tsInt.numerator[i])) {
+            //分母エラーチェック
+            document.getElementById(`ctsTextareaInfo`).innerHTML = `<span class="redText">※拍子の入力エラー：拍子が正しく入力されていません。</span>`;
+            //メトロノームを停止したときの処理
+            metronomeStop()
+            return;
+        } else if (Number.isNaN(tsInt.denominator[i])) {
             //分母エラーチェック
             document.getElementById(`ctsTextareaInfo`).innerHTML = `<span class="redText">※拍子の入力エラー：分母の値が存在しない拍子が含まれています。</span>`;
             //メトロノームを停止したときの処理
@@ -252,11 +260,12 @@ function calculateCtsBeat() {
 
 //メトロノームを停止したときの処理
 function metronomeStop() {
-    // メトロノームが既に再生中の場合、AudioContextを閉じて初期化します。
+    // メトロノームが既に再生中の場合、AudioContextを閉じて初期化。（メトロノームが重複して鳴るのを防ぐため）
     if (audioContext) {
         audioContext.close(); // AudioContextを閉じる
         audioContext = null; // AudioContextをリセット
-        initializeAudioContext()
+        // AudioContextの初期化を行う関数
+        initializeAudioContext();
     };
     // 保存された全てのタイマーIDに対してclearTimeoutを実行
     timerIds.forEach(id => clearTimeout(id));
@@ -278,6 +287,8 @@ function metronomeStop() {
             element.classList.remove("highlightBarCts")
         };
     };
+    document.getElementById("ctsMetronomeClickSoundLoading").innerHTML = "";
+    document.getElementById("ctsMetronomeBeatHeadClickSoundLoading").innerHTML = "";
     // 音が実際に再生されているか判定する変数をfalseにする
     audioBuffersActive = false;
     //ビートのカウントをリセット
@@ -285,6 +296,8 @@ function metronomeStop() {
     timeSignatureBeatCount = 1;
     oneBarBeatCount = 0;
     measureLocation = 0;
+    //ローディングのカウントダウンもリセット
+    remainingTime = 0;
 };
 
 // メトロノームをオンオフする関数
@@ -298,7 +311,10 @@ async function ctsMetronomeOnOff() {
     if (!isPlaying) {
         // メトロノームを開始したときの処理
         if (!audioContext) {
-            initializeAudioContext()
+            // AudioContextを初期化
+            initializeAudioContext();
+            // オーディオファイルの読み込みを開始
+            loadAudioFiles();
         };
         nextBeatTime = audioContext.currentTime;
         // BPMに基づいて最小のクリックの間隔を計算(ms)。
@@ -343,6 +359,10 @@ async function ctsMetronomeOnOff() {
             ctsMetronomeOnOff();
         };
     }, 200);
+    //現在のミュート状態をチェックし、描画する関数
+    muteIconCheck(ctsMuted, `muteCtsRhythm`, `highlightCts`);
+    //現在のミュート状態をチェックし、描画する関数
+    muteIconCheck(ctsBeatHeadMuted, 'muteCtsBeatHead', `highlightBeatHeadCts`);
     //------------------------------------------------------------------------
     isPlaying = !isPlaying; // メトロノームの再生状態を切り替える
 };
@@ -414,7 +434,62 @@ let barBeatCount = 1;
 let oneBarBeatCount = 0;
 // 何小節目かを管理するグローバル変数
 let measureLocation = 0;
-// 変拍子テーブルのビジュアル要素を着色する関数
+
+// 拍子テーブルのビジュアルをHTML上に描画する関数
+function updateCtsRhythmTable(idName) {
+    //メトロノームが動作中ならばいったん止める
+    if (isPlaying) {
+        ctsMetronomeOnOff();
+    };
+    //------------------------------------------------------------------------
+    // 既存の<tr>要素を削除
+    document.getElementById(`${idName}Row`).innerHTML = '';
+    // <td>要素を生成して追加
+    for (let i = 0; i < ctsBeatArray.numerator.length; i++) {
+        // 新しい<td>要素を作成
+        let newTd = document.createElement('td');
+        newTd.id = `ctsVisual${i + 1}`;  // IDを設定
+        newTd.style.width = `${ctsBeatArrayR.numerator[i] / beatTotalValue * 100}%`;//幅を設定
+        newTd.innerHTML
+            = `<span class="grayText">(${i + 1})</span><br>
+            <span class="fontBold">
+            ${ctsBeatArray.numerator[i]}<br>
+            ―
+            <br>${ctsBeatArray.denominator[i]}
+            </span>`;   // 内容を設定
+        // <tr>要素に新しい<td>要素を追加
+        document.getElementById(`${idName}Row`).appendChild(newTd);
+    };
+    //------------------------------------------------------------------------
+    // 合計の拍子を表示する
+    // 値をともに2で割り、smallestBeatが4になった時点でやめる
+    let reducingFractionsBeatTotalValue = beatTotalValue;
+    let reducingFractionsSmallestBeat = smallestBeat;
+    while (reducingFractionsSmallestBeat > 4 && reducingFractionsBeatTotalValue % 2 === 0) {
+        reducingFractionsBeatTotalValue = reducingFractionsBeatTotalValue /= 2;
+        reducingFractionsSmallestBeat = reducingFractionsSmallestBeat /= 2;
+    };
+    //合計の拍子を表示する
+    document.getElementById(`ctsTotalTimeSignature`).innerHTML
+        = ``;
+    if (reducingFractionsBeatTotalValue !== beatTotalValue) {
+        document.getElementById(`ctsTotalTimeSignature`).innerHTML
+            = `<span class="fontBold">
+            ${reducingFractionsBeatTotalValue}<br>
+            ―
+            <br>${reducingFractionsSmallestBeat}
+            </span>`;
+    } else {
+        document.getElementById(`ctsTotalTimeSignature`).innerHTML
+            = `<span class="fontBold">
+            ${beatTotalValue}<br>
+            ―
+            <br>${smallestBeat}
+            </span>`;
+    }
+};
+
+// 拍子テーブルのビジュアル要素を着色する関数
 function highlightBeat(beatCount) {
     //再生中でないなら止める
     if (!isPlaying) {
@@ -428,16 +503,17 @@ function highlightBeat(beatCount) {
             let element = document.getElementById(`ctsVisual${i}`);
             //要素がある場合のみ削除
             if (element) {
-                element.classList.remove("highlightCts")
+                element.classList.remove("highlightBeatHeadCts")
             };
         };
         //ハイライトを付ける
-        document.getElementById(`ctsVisual${timeSignatureBeatCount}`).classList.add('highlightCts');
+        document.getElementById(`ctsVisual${timeSignatureBeatCount}`).classList.add('highlightBeatHeadCts');
         updateCtsBarVisualTable(timeSignatureBeatCount, oneBarBeatCount)
         //カウンターを+1する
         timeSignatureBeatCount++
         barBeatCount = 1;
     };
+    // ------------------------------------------------------------------------
     // 何小節目かをカウントする
     for (let i = 0; i <= ctsBeatHeadStates.length; i++) {
         if (ctsBeatHeadStates[i] === beatCount - 1) {
@@ -467,33 +543,39 @@ function highlightBeat(beatCount) {
     };
 };
 
-// 拍子テーブルのビジュアルをHTML上に描画する関数
-function updateCtsRhythmTable(idName) {
-    //メトロノームが動作中ならばいったん止める
-    if (isPlaying) {
-        ctsMetronomeOnOff();
-    };
+//=============================================================================
+// 1小節テーブルのビジュアルをHTML上に描画する関数
+function updateCtsBarVisualTable(timeSignatureBeatCount = 1, oneBarBeatCount = 1) {
+    // 音符を格納する変数と配列を定義する
+    let note;
+    let rest;
+    let returnNote = { note: '', rest: '' };
+    returnNote = DetermineTypeOfNote(ctsBeatArray.denominator[timeSignatureBeatCount - 1], note, rest);// 音符の種類を決める関数
+    note = returnNote.note;
+    rest = returnNote.rest;
     //------------------------------------------------------------------------
-    // 既存の<tr>要素を削除
-    document.getElementById(`${idName}Row`).innerHTML = '';
+    // 1小節のビジュアルの拍子部分のビジュアルを描画する
+    document.getElementById(`ctsBarTimeSignature`).innerHTML = '';
+    document.getElementById(`ctsBarTimeSignature`).innerHTML
+        = `${ctsBeatArray.numerator[timeSignatureBeatCount - 1]}<br>―<br>${ctsBeatArray.denominator[timeSignatureBeatCount - 1]}`;
+    //------------------------------------------------------------------------
+    // 既存の<tr>要素を一旦削除
+    document.getElementById(`ctsBarVisualRow`).innerHTML = '';
     // <td>要素を生成して追加
-    for (let i = 0; i < ctsBeatArray.numerator.length; i++) {
+    for (let i = 0; i < ctsBeatArray.numerator[timeSignatureBeatCount - 1]; i++) {
         // 新しい<td>要素を作成
         let newTd = document.createElement('td');
-        newTd.id = `ctsVisual${i + 1}`;  // IDを設定
+        newTd.id = `ctsBarVisual_${i + 1 + oneBarBeatCount}`;  // IDを設定
         newTd.innerHTML
-            = `<span class="grayText">(${i + 1})</span><br>
-            <span class="fontBold">
-            ${ctsBeatArray.numerator[i]}<br>
-            ―
-            <br>${ctsBeatArray.denominator[i]}
-            </span>`;   // 内容を設定
+            = `<span class="grayText">
+            (${measureLocation + 1})-${i + 1}
+            </span><br>
+            ${note}`;   // 内容を設定
         // <tr>要素に新しい<td>要素を追加
-        document.getElementById(`${idName}Row`).appendChild(newTd);
+        document.getElementById(`ctsBarVisualRow`).appendChild(newTd);
     };
 };
 
-//=============================================================================
 // 1小節テーブルのビジュアル内の要素を着色する関数
 function ctsBarVisualColored() {
     //一度すべてのハイライトを削除する
@@ -511,37 +593,6 @@ function ctsBarVisualColored() {
     } else {
         console.log('要素が存在しない');
     };
-};
-
-
-// 1小節テーブルのビジュアルをHTML上に描画する関数
-function updateCtsBarVisualTable(timeSignatureBeatCount = 1, oneBarBeatCount = 1) {
-    // 音符を格納する変数と配列を定義する
-    let note;
-    let rest;
-    let returnNote = { note: '', rest: '' };
-    returnNote = DetermineTypeOfNote(ctsBeatArray.denominator[timeSignatureBeatCount - 1], note, rest);// 音符の種類を決める関数
-    note = returnNote.note;
-    rest = returnNote.rest;
-    // console.log(oneBarBeatCount,)
-    //------------------------------------------------------------------------
-    // 1小節のビジュアルの拍子部分のビジュアルを描画する
-    document.getElementById(`ctsBarTimeSignature`).innerHTML = '';
-    document.getElementById(`ctsBarTimeSignature`).innerHTML
-        = `${ctsBeatArray.numerator[timeSignatureBeatCount - 1]}<br>―<br>${ctsBeatArray.denominator[timeSignatureBeatCount - 1]}`;
-    //------------------------------------------------------------------------
-    // 既存の<tr>要素を一旦削除
-    document.getElementById(`ctsBarVisualRow`).innerHTML = '';
-    // <td>要素を生成して追加
-    for (let i = 0; i < ctsBeatArray.numerator[timeSignatureBeatCount - 1]; i++) {
-        // 新しい<td>要素を作成
-        let newTd = document.createElement('td');
-        newTd.id = `ctsBarVisual_${i + 1 + oneBarBeatCount}`;  // IDを設定
-        newTd.innerHTML = `<span class="grayText">(${measureLocation + 1})-${i + 1}</span><br>${note}`;   // 内容を設定
-        // <tr>要素に新しい<td>要素を追加
-        document.getElementById(`ctsBarVisualRow`).appendChild(newTd);
-    };
-    //------------------------------------------------------------------------
 };
 
 //=============================================================================
@@ -632,7 +683,106 @@ document.getElementById('ctsTextarea').addEventListener('input', function () {
     calculateCtsBeat();
     // 拍のビジュアルをHTML上に描画する関数
     updateCtsRhythmTable('ctsVisual')
+    // 1小節のビジュアルをHTML上に描画する関数
+    updateCtsBarVisualTable()
     // テキストエリアの高さを制御する関数
     adjustTextareaHeight();
+});
+
+// --------------------------------------------------------------------------
+// ローディング案内テキストのを表示する処理
+let timers = {};
+let remainingTime = 0;
+function ctsClickSoundLoading(loadingId) {
+    remainingTime = Math.round(nextBeatTime - audioContext.currentTime);
+    // 既存のインターバルをクリア
+    if (timers[loadingId]) {
+        clearInterval(timers[loadingId].intervalId);
+        clearTimeout(timers[loadingId].timeoutId);
+    }
+
+    // カウントダウンを更新する関数
+    const updateText = () => {
+        if (remainingTime <= 0) {
+            clearInterval(timers[loadingId].intervalId);
+            document.getElementById(loadingId).innerHTML = "";
+        } else if (isPlaying) {
+            document.getElementById(loadingId).innerHTML = `読み込み中…${remainingTime}秒ほどお待ちください。`;
+            console.log(remainingTime)
+        };
+        remainingTime = remainingTime - 1
+    };
+
+    if (audioContext) {
+        updateText(); // 最初の更新
+        // 1秒ごとに更新するインターバルを設定
+        timers[loadingId] = { intervalId: setInterval(updateText, 1000) };
+    } else {
+        document.getElementById(loadingId).innerHTML = `読み込み中…`;
+        // タイムアウトを設定
+        timers[loadingId] = {
+            timeoutId: setTimeout(() => {
+                document.getElementById(loadingId).innerHTML = "";
+            }, ((nextBeatTime - audioContext.currentTime) * 1000))
+        };
+    }
+};
+
+//音色の種類を選択するドロップダウンリストのイベントリスナー
+document.getElementById('ctsMetronomeClickSound').addEventListener('change', function () {
+    ctsClickSoundLoading(`ctsMetronomeClickSoundLoading`);
+});
+document.getElementById('ctsMetronomeBeatHeadClickSound').addEventListener('change', function () {
+    ctsClickSoundLoading(`ctsMetronomeBeatHeadClickSoundLoading`);
+});
+
+// --------------------------------------------------------------------------
+//現在のミュート状態をチェックし、描画する関数
+function muteIconCheck(muteData, muteId, highlight) {
+    if (!muteData) {
+        //既にミュート済ならミュートをオフにする
+        document.getElementById(muteId).innerHTML
+            = `<img src="./image/volume_up_FILL0_wght400_GRAD0_opsz24.svg" alt="ヴォリュームアイコン" title="ヴォリュームアイコン" class="volumeIcon">`;
+        document.getElementById(muteId).classList.add(highlight);
+    } else {
+        //ミュートする
+        document.getElementById(muteId).innerHTML
+            = `<img src="./image/volume_off_FILL0_wght400_GRAD0_opsz24.svg" alt="ミュートアイコン" title="ミュートアイコン" class="volumeIcon">`;
+        document.getElementById(muteId).classList.remove(highlight);
+    }
+};
+
+function toggleCtsMuteIcon(muteData, muteId, highlight) {
+    document.getElementById(muteId).innerHTML
+        = `<img src="./image/update_FILL0_wght400_GRAD0_opsz24.svg" alt="ロード中アイコン" title="ロード中アイコン" class="volumeIcon">`;
+    //スケジュールされているタイミングの分だけ切り替えを遅らせる
+    setTimeout(() => {
+        if (!muteData) {
+            //既にミュート済ならミュートをオフにする
+            document.getElementById(muteId).innerHTML
+                = `<img src="./image/volume_up_FILL0_wght400_GRAD0_opsz24.svg" alt="ヴォリュームアイコン" title="ヴォリュームアイコン" class="volumeIcon">`;
+            document.getElementById(muteId).classList.add(highlight);
+        } else {
+            //ミュートする
+            document.getElementById(muteId).innerHTML
+                = `<img src="./image/volume_off_FILL0_wght400_GRAD0_opsz24.svg" alt="ミュートアイコン" title="ミュートアイコン" class="volumeIcon">`;
+            document.getElementById(muteId).classList.remove(highlight);
+        };
+        //現在スケジュールされている時間分処理を止める
+    }, ((nextBeatTime - audioContext.currentTime) * 1000));
+};
+
+//ミュートボタンのイベントリスナー
+document.getElementById('muteCtsRhythm').addEventListener('click', () => {
+    ctsMuted = !ctsMuted;
+    document.getElementById(`muteCtsRhythm`).classList.toggle('muted');
+    toggleCtsMuteIcon(ctsMuted, `muteCtsRhythm`, `highlightCts`)
+    ctsClickSoundLoading(`ctsMetronomeClickSoundLoading`);
+});
+document.getElementById('muteCtsBeatHead').addEventListener('click', () => {
+    ctsBeatHeadMuted = !ctsBeatHeadMuted;
+    document.getElementById(`muteCtsBeatHead`).classList.toggle('muted');
+    toggleCtsMuteIcon(ctsBeatHeadMuted, 'muteCtsBeatHead', `highlightBeatHeadCts`)
+    ctsClickSoundLoading(`ctsMetronomeBeatHeadClickSoundLoading`);
 });
 
