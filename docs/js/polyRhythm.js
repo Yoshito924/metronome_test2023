@@ -89,11 +89,39 @@ function generateBeatPattern(lcm, rhythm1, rhythm2) {
     // 結果の確認
     return beatPattern;
 };
-
 //=============================================================================
+//BPMの値をチェックして数値に変換する関数
+function sanitizeBpmInput(bpm) {
+    // 全角数字を半角に変換
+    bpm = bpm.replace(/[０-９]/g, function (s) {
+        return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+    });
+    // 数字と小数点以外を削除
+    bpm = bpm.replace(/[^0-9.]/g, '');
+    //数値へ変換する
+    bpm = parseFloat(bpm);
+    //四捨五入して小数点第1位までを表示する
+    bpm = roundToOne(bpm);
+    // // 数値チェックと範囲内に収める
+    if (/^\d+(\.\d)?$/g.test(bpm)) {
+        bpm = Math.max(1, Math.min(300, bpm));
+    } else {
+        bpm = 120; // 無効な入力の場合
+    };
+    //HTML上に値を返す
+    document.getElementById('bpm').value = bpm;
+    document.getElementById('bpmValue').value = bpm;
+    document.getElementById('basisBpmValue').innerHTML = ""
+    document.getElementById('basisBpmValue').innerHTML = `${bpm}`;
+    //チェックしたBPMの値を返す
+    return bpm;
+};
 // メトロノームをオンオフする関数
-async function metronomeOnOff() {
-    bpm = document.getElementById('bpm').value;
+function metronomeOnOff() {
+    //現在のBPMの値を取得する
+    bpm = document.getElementById('bpmValue').value;
+    //BPMの値をチェックして数値に変換する
+    bpm = sanitizeBpmInput(bpm);
     rhythm1 = document.getElementById('rhythm1').value;
     rhythm2 = document.getElementById('rhythm2').value;
     lcmRhythm = lcm(rhythm1, rhythm2);
@@ -118,6 +146,8 @@ async function metronomeOnOff() {
         for (let i = 0; i < totalBeats; i++) {
             scheduleBeat(i % totalBeats + 1);
         };
+        //ローディングのカウントダウンもリセット
+        remainingTime = 0;
     } else {
         //メトロノームを停止したときの処理
         // メトロノームが既に再生中の場合、AudioContextを閉じて初期化します。
@@ -159,6 +189,8 @@ async function metronomeOnOff() {
         beatCount = 1
         rhythm1BeatCount = 1
         rhythm2BeatCount = 1
+        //ローディングのカウントダウンもリセット
+        remainingTime = 0;
     };
     //------------------------------------------------------------------------
     if (!isPlaying) {
@@ -192,10 +224,14 @@ async function metronomeOnOff() {
             metronomeOnOff();
         };
     }, 200);
+    //現在のミュート状態をチェックし、描画する関数
+    muteIconCheck(beatHeadMuted, `muteBeatHead`, `highlightBeatHead`)
+    muteIconCheck(rhythm1Muted, `muteRhythm1`, `highlight1`)
+    muteIconCheck(lcmMuted, 'muteLCM', `highlightLcm`)
+    muteIconCheck(rhythm2Muted, `muteRhythm2`, `highlight2`)
     //------------------------------------------------------------------------
     isPlaying = !isPlaying; // メトロノームの再生状態を切り替える
 };
-
 //=============================================================================
 // ビートをスケジュールする関数
 function scheduleBeat(beatCount) {
@@ -226,7 +262,6 @@ function scheduleBeat(beatCount) {
     // 次のビートの時間を更新
     nextBeatTime += beatInterval;
 };
-
 //=============================================================================
 let rhythm1BeatCount;
 let rhythm2BeatCount;
@@ -285,8 +320,7 @@ function highlightBeat(beatCount) {
     } else {
         beatCount++
     };
-}
-
+};
 //=============================================================================
 // オーディオバッファを再生する関数
 function playSound(buffer, time) {
@@ -305,8 +339,7 @@ function playSound(buffer, time) {
     source.start(time);
     //音が再生されているか否かを判定する変数をtrueにする。
     audioBuffersActive = true;
-}
-
+};
 // --------------------------------------------------------------
 //リズムテーブル更新を行う関数
 function updateCommonRhythmTable() {
@@ -363,8 +396,7 @@ function updateCommonRhythmTable() {
     updateRhythmTable(rhythm1, 'rhythm1Beat', rhythm1BeatStates);
     updateRhythmTable(lcmRhythm, 'leastCommonMultipleBeat', lcmBeatStates);
     updateRhythmTable(rhythm2, 'rhythm2Beat', rhythm2BeatStates);
-}
-
+};
 // --------------------------------------------------------------
 // 拍のビジュアルをHTML上に描画する関数
 function updateRhythmTable(beats, idName, beatStates) {
@@ -372,7 +404,6 @@ function updateRhythmTable(beats, idName, beatStates) {
     if (isPlaying) {
         metronomeOnOff()
     };
-
     let row = document.getElementById(`${idName}Row`);
     row.innerHTML = '';
     //------------------------------------------------------------------------
@@ -443,7 +474,6 @@ function updateRhythmTable(beats, idName, beatStates) {
     rhythm1BeatCount = 1
     rhythm2BeatCount = 1
 };
-
 // --------------------------------------------------------------
 // メトロノームが動作中なら一度止めた後に再度動かす関数
 function metronomeRestart() {
@@ -458,8 +488,7 @@ function metronomeRestart() {
             };
         }, 200);
     };
-}
-
+};
 // --------------------------------------------------------------
 //リズムのプリセットを切り替える関数
 function rhythmPresetChange(num) {
@@ -520,16 +549,20 @@ function rhythmPresetChange(num) {
     // 拍のビジュアルをHTML上に描画する関数
     updateCommonRhythmTable();
 };
-
-//ロード中に「読み込み中…」テキストを表示する関数
-function clickSoundLoading(loadingId) {
-    document.getElementById(loadingId).innerHTML = `読み込み中…`;
-    setTimeout(() => {
-        document.getElementById(loadingId).innerHTML = "";
-        //現在スケジュールされている時間分処理を止める
-    }, ((nextBeatTime - audioContext.currentTime) * 1000));
+//現在のミュート状態をチェックし、描画する関数
+function muteIconCheck(muteData, muteId, highlight) {
+    if (!muteData) {
+        //既にミュート済ならミュートをオフにする
+        document.getElementById(muteId).innerHTML
+            = `<img src="./image/volume_up_FILL0_wght400_GRAD0_opsz24.svg" alt="ヴォリュームアイコン" title="ヴォリュームアイコン" class="volumeIcon">`;
+        document.getElementById(muteId).classList.add(highlight);
+    } else {
+        //ミュートする
+        document.getElementById(muteId).innerHTML
+            = `<img src="./image/volume_off_FILL0_wght400_GRAD0_opsz24.svg" alt="ミュートアイコン" title="ミュートアイコン" class="volumeIcon">`;
+        document.getElementById(muteId).classList.remove(highlight);
+    };
 };
-
 //ロード中のアイコンを切り替える関数
 function toggleMuteIcon(muteData, muteId, highlight) {
     document.getElementById(muteId).innerHTML
@@ -540,12 +573,13 @@ function toggleMuteIcon(muteData, muteId, highlight) {
             //既にミュート済ならミュートをオフにする
             document.getElementById(muteId).innerHTML
                 = `<img src="./image/volume_up_FILL0_wght400_GRAD0_opsz24.svg" alt="ヴォリュームアイコン" title="ヴォリュームアイコン" class="volumeIcon">`;
+            document.getElementById(muteId).classList.add(highlight);
         } else {
             //ミュートする
             document.getElementById(muteId).innerHTML
                 = `<img src="./image/volume_off_FILL0_wght400_GRAD0_opsz24.svg" alt="ミュートアイコン" title="ミュートアイコン" class="volumeIcon">`;
-        }
-        document.getElementById(muteId).classList.toggle(highlight);
+            document.getElementById(muteId).classList.remove(highlight);
+        };
         //現在スケジュールされている時間分処理を止める
     }, ((nextBeatTime - audioContext.currentTime) * 1000));
 };
@@ -579,18 +613,11 @@ document.addEventListener('keydown', function (event) {
     };
 });
 
+
 // スライダーとテキストボックスの値を同期させる関数
 function updateBpm(value) {
     // メトロノームが動作中なら一度止めた後に再度動かす関数
     metronomeRestart();
-    // 数値チェックと範囲内に収める
-    value = roundToThree(parseFloat(value))
-    // // 数値チェックと範囲内に収める
-    if (!isNaN(value)) {
-        value = Math.max(1, Math.min(300, value));
-    } else {
-        value = 120; // 無効な入力の場合、デフォルト値にリセット
-    };
     document.getElementById('bpm').value = value;
     document.getElementById('bpmValue').value = value;
     document.getElementById('basisBpmValue').innerHTML = ""
@@ -601,10 +628,7 @@ function updateBpm(value) {
 document.getElementById('bpm').addEventListener('input', function () {
     // メトロノームが動作中なら一度止めた後に再度動かす関数
     metronomeRestart();
-    document.getElementById('bpmValue').textContent = this.value;
-    document.getElementById('basisBpmValue').textContent = this.value;
-    document.getElementById('basisBpmValue').innerHTML = ""
-    document.getElementById('basisBpmValue').innerHTML = `${this.value}`;
+    updateBpm(this.value);
 });
 
 //リズム1の値が変更された時の処理
@@ -660,7 +684,46 @@ document.getElementById('polyRhythm_basis_note').addEventListener('change', func
     updateCommonRhythmTable();
 });
 
+// ローディング案内テキストを表示する処理
+let timers = {};
+let remainingTime = 0;
+function clickSoundLoading(loadingId) {
+    remainingTime = Math.round(nextBeatTime - audioContext.currentTime);
+    // 既存のインターバルをクリア
+    if (timers[loadingId]) {
+        clearInterval(timers[loadingId].intervalId);
+        clearTimeout(timers[loadingId].timeoutId);
+    };
+    // カウントダウンを更新する関数
+    const updateText = () => {
+        if (remainingTime <= 0) {
+            clearInterval(timers[loadingId].intervalId);
+            //何も表示しない
+            document.getElementById(loadingId).innerHTML = "";
+        } else if (isPlaying) {
+            document.getElementById(loadingId).innerHTML = `※処理中…${remainingTime}秒ほどお待ちください。`;
+        };
+        remainingTime = remainingTime - 1
+    };
+    if (audioContext) {
+        updateText(); // 最初の更新
+        // 1秒ごとに更新するインターバルを設定
+        timers[loadingId] = { intervalId: setInterval(updateText, 1000) };
+    } else {
+        document.getElementById(loadingId).innerHTML = `※処理中…`;
+        // タイムアウトを設定
+        timers[loadingId] = {
+            timeoutId: setTimeout(() => {
+                document.getElementById(loadingId).innerHTML = "";
+            }, ((nextBeatTime - audioContext.currentTime) * 1000))
+        };
+    };
+};
 //音色の種類を選択するドロップダウンリストのイベントリスナー
+document.getElementById('beatHeadClickSound').addEventListener('change', function () {
+    clickSoundLoading(`beatHeadClickSoundLoading`);
+});
+
 document.getElementById('rhythm1ClickSound').addEventListener('change', function () {
     clickSoundLoading(`rhythm1ClickSoundLoading`);
 });
@@ -670,30 +733,31 @@ document.getElementById('lcmClickSound').addEventListener('change', function () 
 document.getElementById('rhythm2ClickSound').addEventListener('change', function () {
     clickSoundLoading(`rhythm2ClickSoundLoading`);
 });
-document.getElementById('beatHeadClickSound').addEventListener('change', function () {
+//ミュートボタンのイベントリスナー
+document.getElementById('muteBeatHead').addEventListener('click', () => {
+    beatHeadMuted = !beatHeadMuted;
+    toggleMuteIcon(beatHeadMuted, `muteBeatHead`, `highlightBeatHead`)
     clickSoundLoading(`beatHeadClickSoundLoading`);
 });
-
-//ミュートボタンのイベントリスナー
 document.getElementById('muteRhythm1').addEventListener('click', () => {
     rhythm1Muted = !rhythm1Muted;
     document.getElementById(`rhythm1BeatTable`).classList.toggle('muted');
     toggleMuteIcon(rhythm1Muted, `muteRhythm1`, `highlight1`)
+    clickSoundLoading(`rhythm1ClickSoundLoading`);
 });
 document.getElementById('muteLCM').addEventListener('click', () => {
     lcmMuted = !lcmMuted;
     document.getElementById(`leastCommonMultiple1BeatTable`).classList.toggle('muted');
     toggleMuteIcon(lcmMuted, 'muteLCM', `highlightLcm`)
+    clickSoundLoading(`lcmClickSoundLoading`);
 });
 document.getElementById('muteRhythm2').addEventListener('click', () => {
     rhythm2Muted = !rhythm2Muted;
     document.getElementById(`rhythm2BeatTable`).classList.toggle('muted');
     toggleMuteIcon(rhythm2Muted, `muteRhythm2`, `highlight2`)
+    clickSoundLoading(`rhythm2ClickSoundLoading`);
 });
-document.getElementById('muteBeatHead').addEventListener('click', () => {
-    beatHeadMuted = !beatHeadMuted;
-    toggleMuteIcon(beatHeadMuted, `muteBeatHead`, `highlightBeatHead`)
-});
+
 
 //プリセットのイベントリスナー
 document.getElementById('rhythmPreset').addEventListener('change', function () {

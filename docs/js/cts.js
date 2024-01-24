@@ -309,7 +309,8 @@ function sanitizeCtsBpmInput(bpm) {
     return bpm;
 };
 // メトロノームをオンオフする関数
-async function ctsMetronomeOnOff() {
+function ctsMetronomeOnOff() {
+    console.log("a", isPlaying)
     //現在のBPMの値を取得する
     bpm = document.getElementById('bpmValue').value;
     //BPMの値をチェックして数値に変換する
@@ -376,9 +377,9 @@ async function ctsMetronomeOnOff() {
         };
     }, 200);
     //現在のミュート状態をチェックし、描画する関数
-    muteIconCheck(ctsMuted, `muteCtsRhythm`, `highlightCts`);
+    muteCtsIconCheck(ctsMuted, `muteCtsRhythm`, `highlightCts`);
     //現在のミュート状態をチェックし、描画する関数
-    muteIconCheck(ctsBeatHeadMuted, 'muteCtsBeatHead', `highlightBeatHeadCts`);
+    muteCtsIconCheck(ctsBeatHeadMuted, 'muteCtsBeatHead', `highlightBeatHeadCts`);
     //------------------------------------------------------------------------
     isPlaying = !isPlaying; // メトロノームの再生状態を切り替える
 };
@@ -744,7 +745,7 @@ document.getElementById('ctsTextarea').addEventListener('input', function () {
     adjustTextareaHeight();
 });
 // --------------------------------------------------------------------------
-// ローディング案内テキストのを表示する処理
+// ローディング案内テキストを表示する処理
 let timers = {};
 let remainingTime = 0;
 function ctsClickSoundLoading(loadingId) {
@@ -761,8 +762,7 @@ function ctsClickSoundLoading(loadingId) {
             //何も表示しない
             document.getElementById(loadingId).innerHTML = "";
         } else if (isPlaying) {
-            document.getElementById(loadingId).innerHTML = `処理中…${remainingTime}秒ほどお待ちください。`;
-            console.log(remainingTime)
+            document.getElementById(loadingId).innerHTML = `※処理中…${remainingTime}秒ほどお待ちください。`;
         };
         remainingTime = remainingTime - 1
     };
@@ -771,7 +771,7 @@ function ctsClickSoundLoading(loadingId) {
         // 1秒ごとに更新するインターバルを設定
         timers[loadingId] = { intervalId: setInterval(updateText, 1000) };
     } else {
-        document.getElementById(loadingId).innerHTML = `処理中…`;
+        document.getElementById(loadingId).innerHTML = `※処理中…`;
         // タイムアウトを設定
         timers[loadingId] = {
             timeoutId: setTimeout(() => {
@@ -789,7 +789,7 @@ document.getElementById('ctsMetronomeBeatHeadClickSound').addEventListener('chan
 });
 // --------------------------------------------------------------------------
 //現在のミュート状態をチェックし、描画する関数
-function muteIconCheck(muteData, muteId, highlight) {
+function muteCtsIconCheck(muteData, muteId, highlight) {
     if (!muteData) {
         //既にミュート済ならミュートをオフにする
         document.getElementById(muteId).innerHTML
@@ -800,7 +800,7 @@ function muteIconCheck(muteData, muteId, highlight) {
         document.getElementById(muteId).innerHTML
             = `<img src="./image/volume_off_FILL0_wght400_GRAD0_opsz24.svg" alt="ミュートアイコン" title="ミュートアイコン" class="volumeIcon">`;
         document.getElementById(muteId).classList.remove(highlight);
-    }
+    };
 };
 function toggleCtsMuteIcon(muteData, muteId, highlight) {
     document.getElementById(muteId).innerHTML
