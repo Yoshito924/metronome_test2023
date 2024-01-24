@@ -505,6 +505,9 @@ let audioBuffersActive = false;// 音が実際に再生されているか判定�
 // AudioContextの初期化を行う関数
 function initializeAudioContext() {
     try {
+        //webkitプレフィックスをつける。（WebKit使用のブラウザに対応するため）
+        window.AudioContext
+            = window.AudioContext || window.webkitAudioContext;
         // 新しいAudioContextインスタンスを作成
         audioContext = new AudioContext();
         // ゲインノードの作成
@@ -513,10 +516,9 @@ function initializeAudioContext() {
         gainNode.gain.value = 0.1;
         // ゲインノードをオーディオコンテキストの出力に接続
         gainNode.connect(audioContext.destination);
-        console.log("AudioContext initialized.")
     } catch (e) {
         console.error("Web Audio APIはこのブラウザではサポートされていません。", e);
-    }
+    };
 };
 
 // オーディオファイルを非同期にロードし、オーディオバッファに変換する関数
@@ -539,11 +541,9 @@ async function loadAudioFiles() {
     lordComplete = true;
 };
 
-
 //=============================================================================
 // ボリュームコントロールのイベントリスナー
 document.getElementById('volumeControl').addEventListener('input', function () {
-    console.log("q")
     let volume = this.value;
     gainNode.gain.value = volume / 10; // 0-10 の値を 0-0.5 に変換
     document.getElementById('volumeValue').textContent = volume; // ボリューム値の表示更新

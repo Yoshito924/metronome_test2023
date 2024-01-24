@@ -157,44 +157,30 @@ function calculateCtsBeat() {
         if (Number.isNaN(tsInt.denominator[i]) && Number.isNaN(tsInt.numerator[i])) {
             //分母エラーチェック
             document.getElementById(`ctsTextareaInfo`).innerHTML = `<span class="redText">※拍子の入力エラー：拍子が正しく入力されていません。</span>`;
-            //メトロノームを停止したときの処理
-            metronomeStop()
             return;
         } else if (Number.isNaN(tsInt.denominator[i])) {
             //分母エラーチェック
             document.getElementById(`ctsTextareaInfo`).innerHTML = `<span class="redText">※拍子の入力エラー：分母の値が存在しない拍子が含まれています。</span>`;
-            //メトロノームを停止したときの処理
-            metronomeStop()
             return;
         } else if (Number.isNaN(tsInt.numerator[i])) {
             //分子エラーチェック
             document.getElementById(`ctsTextareaInfo`).innerHTML = `<span class="redText">※拍子の入力エラー：分子の値が存在しない拍子が含まれています。</span>`;
-            //メトロノームを停止したときの処理
-            metronomeStop()
             return;
         } else if (tsInt.denominator[i] === 1) {
             //分母が1のエラーチェック
             document.getElementById(`ctsTextareaInfo`).innerHTML = `<span class="redText">※拍子の入力エラー：分母の値が「1」の拍子には非対応です。</span>`;
-            //メトロノームを停止したときの処理
-            metronomeStop()
             return;
         } else if (isPowerOfTwo(tsInt.denominator[i]) === false) {
             //拍子の値が2の累乗数かチェック
             document.getElementById(`ctsTextareaInfo`).innerHTML = `<span class="redText">※拍子の入力エラー：分母の値が2の累乗数（例:2,4,8,16...）ではない拍子には非対応です。</span>`;
-            //メトロノームを停止したときの処理
-            metronomeStop();
             return;
         } else if (tsInt.numerator[i] > 100) {
             //分子の値が大きすぎる場合のエラーチェック
             document.getElementById(`ctsTextareaInfo`).innerHTML = `<span class="redText">※拍子の入力エラー：分子の値は100以下の値を入力してください。</span>`;
-            //メトロノームを停止したときの処理
-            metronomeStop()
             return;
         } else if (tsInt.denominator[i] > 1024) {
             //分子の値が大きすぎる場合のエラーチェック
             document.getElementById(`ctsTextareaInfo`).innerHTML = `<span class="redText">※拍子の入力エラー：分母の値は1024以下の値を入力してください。</span>`;
-            //メトロノームを停止したときの処理
-            metronomeStop()
             return;
         };
     };
@@ -248,7 +234,7 @@ function calculateCtsBeat() {
     };
 };
 //メトロノームを停止したときの処理
-function metronomeStop() {
+function ctsStoppingProcess() {
     // メトロノームが既に再生中の場合、AudioContextを閉じて初期化。（メトロノームが重複して鳴るのを防ぐため）
     if (audioContext) {
         audioContext.close(); // AudioContextを閉じる
@@ -272,6 +258,7 @@ function metronomeStop() {
             element.classList.remove("highlightBarCts")
         };
     };
+    //------------------------------------------------------------------------
     document.getElementById("ctsMetronomeClickSoundLoading").innerHTML = "";
     document.getElementById("ctsMetronomeBeatHeadClickSoundLoading").innerHTML = "";
     // 音が実際に再生されているか判定する変数をfalseにする
@@ -281,8 +268,19 @@ function metronomeStop() {
     timeSignatureBeatCount = 1;
     oneBarBeatCount = 0;
     measureLocation = 0;
+    //------------------------------------------------------------------------
     //ローディングのカウントダウンもリセット
     remainingTime = 0;
+    //------------------------------------------------------------------------
+    // メトロノームを停止するためにボタンのテキストを「開始」に戻す
+    document.getElementById('ctsMetronomeControlButton').innerHTML
+        = `<i class="fa-solid fa-play controlButtonIcon blue">`;
+    // 音が実際に再生されているか判定する変数をfalseにする
+    audioBuffersActive = false;
+    // 保存された全てのタイマーIDに対してclearTimeoutを実行
+    timerIds.forEach(id => clearTimeout(id));
+    // タイマーIDの配列をクリア
+    timerIds = [];
 };
 //BPMの値をチェックして数値に変換する関数
 function sanitizeCtsBpmInput(bpm) {
@@ -308,9 +306,9 @@ function sanitizeCtsBpmInput(bpm) {
     //チェックしたBPMの値を返す
     return bpm;
 };
-// メトロノームをオンオフする関数
+
+// メトロノームをオン・オフする関数
 function ctsMetronomeOnOff() {
-    console.log("a", isPlaying)
     //現在のBPMの値を取得する
     bpm = document.getElementById('bpmValue').value;
     //BPMの値をチェックして数値に変換する
@@ -336,25 +334,12 @@ function ctsMetronomeOnOff() {
         };
         //ローディングのカウントダウンをリセット
         remainingTime = 0;
-    } else {
-        //メトロノームを停止したときの処理
-        metronomeStop();
-        // 保存された全てのタイマーIDに対してclearTimeoutを実行
-        timerIds.forEach(id => clearTimeout(id));
-        // タイマーIDの配列をクリア
-        timerIds = [];
-    };
-    //------------------------------------------------------------------------
-    if (!isPlaying) {
         // メトロノームが始まったことを示すためにボタンのテキストを「停止」に変更
         document.getElementById('ctsMetronomeControlButton').innerHTML
             = `<i class="fa-solid fa-stop controlButtonIcon red">`;
     } else {
-        // メトロノームを停止するためにボタンのテキストを「開始」に戻す
-        document.getElementById('ctsMetronomeControlButton').innerHTML
-            = `<i class="fa-solid fa-play controlButtonIcon blue">`;
-        // 音が実際に再生されているか判定する変数をfalseにする
-        audioBuffersActive = false;
+        //メトロノームを停止したときの処理
+        ctsStoppingProcess();
     };
     //------------------------------------------------------------------------
     // 本当に音が再生されているかチェックするための処理
@@ -376,6 +361,7 @@ function ctsMetronomeOnOff() {
             ctsMetronomeOnOff();
         };
     }, 200);
+    //------------------------------------------------------------------------
     //現在のミュート状態をチェックし、描画する関数
     muteCtsIconCheck(ctsMuted, `muteCtsRhythm`, `highlightCts`);
     //現在のミュート状態をチェックし、描画する関数
@@ -413,8 +399,8 @@ function generateCtsBeatPattern() {
 };
 // ビートをスケジュールする関数
 function scheduleBeat(beatCount) {
-    // メトロノームが停止状態かつnextBeatTimeが0以下の場合、処理を終了
-    if (!isPlaying && nextBeatTime <= 0) {
+    // メトロノームが停止状態かつnextBeatTimeが0未満の場合、処理を終了
+    if (!isPlaying && nextBeatTime < 0) {
         return;
     };
     // -------------------------------------------
@@ -681,6 +667,7 @@ function ctsMetronomeRestart() {
         }, 200);
     };
 };
+
 //=============================================================================
 // ページが読み込まれた時に実行する関数たち
 window.addEventListener('load', () => {

@@ -116,6 +116,50 @@ function sanitizeBpmInput(bpm) {
     //チェックしたBPMの値を返す
     return bpm;
 };
+//メトロノームを停止したときの処理
+function stoppingProcess() {
+    // メトロノームが既に再生中の場合、AudioContextを閉じて初期化します。
+    if (audioContext) {
+        audioContext.close(); // AudioContextを閉じる
+        audioContext = null; // AudioContextをリセット
+        initializeAudioContext()
+    };
+    // 保存された全てのタイマーIDに対してclearTimeoutを実行
+    timerIds.forEach(id => clearTimeout(id));
+    // タイマーIDの配列をクリア
+    timerIds = [];
+    // ビジュアル表示をリセットするために各ビートのクラスをクリア
+    for (let i = 1; i <= rhythm1; i++) {
+        let element = document.getElementById(`rhythm1Beat${i}`);
+        //要素がある場合のみ削除
+        if (element) {
+            element.classList.remove("highlight1")
+        }
+    };
+    for (let i = 1; i <= lcmRhythm; i++) {
+        let element = document.getElementById(`leastCommonMultipleBeat${i}`);
+        //要素がある場合のみ削除
+        if (element) {
+            element.classList.remove("highlightLcm")
+        }
+    };
+    for (let i = 1; i <= rhythm2; i++) {
+        let element = document.getElementById(`rhythm2Beat${i}`);
+        //要素がある場合のみ削除
+        if (element) {
+            element.classList.remove("highlight2")
+        }
+    };
+    // 音が実際に再生されているか判定する変数をfalseにする
+    audioBuffersActive = false;
+    //ビートのカウントをリセット
+    beatCount = 1
+    rhythm1BeatCount = 1
+    rhythm2BeatCount = 1
+    //ローディングのカウントダウンもリセット
+    remainingTime = 0;
+};
+
 // メトロノームをオンオフする関数
 function metronomeOnOff() {
     //現在のBPMの値を取得する
@@ -150,47 +194,7 @@ function metronomeOnOff() {
         remainingTime = 0;
     } else {
         //メトロノームを停止したときの処理
-        // メトロノームが既に再生中の場合、AudioContextを閉じて初期化します。
-        if (audioContext) {
-            audioContext.close(); // AudioContextを閉じる
-            audioContext = null; // AudioContextをリセット
-            initializeAudioContext()
-        };
-        beatCount = 1
-        // 保存された全てのタイマーIDに対してclearTimeoutを実行
-        timerIds.forEach(id => clearTimeout(id));
-        // タイマーIDの配列をクリア
-        timerIds = [];
-        // ビジュアル表示をリセットするために各ビートのクラスをクリア
-        for (let i = 1; i <= rhythm1; i++) {
-            let element = document.getElementById(`rhythm1Beat${i}`);
-            //要素がある場合のみ削除
-            if (element) {
-                element.classList.remove("highlight1")
-            }
-        };
-        for (let i = 1; i <= lcmRhythm; i++) {
-            let element = document.getElementById(`leastCommonMultipleBeat${i}`);
-            //要素がある場合のみ削除
-            if (element) {
-                element.classList.remove("highlightLcm")
-            }
-        };
-        for (let i = 1; i <= rhythm2; i++) {
-            let element = document.getElementById(`rhythm2Beat${i}`);
-            //要素がある場合のみ削除
-            if (element) {
-                element.classList.remove("highlight2")
-            }
-        };
-        // 音が実際に再生されているか判定する変数をfalseにする
-        audioBuffersActive = false;
-        //ビートのカウントをリセット
-        beatCount = 1
-        rhythm1BeatCount = 1
-        rhythm2BeatCount = 1
-        //ローディングのカウントダウンもリセット
-        remainingTime = 0;
+        stoppingProcess();
     };
     //------------------------------------------------------------------------
     if (!isPlaying) {
@@ -236,7 +240,7 @@ function metronomeOnOff() {
 // ビートをスケジュールする関数
 function scheduleBeat(beatCount) {
     // メトロノームが停止状態かつnextBeatTimeが0以下の場合、処理を終了
-    if (!isPlaying && nextBeatTime <= 0) {
+    if (!isPlaying && nextBeatTime < 0) {
         return;
     };
     // 配列を生成
