@@ -205,25 +205,28 @@ button {
     padding-bottom: 20px;
 }
 
-#ctsBarTimeSignature {
+#ctsTotalTimeSignature {
     text-align: center;
-    margin: 0px 10px;
     font-size: 2rem;
     font-weight:bold;
     height: 200%;
 }
-.timeSignature {
+
+#ctsBarTimeSignature {
     text-align: center;
+}
+
+.marginTimeSignature{
     margin: 0px 10px;
-    font-size: 2rem;
-    font-weight:bold;
-    height: 200%;
 }
 
 .ctsBarVisual {
     display: flex;
     text-align: center;
     align-items: center;
+}
+
+.ctsVisualStandbyColor{
     background-color: rgb(245, 245, 245);
 }
 

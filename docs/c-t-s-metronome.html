@@ -28,6 +28,7 @@
                 <div id="ctsMetronomeControlButton">
                     <i class="fa-solid fa-play controlButtonIcon blue"></i>
                 </div>
+                <a id="helpText2" class="redText"></a>
             </div>
             <!-- ---------------------------------------------------- -->
             <!-- リズムの設定 -->
@@ -55,8 +56,9 @@
 
             <div>
                 <label for="bpm">BPM:</label>
-                <input type="range" id="bpm" min="1" max="300" value="120">
-                <span id="bpmValue">120</span>
+                <input type="range" id="bpm" min="1" step="1" max="300" value="120" oninput="updateCtsBpm(this.value)">
+                <!-- テキストボックスのタイプをtextに変更 -->
+                <input type="text" id="bpmValue" value="120" oninput="updateCtsBpm(this.value)">
             </div>
             <div>
                 <label for="volumeControl">音量：</label>
@@ -132,7 +134,7 @@
             <div id="ctsTotalTimeSignature" class="timeSignature">
                 <!-- 動的に生成 -->
             </div>
-            <table class="ctsVisualTable">
+            <table class="ctsVisualTable ctsVisualStandbyColor">
                 <tr id="ctsVisualRow">
                     <!-- 動的に生成 -->
                 </tr>
@@ -142,11 +144,11 @@
 
         <div class="ctsBarVisualContainer">
             <!-- 現在再生中の小節の拍子 -->
-            <div id="ctsBarTimeSignature" class="timeSignature">
+            <div id="ctsBarTimeSignature" class="timeSignature marginTimeSignature">
                 <!-- 動的に生成 -->
             </div>
             <div class="ctsBarVisual">
-                <table class="ctsBarVisualTable">
+                <table class="ctsBarVisualTable  ctsVisualStandbyColor">
                     <tr id="ctsBarVisualRow">
                         <!-- 動的に生成 -->
                     </tr>

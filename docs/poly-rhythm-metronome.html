@@ -56,8 +56,14 @@
             <!-- リズムの設定 -->
             <div>
                 <label for="bpm">BPM:</label>
-                <input type="range" id="bpm" min="1" max="300" value="120">
-                <span id="bpmValue">120</span>
+                <input type="range" id="bpm" step="1" min="1" max="300" value="120" oninput="updateBpm(this.value)">
+                <!-- テキストボックスのタイプをtextに変更 -->
+                <input type="text" id="bpmValue" value="120" oninput="updateBpm(this.value)">
+            </div>
+            <div>
+                <label for="volumeControl">音量：</label>
+                <input type="range" id="volumeControl" min="0" max="10" step="1" value="1">
+                <span id="volumeValue">1</span>
             </div>
             <div class="rhythm1Border">
                 <label for="rhythm1">【リズム1】:</label>

@@ -554,6 +554,8 @@ function toggleMuteIcon(muteData, muteId, highlight) {
 // イベントリスナー
 // ページが読み込まれた時に実行する関数
 window.addEventListener('load', () => {
+    //BPMを更新したときの処理
+    updateBpm(document.getElementById('bpm').value);
     // AudioContextを初期化
     initializeAudioContext();
     // オーディオファイルの読み込みを開始
@@ -577,12 +579,32 @@ document.addEventListener('keydown', function (event) {
     };
 });
 
+// スライダーとテキストボックスの値を同期させる関数
+function updateBpm(value) {
+    // メトロノームが動作中なら一度止めた後に再度動かす関数
+    metronomeRestart();
+    // 数値チェックと範囲内に収める
+    value = roundToThree(parseFloat(value))
+    // // 数値チェックと範囲内に収める
+    if (!isNaN(value)) {
+        value = Math.max(1, Math.min(300, value));
+    } else {
+        value = 120; // 無効な入力の場合、デフォルト値にリセット
+    };
+    document.getElementById('bpm').value = value;
+    document.getElementById('bpmValue').value = value;
+    document.getElementById('basisBpmValue').innerHTML = ""
+    document.getElementById('basisBpmValue').innerHTML = `${value}`;
+};
+
 //BPMが変更された時の処理
 document.getElementById('bpm').addEventListener('input', function () {
     // メトロノームが動作中なら一度止めた後に再度動かす関数
     metronomeRestart();
     document.getElementById('bpmValue').textContent = this.value;
     document.getElementById('basisBpmValue').textContent = this.value;
+    document.getElementById('basisBpmValue').innerHTML = ""
+    document.getElementById('basisBpmValue').innerHTML = `${this.value}`;
 });
 
 //リズム1の値が変更された時の処理

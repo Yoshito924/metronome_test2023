@@ -10,6 +10,11 @@ function roundToThree(num) {
     return +(Math.round(num + "e+3") + "e-3");
 };
 
+// 四捨五入して小数点第1位までを表示する関数 (JavaScriptには元からそういう関数が無いっぽいので)
+function roundToOne(num) {
+    return +(Math.round(num + "e+1") + "e-1");
+};
+
 //2つの整数の最小公倍数を求める関数--------------------------------------
 function lcm(a, b) {
     let g = (n, m) => m ? g(m, n % m) : n
@@ -162,12 +167,30 @@ const ctsMetronomePreset = [
         info: ""
     },
     {
+        name: '『Monomyth』',
+        cts: `5/8 + 7/8 + 7/8 + 5/8 + 5/8 + 7/8`,
+        timeSig: 18,
+        bpm: 225,
+        exampleMusic: "Animals as Leaders - Monomyth (0:13 - 0:46)",
+        exampleMusicURL: "https://youtu.be/1Gi5KtoWY8U?feature=shared&t=12",
+        info: ""
+    },
+    {
         name: '『Pale Blue Dot』',
         cts: `4/16 + 4/16 + 4/16 + 4/16 + 3/16`,
         timeSig: 19,
         bpm: 144,
         exampleMusic: "Dream Theater - Pale Blue Dot (1:05 - 1:46)",
         exampleMusicURL: "https://youtu.be/hX3dYtIrWIk?si=fpuxRi-DdyzurA98&t=66",
+        info: ""
+    },
+    {
+        name: '『Levitation 21』',
+        cts: `6/16 + 6/16 + 6/16 + 3/16`,
+        timeSig: 21,
+        bpm: 145,
+        exampleMusic: "Tigran Hamasyan - Levitation 21",
+        exampleMusicURL: "https://youtu.be/Db3dHajCRRY?feature=shared&t=70",
         info: ""
     },
     {
@@ -201,15 +224,6 @@ const ctsMetronomePreset = [
         info: ""
     },
     {
-        name: '『Monomyth』',
-        cts: `5/8 + 7/8 + 7/8 + 5/8 + 5/8 + 7/8`,
-        timeSig: 19,
-        bpm: 225,
-        exampleMusic: "Animals as Leaders - Monomyth (0:13 - 0:46)",
-        exampleMusicURL: "https://youtu.be/1Gi5KtoWY8U?feature=shared&t=12",
-        info: ""
-    },
-    {
         name: '『Breaking All Illusions』',
         cts: `4/4 + 5/8 + 2/4 + 4/4 + 4/4 + 3/8 + 2/8 + 2/8 +
         4/4 + 5/8 + 2/4 + 4/4 + 4/4 + 3/8 + 2/8 + 4/8`,
@@ -239,13 +253,14 @@ const ctsMetronomePreset = [
         5/16 + 5/16 + 3/16 + 5/8 +
         5/16 + 5/16 + 3/16 + 2/4 +
         5/16 + 5/16 + 3/16 + 3/4 +
+
         5/16 + 5/16 + 3/16 + 2/4 +
         5/16 + 5/16 + 3/16 + 5/8 +
         5/16 + 5/16 + 3/16 + 2/4 +
         5/16 + 5/16 + 3/16 + 4/4`,
         timeSig: "その他の",
         bpm: 152,
-        exampleMusic: "KHUFRUDAMO NOTES - KUMOGAKURE (2:38 + 3:14)",
+        exampleMusic: "KHUFRUDAMO NOTES - KUMOGAKURE (2:38 - 3:14)",
         exampleMusicURL: "https://youtu.be/VWp20KS4AnY?feature=shared&t=157",
         info: ""
     },
