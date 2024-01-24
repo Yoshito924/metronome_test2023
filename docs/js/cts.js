@@ -28,32 +28,7 @@ function initializeBeatStates() {
 function removeExtraSpaces(str) {
     return str.split('\n').map(line => line.trim()).join('\n');
 };
-//プリセットをHTMLに書きこむ関数
-function updatePresetInfo(index) {
-    // 指定されたインデックスに基づいてプリセットオブジェクトを取得
-    const preset = ctsMetronomePreset[index];
-    // プリセットに exampleMusicURL が存在するかどうかで処理を分岐
-    if (preset.exampleMusicURL) {
-        // URLがある場合は、リンク付きでテキストを設定
-        document.getElementById('ctsPresetExample').innerHTML
-            = `参考曲：<a href="${preset.exampleMusicURL}" target="_blank">${preset.exampleMusic}</a>`;
-    } else {
-        // URLがない場合は、テキストのみを設定
-        document.getElementById('ctsPresetExample').innerHTML = preset.exampleMusic;
-    };
-    // プリセットの情報 (info) を表示
-    document.getElementById('ctsPresetInfo').innerHTML = preset.info;
-    // テキストエリアを空にする
-    const ctsTextarea = document.getElementById('ctsTextarea');
-    ctsTextarea.innerHTML = '';
-    // 拍子のテキストの不要なスペースを削除する
-    const formattedCts = removeExtraSpaces(preset.cts);
-    // 拍子のテキストを書きこむ
-    document.getElementById('ctsTextarea').value = formattedCts;
-    // BPMを変更する
-    document.getElementById('bpm').value = preset.bpm;
-    document.getElementById('bpmValue').value = preset.bpm;
-};
+
 // グループ化されたプリセットを作成する関数
 function groupPresetsByTimeSig(presets) {
     const groups = {};
@@ -107,6 +82,33 @@ selectElement.onchange = function () {
     // テキストエリアの高さを制御する関数
     adjustTextareaHeight();
 };
+//プリセットをHTMLに書きこむ関数
+function updatePresetInfo(index) {
+    // 指定されたインデックスに基づいてプリセットオブジェクトを取得
+    const preset = ctsMetronomePreset[index];
+    // プリセットに exampleMusicURL が存在するかどうかで処理を分岐
+    if (preset.exampleMusicURL) {
+        // URLがある場合は、リンク付きでテキストを設定
+        document.getElementById('ctsPresetExample').innerHTML
+            = `参考曲：<a href="${preset.exampleMusicURL}" target="_blank">${preset.exampleMusic}</a>`;
+    } else {
+        // URLがない場合は、テキストのみを設定
+        document.getElementById('ctsPresetExample').innerHTML = preset.exampleMusic;
+    };
+    // プリセットの情報 (info) を表示
+    document.getElementById('ctsPresetInfo').innerHTML = ``;
+    document.getElementById('ctsPresetInfo').innerHTML = preset.info;
+    // テキストエリアを空にする
+    const ctsTextarea = document.getElementById('ctsTextarea');
+    ctsTextarea.innerHTML = '';
+    // 拍子のテキストの不要なスペースを削除する
+    const formattedCts = removeExtraSpaces(preset.cts);
+    // 拍子のテキストを書きこむ
+    document.getElementById('ctsTextarea').value = formattedCts;
+    // BPMを変更する
+    document.getElementById('bpm').value = preset.bpm;
+    document.getElementById('bpmValue').value = preset.bpm;
+};
 // ------------------------------------------------------------------------------------------------
 // テキストエリアの高さを動的に制御する関数
 function adjustTextareaHeight() {
@@ -115,7 +117,7 @@ function adjustTextareaHeight() {
     // テキストエリアの行数を計算（改行文字で分割）
     let lines = document.getElementById("ctsTextarea").value.split('\n').length;
     // 最小行数と、最大行数を設定する
-    const minLines = 2;
+    const minLines = 3;
     const maxLines = 10;
     // 行数に基づいて高さを調整
     let newLines = Math.min(Math.max(lines, minLines), maxLines);

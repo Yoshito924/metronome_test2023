@@ -36,7 +36,7 @@ function isCoprime(a, b) {
 
     // 最大公約数が1であれば、二つの数は互いに素
     return gcd(a, b) === 1;
-}
+};
 
 // 2の累乗数か否かを判定する関数--------------------------------------
 function isPowerOfTwo(n) {
@@ -74,7 +74,7 @@ const fileNames = [
 //=============================================================================
 //変拍子メトロノームのプリセット
 // let selectedPreset = `『Breaking All Illusions』`;
-let selectedPreset = `4拍子`;
+let selectedPreset = `4拍子`;//初期値
 const ctsMetronomePreset = [
     {
         name: '3拍子',
@@ -122,21 +122,39 @@ const ctsMetronomePreset = [
         info: "",
     },
     {
-        name: '6拍子',
-        cts: `3/8 + 3/8 + 2/4`,
+        name: '『神様、仏様』',
+        cts: `6/8 + 6/8 + 6/8 + 6/8`,
         timeSig: 6,
-        bpm: 176,
-        exampleMusic: "Mission Impossible Theme (0:06 - 0:19)",
-        exampleMusicURL: "https://youtu.be/XAYhNHhxN0A?si=D-EMIbyfV7Lnhonq&t=6",
+        bpm: 130,
+        exampleMusic: "椎名林檎 - 神様、仏様 (3:00 - )",
+        exampleMusicURL: "https://youtu.be/42W8bxW14sU?feature=shared&t=179",
         info: "",
     },
     {
-        name: '7拍子',
+        name: '『Art of Life』',
+        cts: `3/4 + 4/4`,
+        timeSig: 7,
+        bpm: 180,
+        exampleMusic: "X Japan - Art of Life  (9:38 - 9:56)",
+        exampleMusicURL: "https://youtu.be/APazj44j4fw?feature=shared&t=578",
+        info: ""
+    },
+    {
+        name: '『The Best Of Times』',
         cts: `4/4 + 3/4`,
         timeSig: 7,
-        bpm: 170,
-        exampleMusic: "",
-        exampleMusicURL: "",
+        bpm: 144,
+        exampleMusic: "Dream Theater - The Best Of Times  (2:54 - 4:14)",
+        exampleMusicURL: "https://youtu.be/xVSM2CB4MLU?feature=shared&t=210",
+        info: ""
+    },
+    {
+        name: '『Solitary Shell』',
+        cts: `3/8 + 3/8 +  3/8 + 2/8`,
+        timeSig: 11,
+        bpm: 101.5,
+        exampleMusic: "Dream Theater - VI.Solitary Shell (3:46 - 4:21)",
+        exampleMusicURL: "https://youtu.be/ByxpvgdgtRU?feature=shared",
         info: ""
     },
     {
@@ -146,6 +164,15 @@ const ctsMetronomePreset = [
         bpm: 138,
         exampleMusic: "Plini - Electric Sunrise (0:00 - 1:42)",
         exampleMusicURL: "https://youtu.be/Rv_a6rlRjZk?si=Z4FFztFUqjqZmqn5&t=80",
+        info: ""
+    },
+    {
+        name: '『ハルシオン』',
+        cts: `4/4 + 2/4 + 4/4 + 3/4`,
+        timeSig: 13,
+        bpm: 180,
+        exampleMusic: "ハルシオン - ポルカドットスティングレイ (0:00 - 0:17)",
+        exampleMusicURL: "https://youtu.be/0uVKFuRDTQQ?feature=shared",
         info: ""
     },
     {
@@ -203,6 +230,17 @@ const ctsMetronomePreset = [
         info: ""
     },
     {
+        name: '『EverythingChanges』',
+        cts: `5/16 + 5/16 + 4/8 + 2/16 +
+        5/16 + 5/16 + 3/8 +
+        3/8 + 3/8 +  3/8`,
+        timeSig: 27,
+        bpm: 130,
+        exampleMusic: "宇宙コンビニ - EverythingChanges (0:00 - 0:28)",
+        exampleMusicURL: "https://youtu.be/GR8CwENcgEk?feature=shared&t=3",
+        info: ""
+    },
+    {
         name: '『Alive』',
         cts: `2/4 + 3/16 + 2/16 + 2/4 + 3/16 + 3/16`,
         timeSig: 27,
@@ -217,7 +255,7 @@ const ctsMetronomePreset = [
         4/4 + 2/4 + 3/4 +
         4/4 + 2/4 + 3/4 +
         4/4 + 4/4 + 4/4`,
-        timeSig: "その他の",
+        timeSig: 39,
         bpm: 140,
         exampleMusic: "伊福部昭 - ゴジラ(1954) (0:04 - 0:34)",
         exampleMusicURL: "https://youtu.be/V462IsOV3js?si=5oPRULzF6we8vzu9",
@@ -227,10 +265,52 @@ const ctsMetronomePreset = [
         name: '『Breaking All Illusions』',
         cts: `4/4 + 5/8 + 2/4 + 4/4 + 4/4 + 3/8 + 2/8 + 2/8 +
         4/4 + 5/8 + 2/4 + 4/4 + 4/4 + 3/8 + 2/8 + 4/8`,
-        timeSig: "その他の",
+        timeSig: 41,
         bpm: 150,
         exampleMusic: "Dream Theater - Breaking All Illusions (0:00 - 0:32)",
         exampleMusicURL: "https://youtu.be/HZlYCvamxKM?feature=shared",
+        info: ""
+    },
+    {
+        name: '『In the Presence of Enemies,Pt.1』',
+        cts: `3/4 + 3/8 + 3/4 + 4/8 +
+        3/4 + 3/8 + 4/4 + 3/8 +
+        3/4 + 3/8 + 3/4 + 4/8 +
+        3/4 + 3/8 + 3/8 + 4/4 + 3/8 + 3/8 `,
+        timeSig: 42,
+        bpm: 186,
+        exampleMusic: "Dream Theater - In the Presence of Enemies,Pt.1 (0:45 - 1:26)",
+        exampleMusicURL: "https://youtu.be/methQx40Vd8?feature=shared&t=45",
+        info: ""
+    },
+    //その他の拍子-------------------------------------------------------------------------------
+    {
+        name: '『Periphery - Marigold』',
+        cts: `4/16 + 3/16 + 2/16 + 5/16 + 4/16 + 3/16 + 2/16 + 5/16 +
+        4/16 + 3/16 + 2/16 + 5/16 + 4/16 + 3/16 + 2/16 + 5/16 +
+        4/16 + 3/16 + 2/16 + 5/16 + 4/16 + 3/16 + 2/16 + 5/16 +
+        4/16 + 3/16 + 2/16 + 5/16 + 4/8 + 4/8`,
+        timeSig: "その他の",
+        bpm: 107,
+        exampleMusic: "Periphery - Marigold (0:00 - 1:04)",
+        exampleMusicURL: "https://youtu.be/6Czb3M1z0Qs?feature=shared",
+        info: ""
+    },
+    {
+        name: '『地球儀 - Spinning Globe』',
+        cts: `4/4 + 2/4 + 4/4 +
+        4/4 + 2/4 + 4/4 +
+        4/4 + 2/4 + 4/4 +
+        4/4 + 2/4 + 2/4 +
+
+        4/4 + 2/4 + 4/4 +
+        4/4 + 2/4 + 4/4 +
+        4/4 + 2/4 + 4/4 +
+        4/4 + 4/4 + 4/4`,
+        timeSig: "その他の",
+        bpm: 78,
+        exampleMusic: "米津玄師 - 地球儀 - Spinning Globe (0:17 - 1:17)",
+        exampleMusicURL: "https://youtu.be/ByxpvgdgtRU?feature=shared",
         info: ""
     },
     {
@@ -266,14 +346,42 @@ const ctsMetronomePreset = [
     },
     {
         name: '『運鈍根』',
-        cts: `4/4 +\n4/4 + 2/8 + 4/4 + 3/8 + 4/4 + 4/8 + 4/4 + 5/8 +
-        4/4 + 6/8 + 4/4 + 7/8 + 4/4 + 8/8 + 4/4 + (4/8+5/8) +
+        cts: `4/4 + 2/8 + 4/4 + 3/8 + 4/4 + 4/8 + 4/4 + 5/8 +
+        4/4 + 6/8 + 4/4 + 7/8 + 4/4 + 8/8 + 4/4 + 9/8 +
         4/4 + 10/8 + 4/4 + 11/8 + 4/4 + 12/8 + 4/4 + 13/8 +
         4/4 + 14/8 + 4/4 + 15/8 + 4/4 + 16/8 +
         4/4 + 16/8`,
         timeSig: "その他の",
-        bpm: 175,
-        exampleMusic: "スプラトゥーン3 運鈍根(Chaos Carnival)",
+        bpm: 178,
+        exampleMusic: "スプラトゥーン3 運鈍根(Chaos Carnival) (0:00 - 0:50)",
+        exampleMusicURL: "https://youtu.be/8_Ax_-RohHk?si=1y-WK84dxa6R0p96&t=2",
+        info: ""
+    },
+    {
+        name: '『The Dance of Eternity』',
+        cts: `4/4 + 7/8 + 3/4 + 3/4 +
+        4/4 + 7/8 + 3/4 + 3/4 +
+
+        4/4 + 4/8 + 3/8 + 3/4 + 4/8 + 3/8 +
+        4/4 + 4/8 + 3/8 + 3/4 + 4/8 + 3/8 +
+
+        3/16 + 3/16 + 4/16 + 3/16 +
+        3/16 + 3/16 + 2/16 + 4/16 + 3/16 +
+        3/16 + 3/16 + 2/8 + 4/16 + 3/16 +
+        3/16 + 3/16 + 4/16 + 4/16 +
+
+        4/4 + 7/8 + 3/4 + 3/4 +
+        4/4 + 7/8 + 4/4 +
+        5/4 +
+
+        3/16 + 3/16 + 2/8 + 4/16 + 3/16 +
+        3/16 + 3/16 + 2/16 + 4/16 + 3/16 +
+        3/16 + 3/16 + 4/16 + 3/16 +
+        4/4 + 6/8 + 6/8
+        `,
+        timeSig: "その他の",
+        bpm: 123.5,
+        exampleMusic: "Dream Theater - The Dance of Eternity (0:30 - 1:23)",
         exampleMusicURL: "https://youtu.be/8_Ax_-RohHk?si=1y-WK84dxa6R0p96&t=2",
         info: ""
     },

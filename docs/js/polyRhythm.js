@@ -159,15 +159,32 @@ function stoppingProcess() {
     //ローディングのカウントダウンもリセット
     remainingTime = 0;
 };
-
+//互いに素な数を求めてサジェストする関数
+function suggestCoprimes() {
+    let rhythm1 = parseInt(document.getElementById('rhythm1').value);
+    let rhythm2 = parseInt(document.getElementById('rhythm2').value);
+    let coprimesText = "";
+    let count = 0;
+    for (let i = 0; i <= 20; i++) {
+        if (gcd(rhythm1, i) === 1 && i > 1) {
+            if (coprimesText !== "") {
+                coprimesText += ", ";
+            }
+            coprimesText += i;
+            count++
+        }
+    };
+    document.getElementById(`suggestText`).innerHTML = ``;
+    document.getElementById(`suggestText`).innerHTML = `現在のリズム1の値「${rhythm1}」に対して、ポリリズムの関係になるリズム2の値(1～20の間で)は「${coprimesText}」の${count}種類です。`;
+};
 // メトロノームをオンオフする関数
 function metronomeOnOff() {
     //現在のBPMの値を取得する
     bpm = document.getElementById('bpmValue').value;
     //BPMの値をチェックして数値に変換する
     bpm = sanitizeBpmInput(bpm);
-    rhythm1 = document.getElementById('rhythm1').value;
-    rhythm2 = document.getElementById('rhythm2').value;
+    rhythm1 = parseInt(document.getElementById('rhythm1').value);
+    rhythm2 = parseInt(document.getElementById('rhythm2').value);
     lcmRhythm = lcm(rhythm1, rhythm2);
     totalBeats = lcmRhythm;
     // 基準となるポリリズムの値を取得
@@ -392,6 +409,8 @@ function updateCommonRhythmTable() {
             document.getElementById('polyRhythmTimeSignature').innerHTML = `${lcmRhythm}<br>―<br>${polyRhythmBasisNote}`
         }
     };
+    //互いに素な数を求めてサジェストする関数
+    suggestCoprimes();
 
     // ビート状態の配列を初期化する関数
     initializeBeatStates();
@@ -498,6 +517,12 @@ function metronomeRestart() {
 function rhythmPresetChange(num) {
     // メトロノームが動作中なら一度止めた後に再度動かす関数
     metronomeRestart();
+
+    // ボタンのテキストを更新（リンク状態なら解除する）
+    if (isSynchronized = true) {
+        isSynchronized = false;
+        document.getElementById(`rhythmLinkButton`).innerHTML = `◯ リズム1と2をリンクさせる`;
+    };
 
     //デフォルト設定
     if (polyRhythmPreset[num].name === 'default') {
@@ -617,7 +642,6 @@ document.addEventListener('keydown', function (event) {
     };
 });
 
-
 // スライダーとテキストボックスの値を同期させる関数
 function updateBpm(value) {
     // メトロノームが動作中なら一度止めた後に再度動かす関数
@@ -639,18 +663,26 @@ document.getElementById('bpm').addEventListener('input', function () {
 document.getElementById('rhythm1').addEventListener('input', function () {
     // メトロノームが動作中なら一度止めた後に再度動かす関数
     metronomeRestart();
+    // 値を同期する関数
+    synchronizeValues('rhythm1', 'rhythm2', 'rhythm2Value');
     document.getElementById('rhythm1Value').textContent = this.value;
     // 拍のビジュアルをHTML上に描画する関数
     updateCommonRhythmTable();
+    //互いに素な数を求める関数
+    suggestCoprimes();
 });
 
 //リズム2の値が変更された時の処理
 document.getElementById('rhythm2').addEventListener('input', function () {
     // メトロノームが動作中なら一度止めた後に再度動かす関数
     metronomeRestart();
+    // 値を同期する関数
+    synchronizeValues('rhythm2', 'rhythm1', 'rhythm1Value');
     document.getElementById('rhythm2Value').textContent = this.value;
     // 拍のビジュアルをHTML上に描画する関数
     updateCommonRhythmTable();
+    //互いに素な数を求める関数
+    suggestCoprimes();
 });
 
 //rhythm1とrhythm2を入れ替えるボタンのイベントリスナー
@@ -727,7 +759,6 @@ function clickSoundLoading(loadingId) {
 document.getElementById('beatHeadClickSound').addEventListener('change', function () {
     clickSoundLoading(`beatHeadClickSoundLoading`);
 });
-
 document.getElementById('rhythm1ClickSound').addEventListener('change', function () {
     clickSoundLoading(`rhythm1ClickSoundLoading`);
 });
@@ -761,11 +792,39 @@ document.getElementById('muteRhythm2').addEventListener('click', () => {
     toggleMuteIcon(rhythm2Muted, `muteRhythm2`, `highlight2`)
     clickSoundLoading(`rhythm2ClickSoundLoading`);
 });
-
-
 //プリセットのイベントリスナー
 document.getElementById('rhythmPreset').addEventListener('change', function () {
     let num = parseInt(this.value);
     rhythmPresetChange(num);
+});
+
+let isSynchronized = false; // 同期の状態を保持するグローバル変数
+// 同期するべきかどうかを判断する関数
+function shouldSynchronize() {
+    return isSynchronized;
+};
+// 値を同期する関数
+function synchronizeValues(source, target, targetValueElement) {
+    if (shouldSynchronize()) {
+        const value = document.getElementById(source).value;
+        document.getElementById(target).value = value;
+        document.getElementById(targetValueElement).textContent = value;
+    };
+};
+// ボタンのクリックイベントリスナー
+document.getElementById('rhythmLinkButton').addEventListener('click', function () {
+    isSynchronized = !isSynchronized; // 同期の状態を切り替える
+    // ボタンのテキストを更新
+    if (isSynchronized) {
+        this.innerHTML = "⊘ リズム1と2のリンクを解除";
+        // メトロノームが動作中なら一度止めた後に再度動かす関数
+        metronomeRestart();
+        // 値を同期する関数
+        synchronizeValues('rhythm1', 'rhythm2', 'rhythm2Value');
+        // 拍のビジュアルをHTML上に描画する関数
+        updateCommonRhythmTable();
+    } else {
+        this.innerHTML = `◯ リズム1と2をリンクさせる`;
+    };
 });
 
