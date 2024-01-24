@@ -53,11 +53,11 @@
                 <textarea placeholder="ここに拍子のテキストを入力してください。複数の拍子を記入する場合は「+」でつなげて記述ください。（※テキストの保存機能はありません。）"
                     name="ctsTextarea" id="ctsTextarea" class="full-width" cols="" rows=""></textarea>
             </div>
-
             <div>
-                <label for="bpm">BPM:</label>
+                <label for="bpm">BPM：</label>
                 <input type="range" id="bpm" min="1" step="1" max="300" value="120" oninput="updateCtsBpm(this.value)">
-                <!-- テキストボックスのタイプをtextに変更 -->
+                <!-- テキストボックスにラベルを追加 -->
+                <label for="bpmValue" class="none">:</label>
                 <input type="text" id="bpmValue" value="120" oninput="updateCtsBpm(this.value)">
             </div>
             <div>
