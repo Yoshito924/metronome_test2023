@@ -104,6 +104,15 @@ const ctsMetronomePreset = [
         info: "",
     },
     {
+        name: '『混ぜるな危険』',
+        cts: `2/4 + 3/4`,
+        timeSig: 5,
+        bpm: 184,
+        exampleMusic: "tricot - 混ぜるな危険 (0:00 - 0:23)",
+        exampleMusicURL: "https://youtu.be/9oboWLb4I1Y?feature=shared",
+        info: "",
+    },
+    {
         name: '『Mission Impossible Theme』',
         cts: `3/8 + 3/8 + 2/4`,
         timeSig: 5,
@@ -146,6 +155,15 @@ const ctsMetronomePreset = [
         bpm: 144,
         exampleMusic: "Dream Theater - The Best Of Times  (2:54 - 4:14)",
         exampleMusicURL: "https://youtu.be/xVSM2CB4MLU?feature=shared&t=210",
+        info: ""
+    },
+    {
+        name: '『NEW WALL』',
+        cts: `3/8 + 3/8 + 2/8 + 3/4`,
+        timeSig: 7,
+        bpm: 154,
+        exampleMusic: "[Alexandros] - NEW WALL  (0:32 - 0:54)",
+        exampleMusicURL: "https://youtu.be/WW8LSsHZGTM?feature=shared&t=32",
         info: ""
     },
     {
@@ -365,24 +383,24 @@ const ctsMetronomePreset = [
         4/4 + 4/8 + 3/8 + 3/4 + 4/8 + 3/8 +
         4/4 + 4/8 + 3/8 + 3/4 + 4/8 + 3/8 +
 
-        3/16 + 3/16 + 4/16 + 3/16 +
-        3/16 + 3/16 + 2/16 + 4/16 + 3/16 +
-        3/16 + 3/16 + 2/8 + 4/16 + 3/16 +
-        3/16 + 3/16 + 4/16 + 4/16 +
+        3/8 + 4/16 + 3/16 +
+        3/8 + 1/8 + 4/16 + 3/16 +
+        3/8 + 2/8 + 4/16 + 3/16 +
+        3/8 + 2/8 + 4/16 +
 
         4/4 + 7/8 + 3/4 + 3/4 +
         4/4 + 7/8 + 4/4 +
         5/4 +
 
-        3/16 + 3/16 + 2/8 + 4/16 + 3/16 +
-        3/16 + 3/16 + 2/16 + 4/16 + 3/16 +
-        3/16 + 3/16 + 4/16 + 3/16 +
+        3/8 + 2/8 + 4/16 + 3/16 +
+        3/8 + 2/16 + 4/16 + 3/16 +
+        3/8 + 4/16 + 3/16 +
         4/4 + 6/8 + 6/8
         `,
         timeSig: "その他の",
-        bpm: 123.5,
+        bpm: 123.4,
         exampleMusic: "Dream Theater - The Dance of Eternity (0:30 - 1:23)",
-        exampleMusicURL: "https://youtu.be/8_Ax_-RohHk?si=1y-WK84dxa6R0p96&t=2",
+        exampleMusicURL: "https://youtu.be/eYCYGpu0OxM?feature=shared&t=30",
         info: ""
     },
 ]
