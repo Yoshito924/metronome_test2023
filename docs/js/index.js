@@ -80,9 +80,9 @@ const ctsMetronomePreset = [
         name: '3拍子',
         cts: `3/4 + 3/4 + 3/4 + 3/4`,
         timeSig: 3,
-        bpm: 120,
-        exampleMusic: "",
-        exampleMusicURL: "",
+        bpm: 168,
+        exampleMusic: "赤い公園 - 絶対零度 (0:20 - 0:33)",
+        exampleMusicURL: "https://youtu.be/B7HeN3JO9OI?feature=shared&t=45",
         info: "",
     },
     {
@@ -90,8 +90,8 @@ const ctsMetronomePreset = [
         cts: `4/4 + 4/4 + 4/4 + 4/4`,
         bpm: 120,
         timeSig: 4,
-        exampleMusic: "",
-        exampleMusicURL: "",
+        exampleMusic: "yama - 春を告げる",
+        exampleMusicURL: "https://youtu.be/DC6JppqHkaM?feature=shared",
         info: "",
     },
     {
@@ -164,6 +164,15 @@ const ctsMetronomePreset = [
         bpm: 154,
         exampleMusic: "[Alexandros] - NEW WALL  (0:32 - 0:54)",
         exampleMusicURL: "https://youtu.be/WW8LSsHZGTM?feature=shared&t=32",
+        info: ""
+    },
+    {
+        name: '『The Count Of Tuscany』',
+        cts: `3/8 + 2/8 + 2/8 + 3/8 + 3/8 + 2/8 + 3/8`,
+        timeSig: 9,
+        bpm: 186,
+        exampleMusic: "Dream Theater - The Count Of Tuscany  (3:30 - 3:53)",
+        exampleMusicURL: "https://youtu.be/vjoKyj51o_I?feature=shared&t=200",
         info: ""
     },
     {
@@ -373,6 +382,34 @@ const ctsMetronomePreset = [
         bpm: 178,
         exampleMusic: "スプラトゥーン3 運鈍根(Chaos Carnival) (0:00 - 0:50)",
         exampleMusicURL: "https://youtu.be/8_Ax_-RohHk?si=1y-WK84dxa6R0p96&t=2",
+        info: ""
+    },
+    {
+        name: '『Metropolis - Part I』',
+        cts: `6/8 + 6/8 + 6/8 + 6/8 +
+        6/8 + 6/8 + 6/8 + 3/8 +
+
+        2/8 + 3/8 + 2/8 + 2/8 + 3/8 + 2/8 + 3/8 + 2/8 + 2/8 + 3/8 +
+        2/8 + 3/8 + 2/8 + 2/8 + 3/8 + 2/8 + 3/8 + 2/8 + 2/8 + 3/8 +
+
+        2/8 + 3/8 + 2/8 + 3/8 + 2/8 + 2/8 + 3/8 +
+        2/8 + 3/8 + 2/8 + 2/8 + 3/8 + 2/8 + 3/8 +
+        2/8 + 3/8 + 2/8 + 2/8 + 3/8 + 3/8 +
+
+        2/8 + 3/8 + 2/8 + 2/8 + 3/8 + 2/8 + 3/8 + 2/8 + 2/8 + 3/8 +
+        2/8 + 3/8 + 2/8 + 2/8 + 3/8 + 2/8 + 3/8 + 2/8 + 2/8 + 3/8 +
+
+        2/8 + 3/8 + 2/8 + 3/8 + 2/8 + 2/8 + 3/8 +
+        2/8 + 3/8 + 2/8 + 2/8 + 3/8 + 2/8 + 3/8 + 2/8 + 3/8 + 2/8 + 2/8 + 3/8 + 2/8 +
+
+        2/8 + 3/8 + 2/8 + 3/8 + 2/8 + 3/8 + 2/8 + 3/8 +
+
+        5/4
+        `,
+        timeSig: "その他の",
+        bpm: 195,
+        exampleMusic: 'Dream Theater - Metropolis - Part I: "The Miracle and the Sleeper" (7:23 - 8:04)',
+        exampleMusicURL: "https://youtu.be/IqqRx77T4Vo?feature=shared&t=442",
         info: ""
     },
     {
