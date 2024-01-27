@@ -644,6 +644,7 @@ function DetermineTypeOfNote(BasisNote, note, rest) {
     }
     return { note, rest };
 };
+
 //=============================================================================
 let nextBeatTime;
 let beatInterval;
